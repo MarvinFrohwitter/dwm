@@ -15,7 +15,7 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const unsigned int baralpha = 0xd0;
+static const unsigned int baralpha = OPAQUE;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
@@ -42,7 +42,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
@@ -73,6 +73,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", "#11121D", "-nf", "#a9b1d6", "-l", "20", NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
+static const char *htop[]  = { "alacritty","-e","htop", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
 static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
@@ -113,6 +114,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, spawn,          {.v = alacritty } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = lf } },
+	{ MODKEY,                       XK_z,      spawn,          {.v = htop } },
 	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = termcmd } },
 	/* { MODKEY,                       XK_b,      spawn,          {.v = brave } }, */
 
@@ -171,6 +173,11 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+
+	{ MODKEY,                       XK_w, scratchpad_show, {0} },
+	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
+	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
+
 	{ MODKEY,                       XK_s,      spawn,          {.v = slock } },
 	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
 };
