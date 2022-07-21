@@ -8,20 +8,51 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int user_bh            = 0;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true", "JoyPixels:size=12:antialias=true:autohint=true" };
-static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" };
+/* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const unsigned int baralpha = OPAQUE;
-static const unsigned int borderalpha = OPAQUE;
-static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+
+
+/* For using fonts with Xresources, uncoment the folowing an coment the old static font chars */
+
+/* static char font[]            = "monospace:size=10"; */
+/* static char dmenufont[]       = "monospace:size=10"; */
+/* static const char *fonts[]          = { font }; */
+
+
+
+static char normbgcolor[]           = "#11121D";
+static char normbordercolor[]       = "#444444";
+static char normfgcolor[]           = "#a9b1d6";
+static char selfgcolor[]            = "#eeeeee";
+static char selbordercolor[]        = "#005577";
+static char selbgcolor[]            = "#005577";
+static char *colors[][3] = {
+       /*               fg           bg           border   */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
+
+
+
+
+
+
+/* static const char col_gray1[]       = "#222222"; */
+/* static const char col_gray2[]       = "#444444"; */
+/* static const char col_gray3[]       = "#bbbbbb"; */
+/* static const char col_gray4[]       = "#eeeeee"; */
+/* static const char col_cyan[]        = "#005577"; */
+static const unsigned int baralpha = 0xdd;
+static const unsigned int borderalpha = OPAQUE;
+/* static const char *colors[][3]      = { */
+/* 	/1*               fg         bg         border   *1/ */
+/* 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 }, */
+/* 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  }, */
+/* }; */
+
+
+
+
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
@@ -36,9 +67,13 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class       instance    title       tags mask     isfloating   monitor */
+	{ "discord",     NULL,        NULL,        1<<3,         0,           -1 },
+	{ "Thunderbird", NULL,        NULL,        4,            0,           -1 },
+	{ "Clementine",  NULL,        NULL,        1 << 4,       0,           -1 },
+	{ "Alacritty",   NULL,        "notetaker", 0,            1,           -1 },
+	{ "Gimp",        NULL,        NULL,        0,            1,           -1 },
+	{ "Firefox",     NULL,        NULL,        1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -70,10 +105,9 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", "#11121D", "-nf", "#a9b1d6", "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
-static const char *htop[]  = { "alacritty","-e","htop", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
 static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
@@ -90,6 +124,9 @@ static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
 static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
 static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
 
+static const char *notetaker[]  = { "alacritty", "--title=notetaker", "-e", "notetaker", NULL };
+static const char *notepdf[]  = { "notepdf", NULL };
+
 
 /* You obviously need the X11 development packages installed, X11proto in particular */
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
@@ -100,6 +137,32 @@ static const char *brightnessup[] = { "light", "-A", "10", NULL };
 static const char *brightnessdown[] = { "light", "-U", "10", NULL };
 
 
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+		{ "color0",       STRING,  &normbordercolor },
+		{ "color8",       STRING,  &selbordercolor },
+		{ "color0",       STRING,  &normbgcolor },
+		{ "color0",       STRING,  &selbgcolor },
+		{ "color4",       STRING,  &normfgcolor },
+		{ "color4",       STRING,  &selfgcolor },
+		/* { "font",               STRING,  &font }, */
+		/* { "dmenufont",          STRING,  &dmenufont }, */
+		/* { "normbgcolor",        STRING,  &normbgcolor }, */
+		/* { "normbordercolor",    STRING,  &normbordercolor }, */
+		/* { "normfgcolor",        STRING,  &normfgcolor }, */
+		/* { "selbgcolor",         STRING,  &selbgcolor }, */
+		/* { "selbordercolor",     STRING,  &selbordercolor }, */
+		/* { "selfgcolor",         STRING,  &selfgcolor }, */
+		/* { "borderpx",          	INTEGER, &borderpx }, */
+		/* { "snap",          		INTEGER, &snap }, */
+		/* { "showbar",          	INTEGER, &showbar }, */
+		/* { "topbar",          	INTEGER, &topbar }, */
+		/* { "nmaster",          	INTEGER, &nmaster }, */
+		/* { "resizehints",       	INTEGER, &resizehints }, */
+		/* { "mfact",      	 	FLOAT,   &mfact }, */
+};
 
 
 static Key keys[] = {
@@ -114,8 +177,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, spawn,          {.v = alacritty } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = lf } },
-	{ MODKEY,                       XK_z,      spawn,          {.v = htop } },
 	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = termcmd } },
+
+	{ MODKEY,                       XK_y,      spawn,          {.v = notetaker } },
+	{ MODKEY|ShiftMask,             XK_y,      spawn,          {.v = notepdf } },
 	/* { MODKEY,                       XK_b,      spawn,          {.v = brave } }, */
 
 	{ MODKEY,                       XK_c,      spawn,          {.v = clementine } },
