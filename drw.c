@@ -206,6 +206,8 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha)
 	                       clrname, dest))
 		die("error, cannot allocate color '%s'", clrname);
 
+	/* dest->pixel |= 0xff << 24; /1* This is the recomendation form the Arch alacitty wiki *1/ */
+
 	dest->pixel = (dest->pixel & 0x00ffffffU) | (alpha << 24);
 }
 

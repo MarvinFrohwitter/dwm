@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -17,7 +17,6 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:anti
 /* static char font[]            = "monospace:size=10"; */
 /* static char dmenufont[]       = "monospace:size=10"; */
 /* static const char *fonts[]          = { font }; */
-
 
 
 static char normbgcolor[]           = "#11121D";
@@ -106,12 +105,12 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *st[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
 static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
-/* static const char *brave[]  = { "brave", NULL }; */
+static const char *brave[]  = { "brave", NULL };
 static const char *nemo[]  = { "nemo", NULL };
 static const char *thunderbird[]  = { "thunderbird", NULL };
 static const char *newsboat[]  = { "alacritty","-e","newsboat", NULL };
@@ -167,21 +166,21 @@ ResourcePref resources[] = {
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_Super_L,         spawn,          {.v = dmenucmd } },
+	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
     { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
 	{ 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } },
 	{ 0,                       XF86XK_AudioMicMute,     spawn, {.v = mutemicvol } },
 	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
 	{ 0,                       XF86XK_MonBrightnessUp,  spawn, {.v = brightnessup   } },
 	{ 0,                       XF86XK_MonBrightnessDown,spawn, {.v = brightnessdown   } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = alacritty } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = lf } },
-	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = st } },
+	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = alacritty } },
 
 	{ MODKEY,                       XK_y,      spawn,          {.v = notetaker } },
 	{ MODKEY|ShiftMask,             XK_y,      spawn,          {.v = notepdf } },
-	/* { MODKEY,                       XK_b,      spawn,          {.v = brave } }, */
+	{ MODKEY,                       XK_b,      spawn,          {.v = brave } },
 
 	{ MODKEY,                       XK_c,      spawn,          {.v = clementine } },
 	{ MODKEY,                       XK_plus,   spawn,          {.v = clementineup } },
@@ -254,7 +253,7 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button2,        spawn,          {.v = st } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
