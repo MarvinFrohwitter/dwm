@@ -12,7 +12,7 @@ static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:an
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
 
 
-/* For using fonts with Xresources, uncoment the folowing an coment the old static font chars */
+/* For using fonts with Xresources, uncomment the following an comment the old static font chars */
 
 /* static char font[]            = "monospace:size=10"; */
 /* static char dmenufont[]       = "monospace:size=10"; */
@@ -67,12 +67,15 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class       instance    title       tags mask     isfloating   monitor */
-	{ "discord",     NULL,        NULL,        1<<3,         0,           -1 },
-	{ "Thunderbird", NULL,        NULL,        4,            0,           -1 },
+	{ "thunderbird", NULL,        NULL,        1 << 2,       0,           -1 },
+	{ "discord",     NULL,        NULL,        1 << 3,       0,           -1 },
 	{ "Clementine",  NULL,        NULL,        1 << 4,       0,           -1 },
+	{ "Thunar",      NULL,        NULL,        1 << 5,       0,           -1 },
+	{ "TIPP10",      NULL,        NULL,        1 << 6,       0,           -1 },
+	{ "firefox",     NULL,        NULL,        1 << 7,       0,           -1 },
+	{ "Alacritty",   NULL,        "newsboat",  1 << 8,       0,           -1 },
 	{ "Alacritty",   NULL,        "notetaker", 0,            1,           -1 },
-	{ "Gimp",        NULL,        NULL,        0,            1,           -1 },
-	{ "Firefox",     NULL,        NULL,        1 << 8,       0,           -1 },
+	{ "gimp",        NULL,        NULL,        0,            0,           -1 },
 };
 
 /* layout(s) */
@@ -106,7 +109,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-F", "-c", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
 static const char *st[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
@@ -115,7 +118,7 @@ static const char *slock[]  = { "slock", NULL };
 static const char *brave[]  = { "brave", NULL };
 static const char *nemo[]  = { "nemo", NULL };
 static const char *thunderbird[]  = { "thunderbird", NULL };
-static const char *newsboat[]  = { "alacritty","-e","newsboat", NULL };
+static const char *newsboat[]  = { "alacritty", "--title=newsboat", "-e","newsboat", NULL };
 static const char *discord[]  = { "discord", NULL };
 
 static const char *clementine[]  = { "clementine", NULL };
@@ -130,10 +133,11 @@ static const char *notepdf[]  = { "notepdf", NULL };
 
 
 /* You obviously need the X11 development packages installed, X11proto in particular */
-static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
-static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
-static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
-static const char *mutemicvol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+
+/* static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%", NULL }; */
+/* static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%", NULL }; */
+/* static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL }; */
+/* static const char *mutemicvol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL }; */
 static const char *brightnessup[] = { "light", "-A", "10", NULL };
 static const char *brightnessdown[] = { "light", "-U", "10", NULL };
 
@@ -146,8 +150,8 @@ ResourcePref resources[] = {
 		{ "color8",       STRING,  &selbordercolor },
 		{ "color0",       STRING,  &normbgcolor },
 		{ "color0",       STRING,  &selbgcolor },
-		{ "color4",       STRING,  &normfgcolor },
-		{ "color4",       STRING,  &selfgcolor },
+		{ "color7",       STRING,  &normfgcolor },
+		{ "color7",       STRING,  &selfgcolor },
 		/* { "font",               STRING,  &font }, */
 		/* { "dmenufont",          STRING,  &dmenufont }, */
 		/* { "normbgcolor",        STRING,  &normbgcolor }, */
@@ -168,11 +172,21 @@ ResourcePref resources[] = {
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+    { MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
+    { MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
+    { MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
 	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
-    { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
-	{ 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } },
-	{ 0,                       XF86XK_AudioMicMute,     spawn, {.v = mutemicvol } },
-	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+    /* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
+	/* { 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } }, */
+	/* { 0,                       XF86XK_AudioMicMute,     spawn, {.v = mutemicvol } }, */
+	/* { 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } }, */
+
+    { 0,                       XF86XK_AudioLowerVolume, spawn, SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ;kill -44 $(pidof dwmblocks)") },
+	{ 0,                       XF86XK_AudioRaiseVolume, spawn,  SHCMD("/usr/bin/pactl set-sink-volume 0 +5% ;kill -44 $(pidof dwmblocks)") },
+
+	{ 0,                       XF86XK_AudioMicMute,     spawn, SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
+	{ 0,                       XF86XK_AudioMute,        spawn, SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
+
 	{ 0,                       XF86XK_MonBrightnessUp,  spawn, {.v = brightnessup   } },
 	{ 0,                       XF86XK_MonBrightnessDown,spawn, {.v = brightnessdown   } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
