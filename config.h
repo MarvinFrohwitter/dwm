@@ -4,6 +4,7 @@
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
 static const unsigned int snap      = 32;       /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int user_bh            = 0;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
@@ -66,17 +67,26 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class       instance    title       tags mask     isfloating   monitor */
-	{ "thunderbird", NULL,        NULL,        1 << 2,       0,           -1 },
-	{ "discord",     NULL,        NULL,        1 << 3,       0,           -1 },
-	{ "Clementine",  NULL,        NULL,        1 << 4,       0,           -1 },
-	{ "Thunar",      NULL,        NULL,        1 << 5,       0,           -1 },
-	{ "TIPP10",      NULL,        NULL,        1 << 6,       0,           -1 },
-	{ "firefox",     NULL,        NULL,        1 << 7,       0,           -1 },
-	{ "Alacritty",   NULL,        "newsboat",  1 << 8,       0,           -1 },
-	{ "Alacritty",   NULL,        "notetaker", 0,            1,           -1 },
-	{ "gimp",        NULL,        NULL,        0,            0,           -1 },
+	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
+    /* { "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 }, */
+	/* { "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 }, */
+	/* { "St",      NULL,     NULL,           0,         0,          1,           0,        -1 }, */
+	/* { NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /1* xev *1/ */
+	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
+	{ "thunderbird", NULL,        NULL,        1 << 2,       0,     0,           0,      -1 },
+	{ "discord",     NULL,        NULL,        1 << 3,       0,     0,           0,      -1 },
+	{ "Clementine",  NULL,        NULL,        1 << 4,       0,     0,           0,      -1 },
+	{ "Thunar",      NULL,        NULL,        1 << 5,       0,     0,           0,      -1 },
+	{ "TIPP10",      NULL,        NULL,        1 << 6,       0,     0,           0,      -1 },
+	{ "firefox",     NULL,        NULL,        1 << 7,       0,     0,           0,      -1 },
+	{ "Alacritty",   NULL,        "newsboat",  1 << 8,       0,     0,           0,      -1 },
+	{ "Alacritty",   NULL,        "notetaker", 0,            1,     0,           0,      -1 },
+	{ "Alacritty",   NULL,        NULL,        0,            1,     1,           1,      -1 },
+	{ "gimp",        NULL,        NULL,        0,            0,     0,           0,      -1 },
+	{ NULL,          NULL,     "Event Tester", 0,            0,     0,           1,      -1 }, /* xev */
 };
+
+
 
 /* layout(s) */
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
