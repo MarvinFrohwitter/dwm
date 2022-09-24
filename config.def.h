@@ -68,11 +68,6 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-    /* { "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 }, */
-	/* { "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 }, */
-	/* { "St",      NULL,     NULL,           0,         0,          1,           0,        -1 }, */
-	/* { NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /1* xev *1/ */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
 	{ "thunderbird", NULL,        NULL,        1 << 2,       0,     0,           0,      -1 },
 	{ "discord",     NULL,        NULL,        1 << 3,       0,     0,           0,      -1 },
 	{ "Clementine",  NULL,        NULL,        1 << 4,       0,     0,           0,      -1 },
@@ -81,9 +76,11 @@ static const Rule rules[] = {
 	{ "firefox",     NULL,        NULL,        1 << 7,       0,     0,           0,      -1 },
 	{ "Alacritty",   NULL,        "newsboat",  1 << 8,       0,     0,           0,      -1 },
 	{ "Alacritty",   NULL,        "notetaker", 0,            1,     0,           0,      -1 },
-	{ "Alacritty",   NULL,        NULL,        0,            1,     1,           1,      -1 },
+	{ "Alacritty",   NULL,        NULL,        0,            1,     1,           0,      -1 },
+	{ "St",          NULL,        NULL,        0,            0,     1,           0,      -1 },
 	{ "gimp",        NULL,        NULL,        0,            0,     0,           0,      -1 },
 	{ NULL,          NULL,     "Event Tester", 0,            0,     0,           1,      -1 }, /* xev */
+	/* { "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 }, */
 };
 
 
