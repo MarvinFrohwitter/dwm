@@ -2,7 +2,6 @@
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
-static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -37,20 +36,8 @@ static char *colors[][3] = {
 
 
 
-/* static const char col_gray1[]       = "#222222"; */
-/* static const char col_gray2[]       = "#444444"; */
-/* static const char col_gray3[]       = "#bbbbbb"; */
-/* static const char col_gray4[]       = "#eeeeee"; */
-/* static const char col_cyan[]        = "#005577"; */
 static const unsigned int baralpha = 0xdd;
 static const unsigned int borderalpha = OPAQUE;
-/* static const char *colors[][3]      = { */
-/* 	/1*               fg         bg         border   *1/ */
-/* 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 }, */
-/* 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  }, */
-/* }; */
-
-
 
 
 static const unsigned int alphas[][3]      = {
@@ -246,10 +233,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 
-	{ MODKEY|ControlMask,           XK_k,  setgaps,        {.i = -5 } },
-	{ MODKEY|ControlMask,           XK_j,  setgaps,        {.i = +5 } },
-	{ MODKEY|ControlMask,           XK_u,  setgaps,        {.i = GAP_RESET } },
-	{ MODKEY|ControlMask,           XK_o,  setgaps,        {.i = GAP_TOGGLE} },
 
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
