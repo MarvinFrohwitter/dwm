@@ -258,6 +258,7 @@ static void showhide(Client *c);
 static void sigchld(int unused);
 static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
+static void stairs(Monitor *m);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void togglebar(const Arg *arg);
@@ -2217,6 +2218,43 @@ spawn(const Arg *arg)
 		fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[0]);
 		perror(" failed");
 		exit(EXIT_SUCCESS);
+	}
+}
+
+void
+stairs(Monitor *m)
+{
+	unsigned int i, n, h, mw, my;
+	unsigned int ox, oy, ow, oh; /* stair offset values */
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mw = m->nmaster ? m->ww * m->mfact : 0;
+	else
+		mw = m->ww;
+
+	for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+		if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx, m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
+			if (my + HEIGHT(c) < m->wh)
+				my += HEIGHT(c);
+		} else {
+			oy = i - m->nmaster;
+			ox = stairdirection ? n - i - 1 : (stairsamesize ? i - m->nmaster : 0);
+			ow = stairsamesize ? n - m->nmaster - 1 : n - i - 1;
+			oh = stairsamesize ? ow : i - m->nmaster;
+			resize(c,
+			       m->wx + mw + (ox * stairpx),
+			       m->wy + (oy * stairpx),
+			       m->ww - mw - (2 * c->bw) - (ow * stairpx),
+			       m->wh - (2 * c->bw) - (oh * stairpx),
+			       0);
+		}
 	}
 }
 
