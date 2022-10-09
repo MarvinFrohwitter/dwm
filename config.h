@@ -11,11 +11,13 @@ static       int smartgaps          = 0;        /* 1 means no outer gap when the
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+
 static const unsigned int stairpx   = 20;       /* depth of the stairs layout */
 static const int stairdirection     = 1;        /* 0: left-aligned, 1: right-aligned */
 static const int stairsamesize      = 1;        /* 1 means shrink all the staired windows to the same size */
+
 static const double activeopacity   = 1.0f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
-static const double inactiveopacity = 0.875f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static const double inactiveopacity = 0.9f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
 static       Bool bUseOpacity       = True;     /* Starts with opacity on any unfocused windows */
 static const int user_bh            = 0;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true", "JoyPixels:size=12:antialias=true:autohint=true" };
@@ -274,7 +276,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 
 	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[14]} },
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[15]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
@@ -287,6 +289,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
+    { MODKEY|ControlMask,           XK_space,  focusmaster,    {0} },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
