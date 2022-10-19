@@ -257,12 +257,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 
-	{ ControlMask,              XK_j,      incrgaps,       {.i = +1 } },
-	{ ControlMask,              XK_k,      incrgaps,       {.i = -1 } },
+	{ ControlMask|Mod4Mask,              XK_j,      incrgaps,       {.i = +1 } },
+	{ ControlMask|Mod4Mask,              XK_k,      incrgaps,       {.i = -1 } },
 	{ ControlMask|ShiftMask,    XK_j,      incrigaps,      {.i = +1 } },
 	{ ControlMask|ShiftMask,    XK_k,      incrigaps,      {.i = -1 } },
-	{ ControlMask,              XK_h,      incrogaps,      {.i = +1 } },
-	{ ControlMask,              XK_l,      incrogaps,      {.i = -1 } },
+	{ ControlMask|Mod4Mask,              XK_h,      incrogaps,      {.i = +1 } },
+	{ ControlMask|Mod4Mask,              XK_l,      incrogaps,      {.i = -1 } },
 	/* { ControlMask,              XK_6,      incrihgaps,     {.i = +1 } }, */
 	/* { ControlMask|ShiftMask,    XK_6,      incrihgaps,     {.i = -1 } }, */
 	/* { ControlMask,              XK_7,      incrivgaps,     {.i = +1 } }, */
