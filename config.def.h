@@ -144,8 +144,7 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 #define STATUSBAR "dwmblocks"
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-F", "-c", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
 static const char *st[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
@@ -206,7 +205,7 @@ ResourcePref resources[] = {
 };
 
 
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier                     key        function        argument */
     { MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
     { MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
@@ -319,7 +318,7 @@ static Key keys[] = {
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-static Button buttons[] = {
+static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
