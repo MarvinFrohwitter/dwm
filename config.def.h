@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -26,6 +25,7 @@ static const int user_bh            = 30;        /* 0 means that dwm will calcul
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true", "JoyPixels:size=12:antialias=true:autohint=true" };
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
+
 
 
 /* For using fonts with Xresources, uncomment the following an comment the old static font chars */
@@ -328,11 +328,6 @@ static const Button buttons[] = {
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
-
-	/* { ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} }, */
-	/* { ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} }, */
-	/* { ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} }, */
-
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
