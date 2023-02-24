@@ -2127,6 +2127,7 @@ void sigstatusbar(const Arg *arg) {
     return;
 
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
+}
 
 void
 spawn(const Arg *arg)
@@ -2140,16 +2141,6 @@ spawn(const Arg *arg)
 		execvp(((char **)arg->v)[0], (char **)arg->v);
 		die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
 	}
-}
-
-void spawn(const Arg *arg) {
-  if (fork() == 0) {
-    if (dpy)
-      close(ConnectionNumber(dpy));
-    setsid();
-    execvp(((char **)arg->v)[0], (char **)arg->v);
-    die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
-  }
 }
 
 void stairs(Monitor *m) {

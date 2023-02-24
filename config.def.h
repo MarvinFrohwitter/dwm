@@ -146,7 +146,8 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 #define STATUSBAR "dwmblocks"
 
 /* commands */
-static const char *dmenucmd[] = { "dmenu_run", "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
 static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
 static const char *st[]  = { "st", NULL };
