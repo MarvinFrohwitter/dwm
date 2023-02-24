@@ -428,9 +428,14 @@ void applyrules(Client *c) {
     XFree(ch.res_class);
   if (ch.res_name)
     XFree(ch.res_name);
-  if (c->tags != SCRATCHPAD_MASK)
+  if (c->tags != SCRATCHPAD_MASK){
     c->tags =
         c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
+      Arg tagarg;
+      tagarg.ui = c->tags;
+      view(&tagarg);
+
+  }
 }
 
 int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact) {

@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 /* appearance */
+
+#include <X11/Xutil.h>
+#include <string.h>
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
@@ -22,10 +25,10 @@ static const double activeopacity   = 1.0f;     /* Window opacity when it's focu
 static const double inactiveopacity = 1.0f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
 static       Bool bUseOpacity       = True;     /* Starts with opacity on any unfocused windows */
 static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
-static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true", "JoyPixels:size=12:antialias=true:autohint=true" };
+static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true",
+					"JoyPixels:size=12:antialias=true:autohint=true" };
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
-
 
 
 /* For using fonts with Xresources, uncomment the following an comment the old static font chars */
@@ -46,10 +49,6 @@ static char *colors[][3] = {
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
-
-
-
-
 
 
 static const unsigned int baralpha = 0xdd;
@@ -79,11 +78,12 @@ static const Rule rules[] = {
 	{ "thunderbird", NULL,        NULL,        1 << 2,       0,     0,           0,      -1 },
 	{ "discord",     NULL,        NULL,        1 << 3,       0,     0,           0,      -1 },
 	{ "Clementine",  NULL,        NULL,        1 << 4,       0,     0,           0,      -1 },
-	{ "Thunar",      NULL,        NULL,        1 << 5,       0,     0,           0,      -1 },
+	{ "Thunar",      NULL,        NULL,        1 << 5,       1,     0,           0,      -1 },
 	{ "TIPP10",      NULL,        NULL,        1 << 6,       0,     0,           0,      -1 },
 	{ "firefox",     NULL,        NULL,        1 << 7,       0,     0,           0,      -1 },
 	{ "Alacritty",   NULL,        "newsboat",  1 << 8,       0,     0,           0,      -1 },
 	{ "Alacritty",   NULL,        "notetaker", 0,            1,     0,           0,      -1 },
+	{ "Alacritty",   NULL,        "ncmpcpp",   1 << 4,       1,     0,           0,      -1 },
 	{ "Alacritty",   NULL,        NULL,        0,            1,     0,           0,      -1 },
 	{ "St",          NULL,        NULL,        0,            0,     1,           0,      -1 },
 	{ "gimp",        NULL,        NULL,        0,            0,     0,           0,      -1 },
@@ -101,6 +101,7 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
+#include "helper.c"
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -127,6 +128,7 @@ static const Layout layouts[] = {
 /* when clients >= LENGTH(monocles), uses the last element */
 static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]", "[8]", "[9]", "[9+]" };
 
+
 /* key definitions */
 #define MODKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
@@ -145,12 +147,15 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 
 /* commands */
 static const char *dmenucmd[] = { "dmenu_run", "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
+static const char *killscript[]  = { "killscript", NULL };
 static const char *st[]  = { "st", NULL };
 static const char *alacritty[]  = { "alacritty", NULL };
 static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
 static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
 static const char *brave[]  = { "brave", NULL };
+static const char *surf[]  = { "tabbed", "-c", "surf", "-e", NULL };
 static const char *nemo[]  = { "nemo", NULL };
 static const char *thunderbird[]  = { "thunderbird", NULL };
 static const char *newsboat[]  = { "alacritty", "--title=newsboat", "-e","newsboat", NULL };
@@ -162,6 +167,7 @@ static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
 static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
 static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
 static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
+static const char *ncmpcpp[]  = { "alacritty","--title=ncmpcpp", "-e", "ncmpcpp", NULL };
 
 static const char *notetaker[]  = { "alacritty", "--title=notetaker", "-e", "notetaker", NULL };
 static const char *notepdf[]  = { "notepdf", NULL };
@@ -207,16 +213,17 @@ ResourcePref resources[] = {
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-    { MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
-    { MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
-    { MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
+	{ MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
+	{ MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
+	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
 	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
-    /* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
+	{ MODKEY|ShiftMask,              XK_r,         spawn,          {.v = rofi } },
+	/* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
 	/* { 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } }, */
 	/* { 0,                       XF86XK_AudioMicMute,     spawn, {.v = mutemicvol } }, */
 	/* { 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } }, */
 
-    { 0,                       XF86XK_AudioLowerVolume, spawn, SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ;kill -44 $(pidof dwmblocks)") },
+	{ 0,                       XF86XK_AudioLowerVolume, spawn, SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ;kill -44 $(pidof dwmblocks)") },
 	{ 0,                       XF86XK_AudioRaiseVolume, spawn,  SHCMD("/usr/bin/pactl set-sink-volume 0 +5% ;kill -44 $(pidof dwmblocks)") },
 
 	{ 0,                       XF86XK_AudioMicMute,     spawn, SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
@@ -232,6 +239,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_y,      spawn,          {.v = notetaker } },
 	{ MODKEY|ShiftMask,             XK_y,      spawn,          {.v = notepdf } },
 	{ MODKEY,                       XK_b,      spawn,          {.v = brave } },
+	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = surf } },
 
 	{ MODKEY,                       XK_c,      spawn,          {.v = clementine } },
 	{ MODKEY,                       XK_plus,   spawn,          {.v = clementineup } },
@@ -239,10 +247,11 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_plus,   spawn,          {.v = clementinenexttrack } },
 	{ MODKEY|ControlMask,           XK_minus,  spawn,          {.v = clementineprevioustrack} },
 	{ MODKEY|ControlMask,           XK_m,      spawn,          {.v = clementinemute } },
+	{ MODKEY|ControlMask,           XK_n,      spawn,	   {.v = ncmpcpp } },
 
 	{ MODKEY,                       XK_n,      spawn,          {.v = nemo } },
-	{ MODKEY,                       XK_t,      spawn,          {.v = thunderbird } },
-	{ MODKEY,                       XK_d,      spawn,          {.v = discord } },
+	{ MODKEY,                       XK_t,      spawn,          {.v = thunderbird }},
+	{ MODKEY,                       XK_d,      spawn,	   {.v = discord } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = newsboat } },
 
 	{ MODKEY,                       XK_o,      togglebar,      {0} },
@@ -291,7 +300,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 
-    { MODKEY|ControlMask,           XK_space,  focusmaster,    {0} },
+	{ MODKEY|ControlMask,           XK_space,  focusmaster,    {0} },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
@@ -312,8 +321,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
 	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
 
-	{ MODKEY,                       XK_s,      spawn,          {.v = slock } },
-	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
+	{ MODKEY,                       XK_s,  spawn,           {.v = slock } },
+	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit, {.v = killscript } },
 };
 
 /* button definitions */
@@ -336,4 +345,5 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
+
 
