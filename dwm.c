@@ -268,6 +268,7 @@ static void scratchpad_hide();
 static _Bool scratchpad_last_showed_is_killed(void);
 static void scratchpad_remove();
 static void scratchpad_show();
+static _Bool scratchpad_show_client_by_pid(pid_t pid);
 static void scratchpad_show_client(Client *c);
 static void scratchpad_show_first(void);
 static int sendevent(Client *c, Atom proto);
@@ -1846,9 +1847,20 @@ static void scratchpad_show() {
   }
 }
 
+static _Bool scratchpad_show_client_by_pid(pid_t pid) {
+  for (Client *c = selmon->clients; c != NULL; c = c->next) {
+    if (c->pid == pid) {
+      scratchpad_show_client(c);
+      return 1;
+    }
+  }
+  return 0;
+}
+
 static void scratchpad_show_client(Client *c) {
   scratchpad_last_showed = c;
   c->tags = selmon->tagset[selmon->seltags];
+  applyrules(c);
   focus(c);
   arrange(selmon);
 }
@@ -2134,11 +2146,18 @@ void spawn(const Arg *arg) {
   if (arg->v == dmenucmd)
     dmenumon[0] = '0' + selmon->num;
   if (fork() == 0) {
-    if (dpy)
+    if (dpy) {
       close(ConnectionNumber(dpy));
-    setsid();
-    execvp(((char **)arg->v)[0], (char **)arg->v);
-    die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
+    }
+    pid_t pid = setsid();
+    _Bool pid_found = 0;
+    pid_found = scratchpad_show_client_by_pid(pid);
+    if (pid_found) {
+      die("dwm: process '%s' allready exists:", ((char **)arg->v)[0]);
+    } else {
+      execvp(((char **)arg->v)[0], (char **)arg->v);
+      die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
+    }
   }
 }
 
