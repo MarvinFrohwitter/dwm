@@ -130,6 +130,7 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
   int bw, oldbw;
   unsigned int tags;
+  unsigned int switchtotag;
   int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen,
       isterminal, noswallow, issticky;
   pid_t pid;
@@ -185,6 +186,7 @@ typedef struct {
   const char *instance;
   const char *title;
   unsigned int tags;
+  unsigned int switchtotag;
   int isfloating;
   int isterminal;
   int noswallow;
@@ -266,6 +268,7 @@ static void scratchpad_hide();
 static _Bool scratchpad_last_showed_is_killed(void);
 static void scratchpad_remove();
 static void scratchpad_show();
+static _Bool scratchpad_show_client_by_pid(pid_t pid);
 static void scratchpad_show_client(Client *c);
 static void scratchpad_show_first(void);
 static int sendevent(Client *c, Atom proto);
@@ -421,19 +424,20 @@ void applyrules(Client *c) {
         ;
       if (m)
         c->mon = m;
+      if (r->switchtotag) {
+        Arg a = {.ui = r->tags};
+        c->switchtotag = selmon->tagset[selmon->seltags];
+        view(&a);
+      }
     }
   }
   if (ch.res_class)
     XFree(ch.res_class);
   if (ch.res_name)
     XFree(ch.res_name);
-  if (c->tags != SCRATCHPAD_MASK){
+  if (c->tags != SCRATCHPAD_MASK) {
     c->tags =
         c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
-      Arg tagarg;
-      tagarg.ui = c->tags;
-      view(&tagarg);
-
   }
 }
 
@@ -1843,9 +1847,20 @@ static void scratchpad_show() {
   }
 }
 
+static _Bool scratchpad_show_client_by_pid(pid_t pid) {
+  for (Client *c = selmon->clients; c != NULL; c = c->next) {
+    if (c->pid == pid) {
+      scratchpad_show_client(c);
+      return 1;
+    }
+  }
+  return 0;
+}
+
 static void scratchpad_show_client(Client *c) {
   scratchpad_last_showed = c;
   c->tags = selmon->tagset[selmon->seltags];
+  applyrules(c);
   focus(c);
   arrange(selmon);
 }
@@ -2003,22 +2018,21 @@ void setmfact(const Arg *arg) {
   arrange(selmon);
 }
 
-void
-setup(void)
-{
-	int i;
-	XSetWindowAttributes wa;
-	Atom utf8string;
-	struct sigaction sa;
+void setup(void) {
+  int i;
+  XSetWindowAttributes wa;
+  Atom utf8string;
+  struct sigaction sa;
 
-	/* do not transform children into zombies when they terminate */
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT | SA_RESTART;
-	sa.sa_handler = SIG_IGN;
-	sigaction(SIGCHLD, &sa, NULL);
+  /* do not transform children into zombies when they terminate */
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT | SA_RESTART;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGCHLD, &sa, NULL);
 
-	/* clean up any zombies (inherited from .xinitrc etc) immediately */
-	while (waitpid(-1, NULL, WNOHANG) > 0);
+  /* clean up any zombies (inherited from .xinitrc etc) immediately */
+  while (waitpid(-1, NULL, WNOHANG) > 0)
+    ;
 
   /* init screen */
   screen = DefaultScreen(dpy);
@@ -2116,7 +2130,6 @@ void showhide(Client *c) {
   }
 }
 
-
 void sigstatusbar(const Arg *arg) {
   union sigval sv;
 
@@ -2129,18 +2142,23 @@ void sigstatusbar(const Arg *arg) {
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
 }
 
-void
-spawn(const Arg *arg)
-{
-	if (arg->v == dmenucmd)
-		dmenumon[0] = '0' + selmon->num;
-	if (fork() == 0) {
-		if (dpy)
-			close(ConnectionNumber(dpy));
-		setsid();
-		execvp(((char **)arg->v)[0], (char **)arg->v);
-		die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
-	}
+void spawn(const Arg *arg) {
+  if (arg->v == dmenucmd)
+    dmenumon[0] = '0' + selmon->num;
+  if (fork() == 0) {
+    if (dpy) {
+      close(ConnectionNumber(dpy));
+    }
+    pid_t pid = setsid();
+    _Bool pid_found = 0;
+    pid_found = scratchpad_show_client_by_pid(pid);
+    if (pid_found) {
+      die("dwm: process '%s' allready exists:", ((char **)arg->v)[0]);
+    } else {
+      execvp(((char **)arg->v)[0], (char **)arg->v);
+      die("dwm: execvp '%s' failed:", ((char **)arg->v)[0]);
+    }
+  }
 }
 
 void stairs(Monitor *m) {
@@ -2305,6 +2323,10 @@ void unmanage(Client *c, int destroyed) {
     return;
   }
 
+  if (c->switchtotag) {
+    Arg a = {.ui = c->switchtotag};
+    view(&a);
+  }
   Client *s = swallowingclient(c->win);
   if (s) {
     free(s->swallowing);
