@@ -74,20 +74,20 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  switchtotag  isfloating  isterminal  noswallow  monitor */
-	{ "thunderbird", NULL,        NULL,        1 << 2,        1,          0,     0,           0,      -1 },
-	{ "discord",     NULL,        NULL,        1 << 3,        1,          0,     0,           0,      -1 },
-	{ "Clementine",  NULL,        NULL,        1 << 4,        1,          0,     0,           0,      -1 },
-	{ "Thunar",      NULL,        NULL,        1 << 5,        1,          1,     0,           0,      -1 },
-	{ "TIPP10",      NULL,        NULL,        1 << 6,        1,          0,     0,           0,      -1 },
-	{ "firefox",     NULL,        NULL,        1 << 7,        1,          0,     0,           0,      -1 },
-	{ "Alacritty",   NULL,        "newsboat",  1 << 8,        1,          0,     0,           0,      -1 },
-	{ "Alacritty",   NULL,        "notetaker", 0,             0,          1,     0,           0,      -1 },
-	{ "Alacritty",   NULL,        "ncmpcpp",   1 << 4,        1,          1,     0,           0,      -1 },
-	{ "Alacritty",   NULL,        NULL,        0,             0,          1,     0,           0,      -1 },
-	{ "St",          NULL,        NULL,        0,             0,          0,     1,           0,      -1 },
-	{ "gimp",        NULL,        NULL,        0,             0,          0,     0,           0,      -1 },
-	{ NULL,          NULL,     "Event Tester", 0,             0,          0,     0,           1,      -1 }, /* xev */
+	/* class	instance title       tags mask switchtotag isfloating isterminal noswallow monitor float x,y,w,h floatborderpx*/
+	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     0,           0,      -1,  0,0,1000,700,      5},
+	{ "St",          NULL,    NULL,        0,             0,          0,     1,           0,      -1,  0,0,1000,700,      5},
+	{ "gimp",        NULL,    NULL,        0,             0,          0,     0,           0,      -1,  0,0,1000,700,      5},
+	{ NULL,          NULL, "Event Tester", 0,             0,          0,     0,           1,      -1,  0,0,1000,700,      5}, /* xev */
 };
 
 
