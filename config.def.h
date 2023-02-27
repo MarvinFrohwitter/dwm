@@ -273,7 +273,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY|ControlMask,                       XK_Return, zoom,           {0} },
 
 	{ ControlMask|Mod4Mask,              XK_j,      incrgaps,       {.i = +1 } },
 	{ ControlMask|Mod4Mask,              XK_k,      incrgaps,       {.i = -1 } },
@@ -302,7 +302,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 
 	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
-+	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
+	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,                       XK_a,      toggleopacity,  {0} },
