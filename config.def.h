@@ -62,7 +62,7 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "", "", " ", "ﭮ ", "", "", "", "爵 ", "" };
+static const char *tags[] = { "", " ", " ", "ﭮ ", "", "", "", "爵 ", "" };
 
 static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
@@ -156,6 +156,7 @@ static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
 static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
 static const char *brave[]  = { "brave", NULL };
+static const char *firefox[]  = { "firefox", NULL };
 static const char *surf[]  = { "tabbed", "-c", "surf", "-e", NULL };
 static const char *nemo[]  = { "nemo", NULL };
 static const char *thunderbird[]  = { "thunderbird", NULL };
@@ -185,7 +186,11 @@ static const char *brightnessdown[] = { "light", "-U", "10", NULL };
 
 static const Launcher launchers[] = {
        /* command       name to display */
-	{ surf,         "surf" },
+	{ brave,         "" },
+	{ st,            "" },
+	{ thunderbird,   "" },
+	{ firefox,       "" },
+	{ nemo,          "" }
 };
 
 /*
@@ -292,12 +297,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 
 	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[15]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 
 	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
++	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,                       XK_a,      toggleopacity,  {0} },
