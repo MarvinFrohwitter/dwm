@@ -263,7 +263,7 @@ static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void opacity(Client *c, double opacity);
-static void pop(Client *c);
+// static void pop(Client *c);
 static void propertynotify(XEvent *e);
 static void quit(const Arg *arg);
 static Monitor *recttomon(int x, int y, int w, int h);
@@ -962,6 +962,7 @@ Monitor *dirtomon(int dir) {
 
 void drawbar(Monitor *m) {
   int x, w, tw = 0;
+  int tlpad;
   int boxs = drw->fonts->h / 9;
   int boxw = drw->fonts->h / 6 + 2;
   unsigned int i, occ = 0, urg = 0;
@@ -1031,9 +1032,15 @@ void drawbar(Monitor *m) {
   if ((w = m->ww - tw - x) > bh) {
     if (m->sel) {
       drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+
+      tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
+      / 2);
+      // drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
       drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
       if (m->sel->isfloating)
         drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+      // drw_rect(drw, x + boxs + tlpad - lrpad / 2, boxs, boxw, boxw,
+      // m->sel->isfixed, 0);
     } else {
       drw_setscheme(drw, scheme[SchemeNorm]);
       drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
@@ -1532,18 +1539,18 @@ void opacity(Client *c, double opacity) {
     XDeleteProperty(dpy, c->win, netatom[NetWMWindowsOpacity]);
 }
 
-void pop(Client *c) {
-  int i;
-  for (i = 0; !(selmon->tagset[selmon->seltags] & 1 << i); i++)
-    ;
-  i++;
+// void pop(Client *c) {
+//   int i;
+//   for (i = 0; !(selmon->tagset[selmon->seltags] & 1 << i); i++)
+//     ;
+//   i++;
 
-  c->mon->tagmarked[i] = nexttiled(c->mon->clients);
-  detach(c);
-  attach(c);
-  focus(c);
-  arrange(c->mon);
-}
+//   c->mon->tagmarked[i] = nexttiled(c->mon->clients);
+//   detach(c);
+//   attach(c);
+//   focus(c);
+//   arrange(c->mon);
+// }
 
 void propertynotify(XEvent *e) {
   Client *c;

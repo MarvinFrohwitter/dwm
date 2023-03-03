@@ -25,7 +25,7 @@ static const double activeopacity   = 1.0f;     /* Window opacity when it's focu
 static const double inactiveopacity = 1.0f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
 static       Bool bUseOpacity       = True;     /* Starts with opacity on any unfocused windows */
 static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
-static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=15:antialias=true:autohint=true",
+static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
 					"JoyPixels:size=12:antialias=true:autohint=true" };
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
@@ -226,6 +226,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
 	{ MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
 	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
+	{ MODKEY,                       XK_m, spawn, SHCMD("dmenumpd") },
+	{ MODKEY|ShiftMask,             XK_m, spawn, SHCMD("dmenumpc") },
 	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,              XK_r,         spawn,          {.v = rofi } },
 	/* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
@@ -297,7 +299,6 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} },
 
 	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 
