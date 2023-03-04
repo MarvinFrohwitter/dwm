@@ -342,6 +342,7 @@ static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static Client *prevzoom = NULL;
 static const char broken[] = "broken";
+static Bool defaultfakefullscreenmode;
 static const char dwmdir[] = "dwm";
 static const char localshare[] = ".local/share";
 static char stext[256];
@@ -752,10 +753,16 @@ void clientmessage(XEvent *e) {
     return;
   if (cme->message_type == netatom[NetWMState]) {
     if (cme->data.l[1] == netatom[NetWMFullscreen] ||
-        cme->data.l[2] == netatom[NetWMFullscreen])
-      setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
-                        || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
-                            !c->isfullscreen)));
+        cme->data.l[2] == netatom[NetWMFullscreen]) {
+      if (isfakefullscreen) {
+        setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+                          || cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */));
+      } else {
+        setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+                          || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ &&
+                              !c->isfullscreen)));
+      }
+    }
   } else if (cme->message_type == netatom[NetActiveWindow]) {
     if (c != selmon->sel && !c->isurgent)
       seturgent(c, 1);
@@ -781,7 +788,6 @@ void configure(Client *c) {
 
 void configurenotify(XEvent *e) {
   Monitor *m;
-  Client *c;
   XConfigureEvent *ev = &e->xconfigure;
   int dirty;
 
@@ -794,9 +800,12 @@ void configurenotify(XEvent *e) {
       drw_resize(drw, sw, bh);
       updatebars();
       for (m = mons; m; m = m->next) {
-        for (c = m->clients; c; c = c->next)
-          if (c->isfullscreen)
-            resizeclient(c, m->mx, m->my, m->mw, m->mh);
+        if (!isfakefullscreen) {
+          Client *c;
+          for (c = m->clients; c; c = c->next)
+            if (c->isfullscreen)
+              resizeclient(c, m->mx, m->my, m->mw, m->mh);
+        }
         XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp,
                           m->ww - 2 * sp, bh);
       }
@@ -1033,8 +1042,8 @@ void drawbar(Monitor *m) {
     if (m->sel) {
       drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 
-      tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
-      / 2);
+      tlpad =
+          MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad / 2);
       // drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
       drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
       if (m->sel->isfloating)
@@ -1475,8 +1484,10 @@ void movemouse(const Arg *arg) {
 
   if (!(c = selmon->sel))
     return;
-  if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
-    return;
+  if (!isfakefullscreen) {
+    if (c->isfullscreen) /* no support moving fullscreen windows by mouse */
+      return;
+  }
   restack(selmon);
   ocx = c->x;
   ocy = c->y;
@@ -1637,8 +1648,10 @@ void resizemouse(const Arg *arg) {
 
   if (!(c = selmon->sel))
     return;
-  if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
-    return;
+  if (!isfakefullscreen) {
+    if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
+      return;
+  }
   restack(selmon);
   ocx = c->x;
   ocy = c->y;
@@ -1992,24 +2005,30 @@ void setfullscreen(Client *c, int fullscreen) {
                     PropModeReplace, (unsigned char *)&netatom[NetWMFullscreen],
                     1);
     c->isfullscreen = 1;
-    c->oldstate = c->isfloating;
-    c->oldbw = c->bw;
-    c->bw = 0;
-    c->isfloating = 1;
-    resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
-    XRaiseWindow(dpy, c->win);
+    if (!isfakefullscreen) {
+      c->oldstate = c->isfloating;
+      c->oldbw = c->bw;
+      c->bw = 0;
+      c->isfloating = 1;
+      resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
+      XRaiseWindow(dpy, c->win);
+      isfakefullscreen = defaultfakefullscreenmode;
+    }
   } else if (!fullscreen && c->isfullscreen) {
     XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
                     PropModeReplace, (unsigned char *)0, 0);
     c->isfullscreen = 0;
-    c->isfloating = c->oldstate;
-    c->bw = c->oldbw;
-    c->x = c->oldx;
-    c->y = c->oldy;
-    c->w = c->oldw;
-    c->h = c->oldh;
-    resizeclient(c, c->x, c->y, c->w, c->h);
-    arrange(c->mon);
+    if (!isfakefullscreen) {
+      c->isfloating = c->oldstate;
+      c->bw = c->oldbw;
+      c->x = c->oldx;
+      c->y = c->oldy;
+      c->w = c->oldw;
+      c->h = c->oldh;
+      resizeclient(c, c->x, c->y, c->w, c->h);
+      arrange(c->mon);
+      isfakefullscreen = defaultfakefullscreenmode;
+    }
   }
 }
 
@@ -2019,7 +2038,7 @@ void fullscreen(const Arg *arg) {
     for (last_layout = (Layout *)layouts;
          last_layout != selmon->lt[selmon->sellt]; last_layout++)
       ;
-    setlayout(&((Arg){.v = &layouts[2]}));
+    setlayout(&((Arg){.v = &layouts[1]}));
   } else {
     setlayout(&((Arg){.v = last_layout}));
   }
@@ -2094,6 +2113,7 @@ void setup(void) {
     ;
 
   /* init screen */
+  defaultfakefullscreenmode = isfakefullscreen;
   screen = DefaultScreen(dpy);
   sw = DisplayWidth(dpy, screen);
   sh = DisplayHeight(dpy, screen);
@@ -2178,9 +2198,14 @@ void showhide(Client *c) {
   if (ISVISIBLE(c)) {
     /* show clients top down */
     XMoveWindow(dpy, c->win, c->x, c->y);
-    if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) &&
-        !c->isfullscreen)
-      resize(c, c->x, c->y, c->w, c->h, 0);
+    if (isfakefullscreen) {
+      if (!c->mon->lt[c->mon->sellt]->arrange || c->isfloating)
+        resize(c, c->x, c->y, c->w, c->h, 0);
+    } else {
+      if ((!c->mon->lt[c->mon->sellt]->arrange || c->isfloating) &&
+          !c->isfullscreen)
+        resize(c, c->x, c->y, c->w, c->h, 0);
+    }
     showhide(c->snext);
   } else {
     /* hide clients bottom up */
@@ -2286,8 +2311,10 @@ void togglebar(const Arg *arg) {
 void togglefloating(const Arg *arg) {
   if (!selmon->sel)
     return;
-  if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
-    return;
+  if (!isfakefullscreen) {
+    if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
+      return;
+  }
   selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
   if (selmon->sel->isfloating)
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
@@ -2305,6 +2332,10 @@ Client *findbefore(Client *c) {
 }
 
 void togglefullscr(const Arg *arg) {
+
+  if (isfakefullscreen) {
+    isfakefullscreen = False;
+  }
   if (selmon->sel)
     setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
