@@ -49,6 +49,8 @@ static char *colors[][3] = {
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
+static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
+static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
 
 
 static const unsigned int baralpha = 0xdd;
@@ -98,7 +100,7 @@ static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
-static Bool isfakefullscreen  = True;     /* enables fakefullscreen */
+static Bool isfakefullscreen  = False;     /* enables fakefullscreen */
 
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
