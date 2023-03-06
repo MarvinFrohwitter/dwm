@@ -379,7 +379,6 @@ static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static Client *prevzoom = NULL;
 static const char broken[] = "broken";
-static Bool defaultfakefullscreenmode;
 static const char dwmdir[] = "dwm";
 static const char localshare[] = ".local/share";
 static char stext[256];
@@ -1077,7 +1076,7 @@ void drawbar(Monitor *m) {
   if (showsystray && m == systraytomon(m)) {
     stw = getsystraywidth();
     drw_setscheme(drw, scheme[SchemeNorm]);
-    drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
+    drw_rect(drw, m->ww - stw, 0 , stw, bh, 1, 1);
   }
 
   /* draw status first so it can be overdrawn by tags later */
@@ -2940,10 +2939,8 @@ void updatesystray(int updatebar) {
   Monitor *m = systraytomon(NULL);
   unsigned int x = m->mx + m->mw;
   unsigned int w = 1, xpad = 0, ypad = 0;
-#if BARPADDING_PATCH
   xpad = sp;
   ypad = vp;
-#endif // BARPADDING_PATCH
 
   if (!showsystray)
     return;
