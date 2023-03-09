@@ -319,7 +319,6 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
-static void warp(const Client *c);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
@@ -1042,8 +1041,8 @@ void drawbar(Monitor *m) {
     if (m->sel) {
       drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
 
-      // tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad / 2);
-      // drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
+      // tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
+      // / 2); drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
       drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
       if (m->sel->isfloating)
         drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
@@ -1166,7 +1165,9 @@ void focusmon(const Arg *arg) {
   unfocus(selmon->sel, 0);
   selmon = m;
   focus(NULL);
-  warp(selmon->sel);
+  if (selmon->sel)
+    XWarpPointer(dpy, None, selmon->sel->win, 0, 0, 0, 0, selmon->sel->w / 2,
+                 selmon->sel->h / 2);
 }
 
 void focusstack(const Arg *arg) {
@@ -1192,6 +1193,7 @@ void focusstack(const Arg *arg) {
   if (c) {
     focus(c);
     restack(selmon);
+    XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
   }
 }
 
@@ -1428,6 +1430,8 @@ void manage(Window w, XWindowAttributes *wa) {
   c->mon->sel = c;
   arrange(c->mon);
   XMapWindow(dpy, c->win);
+  if (c && c->mon == selmon)
+    XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
   if (term)
     swallow(term, c);
   focus(NULL);
@@ -1739,9 +1743,6 @@ void restack(Monitor *m) {
   XSync(dpy, False);
   while (XCheckMaskEvent(dpy, EnterWindowMask, &ev))
     ;
-  if (m == selmon && (m->tagset[m->seltags] & m->sel->tags) &&
-      selmon->lt[selmon->sellt] != &layouts[2])
-    warp(m->sel);
 }
 
 void run(void) {
@@ -2453,6 +2454,9 @@ void unmanage(Client *c, int destroyed) {
     free(s->swallowing);
     s->swallowing = NULL;
     arrange(m);
+    if (m == selmon && m->sel)
+      XWarpPointer(dpy, None, m->sel->win, 0, 0, 0, 0, m->sel->w / 2,
+                   m->sel->h / 2);
     focus(NULL);
     return;
   }
@@ -2767,24 +2771,6 @@ void view(const Arg *arg) {
 
   focus(NULL);
   arrange(selmon);
-}
-
-void warp(const Client *c) {
-  int x, y;
-
-  if (!c) {
-    XWarpPointer(dpy, None, root, 0, 0, 0, 0, selmon->wx + selmon->ww / 2,
-                 selmon->wy + selmon->wh / 2);
-    return;
-  }
-
-  if (!getrootptr(&x, &y) ||
-      (x > c->x - c->bw && y > c->y - c->bw && x < c->x + c->w + c->bw * 2 &&
-       y < c->y + c->h + c->bw * 2) ||
-      (y > c->mon->by && y < c->mon->by + bh) || (c->mon->topbar && !y))
-    return;
-
-  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w / 2, c->h / 2);
 }
 
 pid_t winpid(Window w) {
