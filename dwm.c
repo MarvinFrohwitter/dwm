@@ -344,6 +344,7 @@ static Client *prevzoom = NULL;
 static const char broken[] = "broken";
 static Bool defaultfakefullscreenmode;
 static const char dwmdir[] = "dwm";
+static Bool defaultfakefullscreenmode;
 static const char localshare[] = ".local/share";
 static char stext[256];
 static int statusw;

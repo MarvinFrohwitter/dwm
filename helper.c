@@ -9,12 +9,26 @@
 // static void movetotag8forrule(const Arg *arg);
 // static void movetotag9forrule(const Arg *arg);
 
+static void toggleactualfullscr(const Arg *arg);
 static void reloadafterquit(const Arg *arg);
 
 void reloadafterquit(const Arg *arg) {
   spawn(arg);
   quit(0);
 }
+
+void toggleactualfullscr(const Arg *arg) {
+  Client *c;
+  if (isfakefullscreen) {
+    isfakefullscreen = False;
+  } else {
+    isfakefullscreen = True;
+  }
+  for (c = selmon->clients; c; c = c->next)
+    resizeclient(c, selmon->mx, selmon->my, selmon->mw, selmon->mh);
+  arrange(selmon);
+}
+
 // void movetotag2forrule(const Arg *arg) {
 //   Arg a2;
 //   a2.ui = 1 << 1;
