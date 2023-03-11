@@ -11,12 +11,21 @@
 
 static void toggleactualfullscr(const Arg *arg);
 static void reloadafterquit(const Arg *arg);
+static void reloadafterquitwithsig(const Arg *arg);
 
 void reloadafterquit(const Arg *arg) {
   spawn(arg);
-  quit(0);
+  Arg a;
+  a.i = 0;
+  quit(&a);
 }
 
+void reloadafterquitwithsig(const Arg *arg) {
+  spawn(arg);
+  Arg a;
+  a.i = 1;
+  quit(&a);
+}
 void toggleactualfullscr(const Arg *arg) {
   Client *c;
   if (isfakefullscreen) {
