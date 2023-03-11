@@ -340,6 +340,7 @@ static const Key keys[] = {
 
 	{ MODKEY,                       XK_s,  spawn,           {.v = slock } },
 	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit, {.v = killscript } },
+	{ MODKEY,                       XK_e,      quit,           {1} },
 };
 
 /* button definitions */
