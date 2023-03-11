@@ -187,6 +187,7 @@ static const char *notepdf[]  = { "notepdf", NULL };
 /* static const char *mutemicvol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL }; */
 static const char *brightnessup[] = { "light", "-A", "10", NULL };
 static const char *brightnessdown[] = { "light", "-U", "10", NULL };
+static const char *layoutmenu_cmd = "layoutmenu.sh";
 
 static const Launcher launchers[] = {
        /* command       name to display */
@@ -308,6 +309,7 @@ static const Key keys[] = {
 
 	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
 	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
+	{ MODKEY|ControlMask,           XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,                       XK_a,      toggleopacity,  {0} },
