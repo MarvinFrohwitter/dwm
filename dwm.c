@@ -85,6 +85,7 @@ enum {
   NetWMWindowType,
   NetWMWindowTypeDialog,
   NetClientList,
+  NetClientInfo,
   NetWMWindowsOpacity,
   NetLast
 }; /* EWMH atoms */
@@ -285,6 +286,7 @@ static void scratchpad_show_first(void);
 static int sendevent(Client *c, Atom proto);
 static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
+static void setclienttagprop(Client *c);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void fullscreen(const Arg *arg);
@@ -1427,6 +1429,28 @@ void manage(Window w, XWindowAttributes *wa) {
   updatewindowtype(c);
   updatesizehints(c);
   updatewmhints(c);
+  {
+    int format;
+    unsigned long *data, n, extra;
+    Monitor *m;
+    Atom atom;
+    if (XGetWindowProperty(dpy, c->win, netatom[NetClientInfo], 0L, 2L, False,
+                           XA_CARDINAL, &atom, &format, &n, &extra,
+                           (unsigned char **)&data) == Success &&
+        n == 2) {
+      c->tags = *data;
+      for (m = mons; m; m = m->next) {
+        if (m->num == *(data + 1)) {
+          c->mon = m;
+          break;
+        }
+      }
+    }
+    if (n > 0)
+      XFree(data);
+  }
+  setclienttagprop(c);
+
   c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
   c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
   XSelectInput(dpy, w,
@@ -1993,6 +2017,7 @@ void sendmon(Client *c, Monitor *m) {
   c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
   attachbottom(c);
   attachstack(c);
+  setclienttagprop(c);
   focus(NULL);
   arrange(NULL);
 }
@@ -2182,6 +2207,7 @@ void setup(void) {
   netatom[NetWMWindowTypeDialog] =
       XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
   netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
+  netatom[NetClientInfo] = XInternAtom(dpy, "_NET_CLIENT_INFO", False);
   netatom[NetWMWindowsOpacity] =
       XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", False);
   /* init cursors */
@@ -2207,6 +2233,7 @@ void setup(void) {
   XChangeProperty(dpy, root, netatom[NetSupported], XA_ATOM, 32,
                   PropModeReplace, (unsigned char *)netatom, NetLast);
   XDeleteProperty(dpy, root, netatom[NetClientList]);
+  XDeleteProperty(dpy, root, netatom[NetClientInfo]);
   /* select events */
   wa.cursor = cursor[CurNormal]->cursor;
   wa.event_mask = SubstructureRedirectMask | SubstructureNotifyMask |
@@ -2282,6 +2309,12 @@ void spawn(const Arg *arg) {
   }
 }
 
+void setclienttagprop(Client *c) {
+  long data[] = {(long)c->tags, (long)c->mon->num};
+  XChangeProperty(dpy, c->win, netatom[NetClientInfo], XA_CARDINAL, 32,
+                  PropModeReplace, (unsigned char *)data, 2);
+}
+
 void stairs(Monitor *m) {
   unsigned int i, n, h, mw, my;
   unsigned int ox, oy, ow, oh; /* stair offset values */
@@ -2316,8 +2349,11 @@ void stairs(Monitor *m) {
 }
 
 void tag(const Arg *arg) {
+  Client *c;
   if (selmon->sel && arg->ui & TAGMASK) {
+    c = selmon->sel;
     selmon->sel->tags = arg->ui & TAGMASK;
+    setclienttagprop(c);
     focus(NULL);
     arrange(selmon);
   }
@@ -2400,6 +2436,7 @@ void toggletag(const Arg *arg) {
   newtags = selmon->sel->tags ^ (arg->ui & TAGMASK);
   if (newtags) {
     selmon->sel->tags = newtags;
+    setclienttagprop(selmon->sel);
     focus(NULL);
     arrange(selmon);
   }
