@@ -132,8 +132,8 @@ struct Client {
   int bw, oldbw;
   unsigned int tags;
   unsigned int switchtotag;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen,
-      isterminal, noswallow, issticky;
+  int isfixed, isfloating, canfocus, isurgent, neverfocus, oldstate,
+      isfullscreen, isterminal, noswallow, issticky;
   int floatborderpx;
   int hasfloatbw;
   pid_t pid;
@@ -191,6 +191,7 @@ typedef struct {
   unsigned int tags;
   unsigned int switchtotag;
   int isfloating;
+  int canfocus;
   int isterminal;
   int noswallow;
   int monitor;
@@ -350,7 +351,6 @@ static Client *prevzoom = NULL;
 static const char broken[] = "broken";
 static Bool defaultfakefullscreenmode;
 static const char dwmdir[] = "dwm";
-static Bool defaultfakefullscreenmode;
 static const char localshare[] = ".local/share";
 static char stext[256];
 static int statusw;
@@ -427,6 +427,7 @@ void applyrules(Client *c) {
 
   /* rule matching */
   c->isfloating = 0;
+  c->canfocus = 1;
   c->tags = 0;
   XGetClassHint(dpy, c->win, &ch);
   class = ch.res_class ? ch.res_class : broken;
@@ -440,6 +441,7 @@ void applyrules(Client *c) {
       c->isterminal = r->isterminal;
       c->noswallow = r->noswallow;
       c->isfloating = r->isfloating;
+      c->canfocus = r->canfocus;
       c->tags |= r->tags;
       if (r->floatborderpx >= 0) {
         c->floatborderpx = r->floatborderpx;
@@ -1111,6 +1113,8 @@ void focus(Client *c) {
   if (selmon->sel && selmon->sel != c)
     unfocus(selmon->sel, 0);
   if (c) {
+    if (!c->canfocus)
+      return;
     if (c->mon != selmon)
       selmon = c->mon;
     if (c->isurgent)
@@ -1185,18 +1189,20 @@ void focusstack(const Arg *arg) {
   if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
     return;
   if (arg->i > 0) {
-    for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next)
+    for (c = selmon->sel->next; c && (!ISVISIBLE(c) || !c->canfocus);
+         c = c->next)
       ;
     if (!c)
-      for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next)
+      for (c = selmon->clients; c && (!ISVISIBLE(c) || !c->canfocus);
+           c = c->next)
         ;
   } else {
     for (i = selmon->clients; i != selmon->sel; i = i->next)
-      if (ISVISIBLE(i))
+      if (ISVISIBLE(i) && i->canfocus)
         c = i;
     if (!c)
       for (; i; i = i->next)
-        if (ISVISIBLE(i))
+        if (ISVISIBLE(i) && i->canfocus)
           c = i;
   }
   if (c) {

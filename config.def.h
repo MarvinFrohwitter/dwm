@@ -77,20 +77,21 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class	instance title       tags mask switchtotag isfloating isterminal noswallow monitor float x,y,w,h floatborderpx*/
-	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     0,           0,      -1,  0,0,1000,700,      5},
-	{ "St",          NULL,    NULL,        0,             0,          0,     1,           0,      -1,  0,0,1000,700,      5},
-	{ "gimp",        NULL,    NULL,        0,             0,          0,     0,           0,      -1,  0,0,1000,700,      5},
-	{ NULL,          NULL, "Event Tester", 0,             0,          0,     0,           1,      -1,  0,0,1000,700,      5}, /* xev */
+	/* class	instance title       tags mask switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx*/
+	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ "St",          NULL,    NULL,        0,             0,          0,     1,            1,      0,      -1,  0,0,1000,700,      5},
+	{ "gimp",        NULL,    NULL,        0,             0,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
+	{ NULL,          NULL, "Event Tester", 0,             0,          0,     1,            0,      1,      -1,  0,0,1000,700,      5}, /* xev */
+	{ "panel",       NULL,    NULL,        0,             0,          0,     0,            0,      1,      -1,  0,0,1000,700,      5},
 };
 
 
@@ -151,7 +152,8 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 
 /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+// static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-l", "20", NULL };
 static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
 static const char *st[]  = { "st", NULL };
@@ -191,6 +193,7 @@ static const char *layoutmenu_cmd = "layoutmenu.sh";
 
 static const Launcher launchers[] = {
        /* command       name to display */
+
 	{ brave,         "" },
 	{ st,            "" },
 	{ thunderbird,   "" },
