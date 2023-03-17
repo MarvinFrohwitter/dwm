@@ -2613,6 +2613,7 @@ void togglescratch(const Arg *arg) {
     ;
   if (found) {
     c->tags = ISVISIBLE(c) ? 0 : selmon->tagset[selmon->seltags];
+
     focus(NULL);
     arrange(selmon);
 

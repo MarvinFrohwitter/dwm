@@ -72,6 +72,8 @@ static const unsigned int ulinevoffset	= 0;	/* how far above the bottom of the b
 static const int ulineall 		= 0;	/* 1 to show underline on all tags, 0 for just the active ones */
 
 
+#include "scratchtagwins.c"
+
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -93,6 +95,16 @@ static const Rule rules[] = {
 	{ NULL,          NULL, "Event Tester", 0,             0,          0,     1,            0,      1,      -1,  0,0,1000,700,      2,         0  }, /* xev */
 	{ "panel",       NULL,    NULL,        0,             0,          0,     0,            0,      1,      -1,  0,0,1000,700,      2,         0  },
 	{ NULL,          NULL, "scratchpad",   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        's'  },
+
+	{ NULL,       "scratchtagwin1", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '1'  },
+	{ NULL,       "scratchtagwin2", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '2'  },
+	{ NULL,       "scratchtagwin3", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '3'  },
+	{ NULL,       "scratchtagwin4", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '4'  },
+	{ NULL,       "scratchtagwin5", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '5'  },
+	{ NULL,       "scratchtagwin6", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '6'  },
+	{ NULL,       "scratchtagwin7", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '7'  },
+	{ NULL,       "scratchtagwin8", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '8'  },
+	{ NULL,       "scratchtagwin9", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '9'  },
 };
 
 
@@ -183,6 +195,21 @@ static const char *notepdf[]  = { "notepdf", NULL };
 
 /*First arg only serves to match against key in rules*/
 static const char *scratchpad_htop[] = {"s", "st", "-t", "scratchpad", "-e", "htop", NULL};
+static const char *scratchtagwin1[] = { "1", "tabbed", "-p", "s+1", "-n", "scratchtagwin1", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin2[] = { "2", "tabbed", "-p", "s+1", "-n", "scratchtagwin2", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin3[] = { "3", "tabbed", "-p", "s+1", "-n", "scratchtagwin3", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin4[] = { "4", "tabbed", "-p", "s+1", "-n", "scratchtagwin4", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin5[] = { "5", "tabbed", "-p", "s+1", "-n", "scratchtagwin5", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin6[] = { "6", "tabbed", "-p", "s+1", "-n", "scratchtagwin6", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin7[] = { "7", "tabbed", "-p", "s+1", "-n", "scratchtagwin7", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin8[] = { "8", "tabbed", "-p", "s+1", "-n", "scratchtagwin8", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchtagwin9[] = { "9", "tabbed", "-p", "s+1", "-n", "scratchtagwin9", "-g", "1195x672", "-c", "st", "-w", NULL };
+
+
+
+
+
+
 
 /* You obviously need the X11 development packages installed, X11proto in particular */
 
@@ -234,6 +261,18 @@ ResourcePref resources[] = {
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
+	SCRATCHTAGWIN_KEY (scratchtagwin1, 1)
+	SCRATCHTAGWIN_KEY (scratchtagwin2, 2)
+	SCRATCHTAGWIN_KEY (scratchtagwin3, 3)
+	SCRATCHTAGWIN_KEY (scratchtagwin4, 4)
+	SCRATCHTAGWIN_KEY (scratchtagwin5, 5)
+	SCRATCHTAGWIN_KEY (scratchtagwin6, 6)
+	SCRATCHTAGWIN_KEY (scratchtagwin7, 7)
+	SCRATCHTAGWIN_KEY (scratchtagwin8, 8)
+	SCRATCHTAGWIN_KEY (scratchtagwin9, 9)
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_0,  makescratchtagwin,  {.i = 0} },
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_s,  makescratchtagwin,  {.i = 's'} },
+
 	{ MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
 	{ MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
 	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
