@@ -3,7 +3,7 @@
 
 #include <X11/Xutil.h>
 #include <string.h>
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -77,21 +77,22 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class	instance title       tags mask switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx*/
-	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ "St",          NULL,    NULL,        0,             0,          0,     1,            1,      0,      -1,  0,0,1000,700,      5},
-	{ "gimp",        NULL,    NULL,        0,             0,          0,     1,            0,      0,      -1,  0,0,1000,700,      5},
-	{ NULL,          NULL, "Event Tester", 0,             0,          0,     1,            0,      1,      -1,  0,0,1000,700,      5}, /* xev */
-	{ "panel",       NULL,    NULL,        0,             0,          0,     0,            0,      1,      -1,  0,0,1000,700,      5},
+	/* class	instance title       tags mask switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx scratch key*/
+	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "St",          NULL,    NULL,        0,             0,          0,     1,            1,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ "gimp",        NULL,    NULL,        0,             0,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
+	{ NULL,          NULL, "Event Tester", 0,             0,          0,     1,            0,      1,      -1,  0,0,1000,700,      2,         0  }, /* xev */
+	{ "panel",       NULL,    NULL,        0,             0,          0,     0,            0,      1,      -1,  0,0,1000,700,      2,         0  },
+	{ NULL,          NULL, "scratchpad",   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        's'  },
 };
 
 
@@ -180,6 +181,8 @@ static const char *ncmpcpp[]  = { "alacritty","--title=ncmpcpp", "-e", "ncmpcpp"
 static const char *notetaker[]  = { "alacritty", "--title=notetaker", "-e", "notetaker", NULL };
 static const char *notepdf[]  = { "notepdf", NULL };
 
+/*First arg only serves to match against key in rules*/
+static const char *scratchpad_htop[] = {"s", "st", "-t", "scratchpad", "-e", "htop", NULL};
 
 /* You obviously need the X11 development packages installed, X11proto in particular */
 
@@ -357,6 +360,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_w, scratchpad_show, {0} },
 	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
 	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
+	{ MODKEY,        XK_x,  togglescratch,  {.v = scratchpad_htop } },
 
 	{ MODKEY,                       XK_s,  spawn,           {.v = slock } },
 	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit, {.v = killscript } },

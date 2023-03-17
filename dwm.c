@@ -137,6 +137,7 @@ struct Client {
   int floatborderpx;
   int hasfloatbw;
   pid_t pid;
+  char scratchkey;
   Client *next;
   Client *snext;
   Client *swallowing;
@@ -197,6 +198,7 @@ typedef struct {
   int monitor;
   int floatx, floaty, floatw, floath;
   int floatborderpx;
+  const char scratchkey;
 } Rule;
 
 /* Xresources preferences */
@@ -302,12 +304,14 @@ static void sighup(int unused);
 static void sigterm(int unused);
 static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
+static void spawnscratch(const Arg *arg);
 static void stairs(Monitor *m);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 /* static void tile(Monitor *m); */
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglescratch(const Arg *arg);
 static void togglefullscr(const Arg *arg);
 static void toggleopacity(const Arg *arg);
 static void togglesticky(const Arg *arg);
@@ -429,6 +433,7 @@ void applyrules(Client *c) {
   c->isfloating = 0;
   c->canfocus = 1;
   c->tags = 0;
+  c->scratchkey = 0;
   XGetClassHint(dpy, c->win, &ch);
   class = ch.res_class ? ch.res_class : broken;
   instance = ch.res_name ? ch.res_name : broken;
@@ -443,6 +448,7 @@ void applyrules(Client *c) {
       c->isfloating = r->isfloating;
       c->canfocus = r->canfocus;
       c->tags |= r->tags;
+      c->scratchkey = r->scratchkey;
       if (r->floatborderpx >= 0) {
         c->floatborderpx = r->floatborderpx;
         c->hasfloatbw = 1;
@@ -472,6 +478,7 @@ void applyrules(Client *c) {
     XFree(ch.res_class);
   if (ch.res_name)
     XFree(ch.res_name);
+
   if (c->tags != SCRATCHPAD_MASK) {
     c->tags =
         c->tags & TAGMASK ? c->tags & TAGMASK : c->mon->tagset[c->mon->seltags];
@@ -2499,6 +2506,18 @@ void spawn(const Arg *arg) {
   }
 }
 
+void spawnscratch(const Arg *arg) {
+  if (fork() == 0) {
+    if (dpy)
+      close(ConnectionNumber(dpy));
+    setsid();
+    execvp(((char **)arg->v)[1], ((char **)arg->v) + 1);
+    fprintf(stderr, "dwm: execvp %s", ((char **)arg->v)[1]);
+    perror(" failed");
+    exit(EXIT_SUCCESS);
+  }
+}
+
 void setclienttagprop(Client *c) {
   long data[] = {(long)c->tags, (long)c->mon->num};
   XChangeProperty(dpy, c->win, netatom[NetClientInfo], XA_CARDINAL, 32,
@@ -2583,6 +2602,28 @@ void togglefloating(const Arg *arg) {
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
   arrange(selmon);
+}
+
+void togglescratch(const Arg *arg) {
+  Client *c;
+  unsigned int found = 0;
+
+  for (c = selmon->clients;
+       c && !(found = c->scratchkey == ((char **)arg->v)[0][0]); c = c->next)
+    ;
+  if (found) {
+    c->tags = ISVISIBLE(c) ? 0 : selmon->tagset[selmon->seltags];
+    focus(NULL);
+    arrange(selmon);
+
+    if (ISVISIBLE(c)) {
+      focus(c);
+      restack(selmon);
+    }
+
+  } else {
+    spawnscratch(arg);
+  }
 }
 
 Client *findbefore(Client *c) {
