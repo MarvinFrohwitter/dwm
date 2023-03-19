@@ -1,4 +1,3 @@
-
 /* custom functions declarations */
 // static void movetotag2forrule(const Arg *arg);
 // static void movetotag3forrule(const Arg *arg);
