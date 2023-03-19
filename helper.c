@@ -30,6 +30,7 @@ void toggleactualfullscr(const Arg *arg) {
   Client *c;
   if (isfakefullscreen) {
     isfakefullscreen = False;
+    togglefullscr(0);
   } else {
     isfakefullscreen = True;
   }

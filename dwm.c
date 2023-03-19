@@ -705,10 +705,8 @@ void buttonpress(XEvent *e) {
   }
 execute_handler:
   for (i = 0; i < LENGTH(buttons); i++)
-    if (click == buttons[i].click && buttons[i].func &&
-        buttons[i].button == ev->button &&
-        CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
-      buttons[i].func(
+    if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button &&
+        CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state)) buttons[i].func(
           click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 

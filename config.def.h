@@ -1,5 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 /* appearance */
+#define TERMINAL "st"
+#define TERMINALCLASS "St"
+#define BROWSER "brave"
+#define FIRE "librewolf"
 
 #include <X11/Xutil.h>
 #include <string.h>
@@ -79,32 +83,33 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class	instance title       tags mask switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx scratch key*/
-	{ "thunderbird", NULL,    NULL,        1 << 2,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "discord",     NULL,    NULL,        1 << 3,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Clementine",  NULL,    NULL,        1 << 4,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Thunar",      NULL,    NULL,        1 << 5,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "TIPP10",      NULL,    NULL,        1 << 6,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "firefox",     NULL,    NULL,        1 << 7,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Alacritty",   NULL,    "newsboat",  1 << 8,        1,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Alacritty",   NULL,    "notetaker", 0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Alacritty",   NULL,    "ncmpcpp",   1 << 4,        1,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "Alacritty",   NULL,    NULL,        0,             0,          1,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "St",          NULL,    NULL,        0,             0,          0,     1,            1,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ "gimp",        NULL,    NULL,        0,             0,          0,     1,            0,      0,      -1,  0,0,1000,700,      2,         0  },
-	{ NULL,          NULL, "Event Tester", 0,             0,          0,     1,            0,      1,      -1,  0,0,1000,700,      2,         0  }, /* xev */
-	{ "panel",       NULL,    NULL,        0,             0,          0,     0,            0,      1,      -1,  0,0,1000,700,      2,         0  },
-	{ NULL,          NULL, "scratchpad",   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        's'  },
-
-	{ NULL,       "scratchtagwin1", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '1'  },
-	{ NULL,       "scratchtagwin2", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '2'  },
-	{ NULL,       "scratchtagwin3", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '3'  },
-	{ NULL,       "scratchtagwin4", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '4'  },
-	{ NULL,       "scratchtagwin5", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '5'  },
-	{ NULL,       "scratchtagwin6", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '6'  },
-	{ NULL,       "scratchtagwin7", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '7'  },
-	{ NULL,       "scratchtagwin8", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '8'  },
-	{ NULL,       "scratchtagwin9", NULL,   0,             0,          1,     1,            0,      1,      -1,  0,0,1000,700,      2,        '9'  },
+	/* class	instance          title       tags mask  switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx scratch key*/
+	{ "thunderbird", NULL,             NULL,           1<<2, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "discord",     NULL,             NULL,           1<<3, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "Clementine",  NULL,             NULL,           1<<4, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "Thunar",      NULL,             NULL,           1<<5, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "TIPP10",      NULL,             NULL,           1<<6, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ FIRE,          NULL,             NULL,           1<<7, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "Alacritty",   NULL,             NULL,           0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ TERMINALCLASS, "float",          NULL,           0,    0,          1,         1,       1,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,          0,         1,       1,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ "gimp",        NULL,             NULL,           0,    0,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
+	{ NULL,          NULL,             "Event Tester", 0,    0,          0,         1,       0,         1,        -1,     0,0,1000,700, 2,            0   }, /* xev */
+	{ "panel",       NULL,             NULL,           0,    0,          0,         0,       0,         1,        -1,     0,0,1000,700, 2,            0   },
+	{ NULL,          NULL,             "htop",         0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            'p' },
+	{ NULL,          "scratchpad",     NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            's' },
+	{ NULL,          "scratchtagwin1", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '1' },
+	{ NULL,          "scratchtagwin2", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '2' },
+	{ NULL,          "scratchtagwin3", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '3' },
+	{ NULL,          "scratchtagwin4", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '4' },
+	{ NULL,          "scratchtagwin5", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '5' },
+	{ NULL,          "scratchtagwin6", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '6' },
+	{ NULL,          "scratchtagwin7", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '7' },
+	{ NULL,          "scratchtagwin8", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '8' },
+	{ NULL,          "scratchtagwin9", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '9' },
 };
 
 
@@ -169,17 +174,17 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-l", "20", NULL };
 static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
-static const char *st[]  = { "st", NULL };
-static const char *alacritty[]  = { "alacritty", NULL };
-static const char *ranger[]  = { "alacritty","-e","ranger", NULL };
-static const char *lf[]  = { "alacritty", "-e", "lfueberzug", NULL };
+static const char *term[]  = { TERMINAL, NULL };
+static const char *termfloat[]  = { TERMINAL, "-n", "float", NULL };
+static const char *ranger[]  = { TERMINAL ,"-e","ranger", NULL };
+static const char *lf[]  = { TERMINAL, "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
-static const char *brave[]  = { "brave", NULL };
-static const char *firefox[]  = { "firefox", NULL };
+static const char *brave[]  = { BROWSER, NULL };
+static const char *firefox[]  = { FIRE, NULL };
 static const char *surf[]  = { "tabbed", "-c", "surf", "-e", NULL };
 static const char *nemo[]  = { "nemo", NULL };
 static const char *thunderbird[]  = { "thunderbird", NULL };
-static const char *newsboat[]  = { "alacritty", "--title=newsboat", "-e","newsboat", NULL };
+static const char *newsboat[]  = { TERMINAL, "-t", "newsboat", "-e","newsboat", NULL };
 static const char *discord[]  = { "discord", NULL };
 
 static const char *clementine[]  = { "clementine", NULL };
@@ -188,24 +193,34 @@ static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
 static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
 static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
 static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
-static const char *ncmpcpp[]  = { "alacritty","--title=ncmpcpp", "-e", "ncmpcpp", NULL };
+static const char *ncmpcpp[]  = { TERMINAL, "-t", "ncmpcpp", "-e", "ncmpcpp", NULL };
 
-static const char *notetaker[]  = { "alacritty", "--title=notetaker", "-e", "notetaker", NULL };
+static const char *notetaker[]  = { TERMINAL, "-t", "notetaker", "-e", "notetaker", NULL };
 static const char *notepdf[]  = { "notepdf", NULL };
 
 /*First arg only serves to match against key in rules*/
-static const char *scratchpad_htop[] = {"s", "st", "-t", "scratchpad", "-e", "htop", NULL};
-static const char *scratchtagwin1[] = { "1", "tabbed", "-p", "s+1", "-n", "scratchtagwin1", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin2[] = { "2", "tabbed", "-p", "s+1", "-n", "scratchtagwin2", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin3[] = { "3", "tabbed", "-p", "s+1", "-n", "scratchtagwin3", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin4[] = { "4", "tabbed", "-p", "s+1", "-n", "scratchtagwin4", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin5[] = { "5", "tabbed", "-p", "s+1", "-n", "scratchtagwin5", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin6[] = { "6", "tabbed", "-p", "s+1", "-n", "scratchtagwin6", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin7[] = { "7", "tabbed", "-p", "s+1", "-n", "scratchtagwin7", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin8[] = { "8", "tabbed", "-p", "s+1", "-n", "scratchtagwin8", "-g", "1195x672", "-c", "st", "-w", NULL };
-static const char *scratchtagwin9[] = { "9", "tabbed", "-p", "s+1", "-n", "scratchtagwin9", "-g", "1195x672", "-c", "st", "-w", NULL };
+static const char *scratchpad_htop[] = {"p", TERMINAL, "-n", "scratchpad", "-t", "htop", "-e", "htop", NULL};
+static const char *scratchpad[] = {"s", TERMINAL, "-n", "scratchpad", NULL};
+static const char *scratchtagwin1[] = { "1", TERMINAL, "-n", "scratchtagwin1",  NULL };
+static const char *scratchtagwin2[] = { "2", TERMINAL, "-n", "scratchtagwin2",  NULL };
+static const char *scratchtagwin3[] = { "3", TERMINAL, "-n", "scratchtagwin3",  NULL };
+static const char *scratchtagwin4[] = { "4", TERMINAL, "-n", "scratchtagwin4",  NULL };
+static const char *scratchtagwin5[] = { "5", TERMINAL, "-n", "scratchtagwin5",  NULL };
+static const char *scratchtagwin6[] = { "6", TERMINAL, "-n", "scratchtagwin6",  NULL };
+static const char *scratchtagwin7[] = { "7", TERMINAL, "-n", "scratchtagwin7",  NULL };
+static const char *scratchtagwin8[] = { "8", TERMINAL, "-n", "scratchtagwin8",  NULL };
+static const char *scratchtagwin9[] = { "9", TERMINAL, "-n", "scratchtagwin9",  NULL };
 
 
+// static const char *scratchtagwin1[] = { "1", "tabbed", "-p", "s+1", "-n", "scratchtagwin1", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin2[] = { "2", "tabbed", "-p", "s+1", "-n", "scratchtagwin2", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin3[] = { "3", "tabbed", "-p", "s+1", "-n", "scratchtagwin3", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin4[] = { "4", "tabbed", "-p", "s+1", "-n", "scratchtagwin4", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin5[] = { "5", "tabbed", "-p", "s+1", "-n", "scratchtagwin5", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin6[] = { "6", "tabbed", "-p", "s+1", "-n", "scratchtagwin6", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin7[] = { "7", "tabbed", "-p", "s+1", "-n", "scratchtagwin7", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin8[] = { "8", "tabbed", "-p", "s+1", "-n", "scratchtagwin8", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+// static const char *scratchtagwin9[] = { "9", "tabbed", "-p", "s+1", "-n", "scratchtagwin9", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
 
 
 
@@ -225,7 +240,7 @@ static const Launcher launchers[] = {
        /* command       name to display */
 
 	{ brave,         "" },
-	{ st,            "" },
+	{ term,          "" },
 	{ thunderbird,   "" },
 	{ firefox,       "" },
 	{ nemo,          "" }
@@ -261,18 +276,6 @@ ResourcePref resources[] = {
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	SCRATCHTAGWIN_KEY (scratchtagwin1, 1)
-	SCRATCHTAGWIN_KEY (scratchtagwin2, 2)
-	SCRATCHTAGWIN_KEY (scratchtagwin3, 3)
-	SCRATCHTAGWIN_KEY (scratchtagwin4, 4)
-	SCRATCHTAGWIN_KEY (scratchtagwin5, 5)
-	SCRATCHTAGWIN_KEY (scratchtagwin6, 6)
-	SCRATCHTAGWIN_KEY (scratchtagwin7, 7)
-	SCRATCHTAGWIN_KEY (scratchtagwin8, 8)
-	SCRATCHTAGWIN_KEY (scratchtagwin9, 9)
-	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_0,  makescratchtagwin,  {.i = 0} },
-	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_s,  makescratchtagwin,  {.i = 's'} },
-
 	{ MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
 	{ MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
 	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
@@ -295,8 +298,8 @@ static const Key keys[] = {
 	{ 0,                       XF86XK_MonBrightnessDown,spawn, {.v = brightnessdown   } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = lf } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = st } },
-	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = alacritty } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = term } },
+	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = termfloat } },
 
 	{ MODKEY,                       XK_y,      spawn,          {.v = notetaker } },
 	{ MODKEY|ShiftMask,             XK_y,      spawn,          {.v = notepdf } },
@@ -399,7 +402,20 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_w, scratchpad_show, {0} },
 	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
 	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
-	{ MODKEY,        XK_x,  togglescratch,  {.v = scratchpad_htop } },
+	{ MODKEY,           XK_x,  togglescratch,  {.v = scratchpad_htop } },
+	{ MODKEY|ShiftMask, XK_x,  togglescratch,  {.v = scratchpad } },
+
+	SCRATCHTAGWIN_KEY (scratchtagwin1, 1)
+	SCRATCHTAGWIN_KEY (scratchtagwin2, 2)
+	SCRATCHTAGWIN_KEY (scratchtagwin3, 3)
+	SCRATCHTAGWIN_KEY (scratchtagwin4, 4)
+	SCRATCHTAGWIN_KEY (scratchtagwin5, 5)
+	SCRATCHTAGWIN_KEY (scratchtagwin6, 6)
+	SCRATCHTAGWIN_KEY (scratchtagwin7, 7)
+	SCRATCHTAGWIN_KEY (scratchtagwin8, 8)
+	SCRATCHTAGWIN_KEY (scratchtagwin9, 9)
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_0,  makescratchtagwin,  {.i = 0} },
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_s,  makescratchtagwin,  {.i = 's'} },
 
 	{ MODKEY,                       XK_s,  spawn,           {.v = slock } },
 	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit, {.v = killscript } },
