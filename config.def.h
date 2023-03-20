@@ -7,7 +7,7 @@
 
 #include <X11/Xutil.h>
 #include <string.h>
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -48,7 +48,7 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:anti
 
 
 static char normbgcolor[]           = "#11121D";
-// static char red[]           = "#FF00FF";
+static char red[]           = "#FF00FF";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#a9b1d6";
 static char selfgcolor[]            = "#eeeeee";
@@ -59,7 +59,8 @@ static char *colors[][3] = {
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeTray] = { normfgcolor, normbgcolor, normbordercolor },
        // [SchemeTray] = { red, red, red },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  red  },
+       // [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
 static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
@@ -209,7 +210,7 @@ static const char *notetaker[]  = { TERMINAL, "-t", "notetaker", "-e", "notetake
 static const char *notepdf[]  = { "notepdf", NULL };
 
 /*First arg only serves to match against key in rules*/
-static const char *scratchpad_htop[] = {"p", TERMINAL, "-n", "scratchpad", "-t", "htop", "-e", "htop", NULL};
+static const char *scratchpad_htop[] = {"p", TERMINAL, "-t", "htop", "-e", "htop", NULL};
 static const char *scratchpad[] = {"s", TERMINAL, "-n", "scratchpad", NULL};
 static const char *scratchtagwin1[] = { "1", TERMINAL, "-n", "scratchtagwin1",  NULL };
 static const char *scratchtagwin2[] = { "2", TERMINAL, "-n", "scratchtagwin2",  NULL };
