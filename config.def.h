@@ -7,7 +7,7 @@
 
 #include <X11/Xutil.h>
 #include <string.h>
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -22,7 +22,7 @@ static const int vertpad            = 10;       /* vertical padding of bar */
 static const int sidepad            = 10;       /* horizontal padding of bar */
 
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
-static const unsigned int systrayspacing = 10;   /* systray spacing */
+static const unsigned int systrayspacing = 3;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;        /* 0 means no systray */
 
@@ -48,6 +48,7 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:anti
 
 
 static char normbgcolor[]           = "#11121D";
+// static char red[]           = "#FF00FF";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#a9b1d6";
 static char selfgcolor[]            = "#eeeeee";
@@ -56,6 +57,8 @@ static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeTray] = { normfgcolor, normbgcolor, normbordercolor },
+       // [SchemeTray] = { red, red, red },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
@@ -64,11 +67,14 @@ static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner 
 
 static const unsigned int baralpha = 0xdd;
 static const unsigned int borderalpha = OPAQUE;
+static const unsigned int trayalpha = 0xff;
 
 
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeTray] = { OPAQUE, baralpha, borderalpha },
+	// [SchemeTray] = { trayalpha, trayalpha, trayalpha },
 	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
 };
 
@@ -89,32 +95,32 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class	instance          title       tags mask  switchtotag isfloating confocus isterminal noswallow monitor float x,y,w,h floatborderpx scratch key*/
-	{ "thunderbird", NULL,             NULL,           1<<2, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "discord",     NULL,             NULL,           1<<3, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "Clementine",  NULL,             NULL,           1<<4, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "Thunar",      NULL,             NULL,           1<<5, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "TIPP10",      NULL,             NULL,           1<<6, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ FIRE,          NULL,             NULL,           1<<7, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "Alacritty",   NULL,             NULL,           0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ TERMINALCLASS, "float",          NULL,           0,    0,          1,         1,       1,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,          0,         1,       1,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ "gimp",        NULL,             NULL,           0,    0,          0,         1,       0,         0,        -1,     0,0,1000,700, 2,            0   },
-	{ NULL,          NULL,             "Event Tester", 0,    0,          0,         1,       0,         1,        -1,     0,0,1000,700, 2,            0   }, /* xev */
-	{ "panel",       NULL,             NULL,           0,    0,          0,         0,       0,         1,        -1,     0,0,1000,700, 2,            0   },
-	{ NULL,          NULL,             "htop",         0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            'p' },
-	{ NULL,          "scratchpad",     NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            's' },
-	{ NULL,          "scratchtagwin1", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '1' },
-	{ NULL,          "scratchtagwin2", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '2' },
-	{ NULL,          "scratchtagwin3", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '3' },
-	{ NULL,          "scratchtagwin4", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '4' },
-	{ NULL,          "scratchtagwin5", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '5' },
-	{ NULL,          "scratchtagwin6", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '6' },
-	{ NULL,          "scratchtagwin7", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '7' },
-	{ NULL,          "scratchtagwin8", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '8' },
-	{ NULL,          "scratchtagwin9", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, 2,            '9' },
+	{ "thunderbird", NULL,             NULL,           1<<2, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "discord",     NULL,             NULL,           1<<3, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "Clementine",  NULL,             NULL,           1<<4, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "Thunar",      NULL,             NULL,           1<<5, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "TIPP10",      NULL,             NULL,           1<<6, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ FIRE,          NULL,             NULL,           1<<7, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "Alacritty",   NULL,             NULL,           0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, "float",          NULL,           0,    0,          1,         1,       1,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,          0,         1,       1,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ "gimp",        NULL,             NULL,           0,    0,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ NULL,          NULL,             "Event Tester", 0,    0,          0,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      0   }, /* xev */
+	{ "panel",       NULL,             NULL,           0,    0,          0,         0,       0,         1,        -1,     0,0,1000,700, borderpx,      0   },
+	{ NULL,          NULL,             "htop",         0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      'p' },
+	{ NULL,          "scratchpad",     NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      's' },
+	{ NULL,          "scratchtagwin1", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '1' },
+	{ NULL,          "scratchtagwin2", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '2' },
+	{ NULL,          "scratchtagwin3", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '3' },
+	{ NULL,          "scratchtagwin4", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '4' },
+	{ NULL,          "scratchtagwin5", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '5' },
+	{ NULL,          "scratchtagwin6", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '6' },
+	{ NULL,          "scratchtagwin7", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '7' },
+	{ NULL,          "scratchtagwin8", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '8' },
+	{ NULL,          "scratchtagwin9", NULL,           0,    0,          1,         1,       0,         1,        -1,     0,0,1000,700, borderpx,      '9' },
 };
 
 
@@ -125,7 +131,6 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static Bool isfakefullscreen  = False;     /* enables fakefullscreen */
-
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"

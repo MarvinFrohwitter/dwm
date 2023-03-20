@@ -69,6 +69,7 @@
 #define HEIGHT(X) ((X)->h + 2 * (X)->bw)
 #define TAGMASK ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X) (drw_fontset_getwidth(drw, (X)) + lrpad)
+#define TEXTWITH(X) (drw_fontset_getwidth(drw, (X)) + lrpad + 5)
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 #define _NET_SYSTEM_TRAY_ORIENTATION_HORZ 0
@@ -89,7 +90,7 @@
 /* enums */
 enum { Manager, Xembed, XembedInfo, XLast };     /* Xembed atoms */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel };                  /* color schemes */
+enum { SchemeNorm, SchemeTray, SchemeSel };      /* color schemes */
 enum {
   NetSupported,
   NetSystemTray,
@@ -386,6 +387,7 @@ static Client *termforwin(const Client *c);
 static pid_t winpid(Window w);
 
 /* variables */
+static Bool defaultfakefullscreenmode;
 static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static Client *prevzoom = NULL;
@@ -673,6 +675,7 @@ void unswallow(Client *c) {
 
 void buttonpress(XEvent *e) {
   unsigned int i, x, click;
+  int stw = getsystraywidth();
   Arg arg = {0};
   Client *c;
   Monitor *m;
@@ -718,8 +721,8 @@ void buttonpress(XEvent *e) {
       }
     }
 
-    if (ev->x > selmon->ww - statusw - getsystraywidth()) {
-      x = selmon->ww - statusw;
+    if (ev->x > selmon->ww - statusw - stw - 2*sp - 5 - 2) {
+      x = selmon->ww - statusw - stw - 2*sp - 5 - 2;
       click = ClkStatusText;
       statussig = 0;
       for (text = s = stext; *s && x <= ev->x; s++) {
@@ -1092,8 +1095,8 @@ void drawbar(Monitor *m) {
 
   if (showsystray && m == systraytomon(m)) {
     stw = getsystraywidth();
-    drw_setscheme(drw, scheme[SchemeNorm]);
-    drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
+    drw_setscheme(drw, scheme[SchemeTray]);
+    drw_rect(drw, m->ww - stw, 0, 2 * stw, bh, 1, 1);
   }
 
   /* draw status first so it can be overdrawn by tags later */
@@ -1106,19 +1109,20 @@ void drawbar(Monitor *m) {
       if ((unsigned char)(*s) < ' ') {
         ch = *s;
         *s = '\0';
-        tw = TEXTW(stext) - lrpad + 2; /* 2px extra right padding */
-        drw_text(drw, m->ww - statusw - stw + x - 2 * sp, 0, tw, bh, 0, stext,
+        tw = TEXTW(text) - lrpad; /* 2px extra right padding */
+        drw_text(drw, m->ww - statusw - stw + x - 2 * sp, 0, tw, bh, 0, text,
                  0);
         x += tw;
         *s = ch;
         text = s + 1;
       }
     }
-    tw = TEXTW(stext) - lrpad + 2; /* 2px extra right padding */
-    drw_text(drw, m->ww - statusw - stw + x - 2 * sp, 0, tw, bh, 0, stext, 0);
+    tw = TEXTWITH(text) - lrpad; /* 2px extra right padding */
+    drw_text(drw, m->ww - statusw - stw + x - 2 * sp, 0, tw, bh, 0, text, 0);
 
     tw = statusw;
   }
+
 
   for (c = m->clients; c; c = c->next) {
     occ |= c->tags;
