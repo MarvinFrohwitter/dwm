@@ -69,7 +69,7 @@
 #define HEIGHT(X) ((X)->h + 2 * (X)->bw)
 #define TAGMASK ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X) (drw_fontset_getwidth(drw, (X)) + lrpad)
-#define TEXTWITH(X) (drw_fontset_getwidth(drw, (X)) + lrpad + 5)
+#define TEXTWITH(X) (drw_fontset_getwidth(drw, (X)) + lrpad + 7)
 
 #define SYSTEM_TRAY_REQUEST_DOCK 0
 #define _NET_SYSTEM_TRAY_ORIENTATION_HORZ 0
@@ -721,8 +721,8 @@ void buttonpress(XEvent *e) {
       }
     }
 
-    if (ev->x > selmon->ww - statusw - stw - 2*sp - 5 - 2) {
-      x = selmon->ww - statusw - stw - 2*sp - 5 - 2;
+    if (ev->x > selmon->ww - statusw - stw - 2*sp - 7 - 2) {
+      x = selmon->ww - statusw - stw - 2*sp - 7 - 2;
       click = ClkStatusText;
       statussig = 0;
       for (text = s = stext; *s && x <= ev->x; s++) {
@@ -1182,7 +1182,8 @@ void drawbar(Monitor *m) {
       drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
     }
   }
-  drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
+  // drw_map(drw, m->barwin, 0, 0, m->ww - stw, bh);
+  drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
 void drawbars(void) {

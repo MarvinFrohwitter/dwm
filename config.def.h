@@ -103,8 +103,10 @@ static const Rule rules[] = {
 	{ "TIPP10",      NULL,             NULL,           1<<6, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ FIRE,          NULL,             NULL,           1<<7, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,          0,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
-	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "lf",           0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
+	{ TERMINALCLASS, NULL,             "ranger",       0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ "Alacritty",   NULL,             NULL,           0,    0,          1,         1,       0,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, "float",          NULL,           0,    0,          1,         1,       1,         0,        -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,          0,         1,       1,         0,        -1,     0,0,1000,700, borderpx,      0   },
@@ -187,8 +189,8 @@ static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
 static const char *term[]  = { TERMINAL, NULL };
 static const char *termfloat[]  = { TERMINAL, "-n", "float", NULL };
-static const char *ranger[]  = { TERMINAL ,"-e","ranger", NULL };
-static const char *lf[]  = { TERMINAL, "-e", "lfueberzug", NULL };
+static const char *ranger[]  = { TERMINAL, "-t", "ranger" ,"-e","ranger", NULL };
+static const char *lf[]  = { TERMINAL, "-t", "lf", "-e", "lfueberzug", NULL };
 static const char *slock[]  = { "slock", NULL };
 static const char *brave[]  = { BROWSER, NULL };
 static const char *firefox[]  = { FIRE, NULL };
@@ -292,6 +294,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
 	{ MODKEY,                       XK_m, spawn, SHCMD("dmenumpd") },
 	{ MODKEY|ShiftMask,             XK_m, spawn, SHCMD("dmenumpc") },
+	{ MODKEY|ShiftMask,             XK_p, spawn, SHCMD("dmenupac") },
 	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,              XK_r,         spawn,          {.v = rofi } },
 	/* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
