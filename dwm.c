@@ -163,6 +163,8 @@ struct Client {
   Client *next;
   Client *snext;
   Client *swallowing;
+  double opacity;
+  int wasruleopacity;
   Monitor *mon;
   Window win;
 };
@@ -217,6 +219,7 @@ typedef struct {
   int canfocus;
   int isterminal;
   int noswallow;
+  double opacity;
   int monitor;
   int floatx, floaty, floatw, floath;
   int floatborderpx;
@@ -253,6 +256,7 @@ static void attach(Client *c);
 static void attachbottom(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
+static void changeopacity(const Arg *arg);
 static void checkotherwm(void);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
@@ -475,6 +479,8 @@ void applyrules(Client *c) {
   c->canfocus = 1;
   c->tags = 0;
   c->scratchkey = 0;
+  c->opacity = defaultopacity;
+  c->wasruleopacity = 0;
   XGetClassHint(dpy, c->win, &ch);
   class = ch.res_class ? ch.res_class : broken;
   instance = ch.res_name ? ch.res_name : broken;
@@ -490,6 +496,10 @@ void applyrules(Client *c) {
       c->canfocus = r->canfocus;
       c->tags |= r->tags;
       c->scratchkey = r->scratchkey;
+      if (r->opacity != c->opacity) {
+        c->opacity = r->opacity;
+        c->wasruleopacity = 1;
+      }
       if (r->floatborderpx >= 0) {
         c->floatborderpx = r->floatborderpx;
         c->hasfloatbw = 1;
@@ -721,8 +731,8 @@ void buttonpress(XEvent *e) {
       }
     }
 
-    if (ev->x > selmon->ww - statusw - stw - 2*sp - 7 - 2) {
-      x = selmon->ww - statusw - stw - 2*sp - 7 - 2;
+    if (ev->x > selmon->ww - statusw - stw - 2 * sp - 7 - 2) {
+      x = selmon->ww - statusw - stw - 2 * sp - 7 - 2;
       click = ClkStatusText;
       statussig = 0;
       for (text = s = stext; *s && x <= ev->x; s++) {
@@ -752,6 +762,19 @@ execute_handler:
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
       buttons[i].func(
           click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+}
+
+void changeopacity(const Arg *arg) {
+  if (!selmon->sel)
+    return;
+  selmon->sel->opacity += arg->f;
+  if (selmon->sel->opacity > 1.0)
+    selmon->sel->opacity = 1.0;
+
+  if (selmon->sel->opacity < 0)
+    selmon->sel->opacity = 0;
+
+  opacity(selmon->sel, selmon->sel->opacity);
 }
 
 void checkotherwm(void) {
@@ -1123,7 +1146,6 @@ void drawbar(Monitor *m) {
     tw = statusw;
   }
 
-
   for (c = m->clients; c; c = c->next) {
     occ |= c->tags;
     if (c->isurgent)
@@ -1244,7 +1266,11 @@ void focus(Client *c) {
     grabbuttons(c, 1);
     XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
     setfocus(c);
-    opacity(c, activeopacity);
+    if (!c->wasruleopacity) {
+      if (c->opacity != defaultopacity) {
+        opacity(c, activeopacity);
+      }
+    }
   } else {
     XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
@@ -1563,6 +1589,7 @@ void manage(Window w, XWindowAttributes *wa) {
     applyrules(c);
     term = termforwin(c);
   }
+  opacity(c, c->opacity);
 
   if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
     c->x = c->mon->wx + c->mon->ww - WIDTH(c);
@@ -1570,7 +1597,11 @@ void manage(Window w, XWindowAttributes *wa) {
     c->y = c->mon->wy + c->mon->wh - HEIGHT(c);
   c->x = MAX(c->x, c->mon->wx);
   c->y = MAX(c->y, c->mon->wy);
-  c->bw = borderpx;
+  if (c->hasfloatbw) {
+    c->bw = c->floatborderpx;
+  } else {
+    c->bw = borderpx;
+  }
 
   wc.border_width = c->bw;
   XConfigureWindow(dpy, w, CWBorderWidth, &wc);
