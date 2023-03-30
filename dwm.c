@@ -1536,6 +1536,9 @@ void killclient(const Arg *arg) {
   if (!selmon->sel)
     return;
 
+  if (selmon->sel->scratchkey == 'l') {
+    pskiller(selmon->sel->pid);
+  }
   if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask,
                  wmatom[WMDelete], CurrentTime, 0, 0, 0)) {
     XGrabServer(dpy);

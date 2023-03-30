@@ -101,21 +101,23 @@ static const Rule rules[] = {
 	{ "thunderbird", NULL,             NULL,           1<<2, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ "discord",     NULL,             NULL,           1<<3, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ "Clementine",  NULL,             NULL,           1<<4, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
+	{ "Audacity",    NULL,             NULL,           1<<4, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ "Thunar",      NULL,             NULL,           1<<5, 1,          1,         1,       0,         0, defaultopacity, -1,     0,0,1000,700, borderpx,      0   },
 	{ "TIPP10",      NULL,             NULL,           1<<6, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ FIRE,          NULL,             NULL,           1<<7, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-	{ TERMINALCLASS, NULL,             "lf",           0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-	{ TERMINALCLASS, NULL,             "ranger",       0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,      0   },
+	{ TERMINALCLASS, NULL,             "lf",           0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      'l' },
+	{ TERMINALCLASS, NULL,             "ranger",       0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,            0   },
 	{ "Alacritty",   NULL,             NULL,           0,    0,          1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, "float",          NULL,           0,    0,          1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,          0,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,      0   },
 	{ "gimp",        NULL,             NULL,           0,    0,          0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ NULL,          NULL,             "Event Tester", 0,    0,          0,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      0   }, /* xev */
 	{ "panel",       NULL,             NULL,           0,    0,          0,         0,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-	{ NULL,          NULL,             "htop",         0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'p' },
+	{ NULL,          NULL,             "htop",         0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'h' },
+	{ NULL,          NULL,             "bc",           0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'b' },
 	{ NULL,          "scratchpad",     NULL,           0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      's' },
 	{ NULL,          "scratchtagwin1", NULL,           0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '1' },
 	{ NULL,          "scratchtagwin2", NULL,           0,    0,          1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '2' },
@@ -203,7 +205,8 @@ static const char *newsboat[]  = { TERMINAL, "-t", "newsboat", "-e","newsboat", 
 static const char *discord[]  = { "discord", NULL };
 
 static const char *clementine[]  = { "clementine", NULL };
-static const char *clementinemute[]  = { "clementine", "-t", NULL };
+// static const char *clementinemute[]  = { "clementine", "-t", NULL };
+static const char *musicmute[]  = { "musicmute", NULL };
 static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
 static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
 static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
@@ -214,7 +217,8 @@ static const char *notetaker[]  = { TERMINAL, "-t", "notetaker", "-e", "notetake
 static const char *notepdf[]  = { "notepdf", NULL };
 
 /*First arg only serves to match against key in rules*/
-static const char *scratchpad_htop[] = {"p", TERMINAL, "-t", "htop", "-e", "htop", NULL};
+static const char *scratchpad_htop[] = {"h", TERMINAL, "-t", "htop", "-e", "htop", NULL};
+static const char *scratchpad_bc[] = {"b", TERMINAL, "-t", "bc", "-e", "bc", "-q", NULL};
 static const char *scratchpad[] = {"s", TERMINAL, "-n", "scratchpad", NULL};
 static const char *scratchtagwin1[] = { "1", TERMINAL, "-n", "scratchtagwin1",  NULL };
 static const char *scratchtagwin2[] = { "2", TERMINAL, "-n", "scratchtagwin2",  NULL };
@@ -322,12 +326,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_b,      spawn,          {.v = brave } },
 	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = surf } },
 
-	{ MODKEY,                       XK_c,      spawn,          {.v = clementine } },
+	{ MODKEY|ShiftMask,             XK_c,      spawn,          {.v = clementine } },
 	{ MODKEY,                       XK_plus,   spawn,          {.v = clementineup } },
 	{ MODKEY,                       XK_minus,  spawn,          {.v = clementinedown } },
 	{ MODKEY|ControlMask,           XK_plus,   spawn,          {.v = clementinenexttrack } },
 	{ MODKEY|ControlMask,           XK_minus,  spawn,          {.v = clementineprevioustrack} },
-	{ MODKEY|ControlMask,           XK_m,      spawn,          {.v = clementinemute } },
+	{ MODKEY|ControlMask,           XK_m,      spawn,          {.v = musicmute } },
 	{ MODKEY|ControlMask,           XK_n,      spawn,	   {.v = ncmpcpp } },
 
 	{ MODKEY,                       XK_n,      spawn,          {.v = nemo } },
@@ -418,6 +422,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_w, scratchpad_show, {0} },
 	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
 	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
+	{ MODKEY,           XK_c,  togglescratch,  {.v = scratchpad_bc } },
 	{ MODKEY,           XK_x,  togglescratch,  {.v = scratchpad_htop } },
 	{ MODKEY|ShiftMask, XK_x,  togglescratch,  {.v = scratchpad } },
 

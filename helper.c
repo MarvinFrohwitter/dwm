@@ -8,10 +8,16 @@
 // static void movetotag8forrule(const Arg *arg);
 // static void movetotag9forrule(const Arg *arg);
 
+#include <sys/types.h>
 static void toggleactualfullscr(const Arg *arg);
 static void reloadafterquit(const Arg *arg);
 static void reloadafterquitwithsig(const Arg *arg);
+static void pskiller(pid_t pid);
 
+void pskiller(pid_t pid){
+  Arg a = {.v = (const char*[]){ "kill", "-9", pid, NULL }};
+  spawn(&a);
+}
 void reloadafterquit(const Arg *arg) {
   spawn(arg);
   Arg a;
