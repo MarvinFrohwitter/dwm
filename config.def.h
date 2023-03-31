@@ -26,6 +26,7 @@ static const unsigned int systrayspacing = 3;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;        /* 0 means no systray */
 
+static const int rmaster            = 1;        /* 1 means master-area is initially on the right */
 static const unsigned int stairpx   = 20;       /* depth of the stairs layout */
 static const int stairdirection     = 1;        /* 0: left-aligned, 1: right-aligned */
 static const int stairsamesize      = 1;        /* 1 means shrink all the staired windows to the same size */
@@ -392,6 +393,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 
+	{ MODKEY|ControlMask,           XK_r,      togglermaster,  {0} },
 	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
 	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
 	{ MODKEY|ControlMask,           XK_f,      toggleactualfullscr,  {0} },

@@ -197,6 +197,7 @@ struct Monitor {
   unsigned int seltags;
   unsigned int sellt;
   unsigned int tagset[2];
+  int rmaster;
   int showbar;
   int topbar;
   Client *clients;
@@ -348,6 +349,7 @@ static void tagmon(const Arg *arg);
 /* static void tile(Monitor *m); */
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglermaster(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void togglefullscr(const Arg *arg);
 static void toggleopacity(const Arg *arg);
@@ -1008,6 +1010,7 @@ Monitor *createmon(void) {
   m->tagset[0] = m->tagset[1] = 1;
   m->mfact = mfact;
   m->nmaster = nmaster;
+  m->rmaster = rmaster;
   m->showbar = showbar;
   m->topbar = topbar;
   m->gappih = gappih;
@@ -2195,16 +2198,22 @@ void col(Monitor *m) {
     return;
 
   if (n > m->nmaster)
-    mw = m->nmaster ? m->ww * m->mfact : 0;
+    mw = m->nmaster ? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) : 0;
   else
     mw = m->ww;
   for (i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
       w = (mw - x) / (MIN(n, m->nmaster) - i);
-      resize(c, x + m->wx, m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+      // The positioning is correct but client pos update is sometime wrong
+      // resize(c, (m->rmaster ? x + m->wx + m->ww - w : x + m->wx), m->wy,
+      //        w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+      resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
       x += WIDTH(c);
     } else {
       h = (m->wh - y) / (n - i);
+      // This is correct resize function for the rmaster
+      // resize(c, (m->rmaster ? x + m->wx - m->ww  : x + m->wx), m->wy + y,
+      //        m->ww - x - (2 * c->bw), h - (2 * c->bw), 0);
       resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 * c->bw),
              0);
       y += HEIGHT(c);
@@ -2784,7 +2793,7 @@ void stairs(Monitor *m) {
     return;
 
   if (n > m->nmaster)
-    mw = m->nmaster ? m->ww * m->mfact : 0;
+    mw = m->nmaster ? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) : 0;
   else
     mw = m->ww;
 
@@ -2863,6 +2872,14 @@ void togglefloating(const Arg *arg) {
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
   arrange(selmon);
+}
+
+void togglermaster(const Arg *arg) {
+  selmon->rmaster = !selmon->rmaster;
+  /* now mfact represents the left factor */
+  selmon->mfact = 1.0 - selmon->mfact;
+  if (selmon->lt[selmon->sellt]->arrange)
+    arrange(selmon);
 }
 
 void togglescratch(const Arg *arg) {
