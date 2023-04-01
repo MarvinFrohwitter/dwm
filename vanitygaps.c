@@ -182,7 +182,7 @@ static void bstack(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
-      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2*ov: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
+      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2*oh: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
              mh - (2 * c->bw), 0);
       mx += WIDTH(c) + iv;
     } else {
@@ -225,11 +225,11 @@ static void bstackhoriz(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
-      resize(c, mx, my, (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
+      resize(c, mx,(m->rmaster ? my + m->wh - mh - 2*oh: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
              mh - (2 * c->bw), 0);
       mx += WIDTH(c) + iv;
     } else {
-      resize(c, sx, sy, sw - (2 * c->bw),
+      resize(c, sx, (m->rmaster ? sy - mh - ih: sy), sw - (2 * c->bw),
              (sh / sfacts) + ((i - m->nmaster) < srest ? 1 : 0) - (2 * c->bw),
              0);
       sy += HEIGHT(c) + ih;
