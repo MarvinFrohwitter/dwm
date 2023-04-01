@@ -2800,7 +2800,7 @@ void stairs(Monitor *m) {
   for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
       h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-      resize(c, m->wx, m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
+      resize(c, (m->rmaster ? m->wx + m->ww - mw: m->wx), m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
       if (my + HEIGHT(c) < m->wh)
         my += HEIGHT(c);
     } else {
@@ -2808,7 +2808,7 @@ void stairs(Monitor *m) {
       ox = stairdirection ? n - i - 1 : (stairsamesize ? i - m->nmaster : 0);
       ow = stairsamesize ? n - m->nmaster - 1 : n - i - 1;
       oh = stairsamesize ? ow : i - m->nmaster;
-      resize(c, m->wx + mw + (ox * stairpx), m->wy + (oy * stairpx),
+      resize(c, (m-> rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox * stairpx) ), m->wy + (oy * stairpx),
              m->ww - mw - (2 * c->bw) - (ow * stairpx),
              m->wh - (2 * c->bw) - (oh * stairpx), 0);
     }
