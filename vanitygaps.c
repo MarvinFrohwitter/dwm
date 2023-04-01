@@ -182,11 +182,11 @@ static void bstack(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
-      resize(c, mx, my, (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
+      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2*ov: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
              mh - (2 * c->bw), 0);
       mx += WIDTH(c) + iv;
     } else {
-      resize(c, sx, sy,
+      resize(c, sx, (m->rmaster ? my : sy),
              (sw / sfacts) + ((i - m->nmaster) < srest ? 1 : 0) - (2 * c->bw),
              sh - (2 * c->bw), 0);
       sx += WIDTH(c) + iv;
@@ -423,11 +423,11 @@ void deck(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
-      resize(c, (m->rmaster ? sx : mx), my, mw - (2 * c->bw),
+      resize(c, (m->rmaster ? mx +m->ww - mw - 2*ov : mx), my, mw - (2 * c->bw),
              (mh / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw), 0);
       my += HEIGHT(c) + ih;
     } else {
-      resize(c, (m->rmaster ? mx : sx), sy, sw - (2 * c->bw), sh - (2 * c->bw), 0);
+      resize(c, (m->rmaster ? mx  : sx), sy, sw - (2 * c->bw), sh - (2 * c->bw), 0);
     }
 }
 
