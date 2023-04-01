@@ -2205,17 +2205,17 @@ void col(Monitor *m) {
     if (i < m->nmaster) {
       w = (mw - x) / (MIN(n, m->nmaster) - i);
       // The positioning is correct but client pos update is sometime wrong
-      // resize(c, (m->rmaster ? x + m->wx + m->ww - w : x + m->wx), m->wy,
-      //        w - (2 * c->bw), m->wh - (2 * c->bw), 0);
-      resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+      resize(c, (m->rmaster ? x + m->wx + m->ww - mw : x + m->wx), m->wy,
+             w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+      // resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
       x += WIDTH(c);
     } else {
       h = (m->wh - y) / (n - i);
       // This is correct resize function for the rmaster
-      // resize(c, (m->rmaster ? x + m->wx - m->ww  : x + m->wx), m->wy + y,
-      //        m->ww - x - (2 * c->bw), h - (2 * c->bw), 0);
-      resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 * c->bw),
-             0);
+      resize(c, (m->rmaster ? x + m->wx - m->ww  : x + m->wx), m->wy + y,
+             m->ww - x - (2 * c->bw), h - (2 * c->bw), 0);
+      // resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 * c->bw),
+      //        0);
       y += HEIGHT(c);
     }
 }
