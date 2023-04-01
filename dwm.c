@@ -447,22 +447,24 @@ static int useargb = 0;
 static Visual *visual;
 static int depth;
 static Colormap cmap;
-
 static xcb_connection_t *xcon;
+
+
+/*The hard coded 9 was previously LENGTH(tags), but we get and dependency
+ * problem*/
+struct Pertag {
+  unsigned int curtag, prevtag;   /* current and previous tag */
+  int nmasters[9 + 1];    /* number of windows in master area */
+  float mfacts[9 + 1];            /* mfacts per tag */
+  unsigned int sellts[9 + 1];     /* selected layouts */
+  const Layout *ltidxs[9 + 1][2]; /* matrix of tags and layouts indexes  */
+  int showbars[9 + 1];            /* display bar for the current tag */
+  int enablegaps[9 + 1];
+  unsigned int gaps[9 + 1];
+};
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
-
-struct Pertag {
-  unsigned int curtag, prevtag;          /* current and previous tag */
-  int nmasters[LENGTH(tags) + 1];        /* number of windows in master area */
-  float mfacts[LENGTH(tags) + 1];        /* mfacts per tag */
-  unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
-  const Layout
-      *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
-  int showbars[LENGTH(tags) + 1];   /* display bar for the current tag */
-};
-
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags {
   char limitexceeded[LENGTH(tags) > 30 ? -1 : 1];
@@ -1031,6 +1033,9 @@ Monitor *createmon(void) {
     m->pertag->ltidxs[i][1] = m->lt[1];
     m->pertag->sellts[i] = m->sellt;
 
+    m->pertag->enablegaps[i] = 1;
+    m->pertag->gaps[i] = ((gappoh & 0xFF) << 0) | ((gappov & 0xFF) << 8) |
+                         ((gappih & 0xFF) << 16) | ((gappiv & 0xFF) << 24);
     m->pertag->showbars[i] = m->showbar;
   }
 
@@ -2212,9 +2217,10 @@ void col(Monitor *m) {
     } else {
       h = (m->wh - y) / (n - i);
       // This is correct resize function for the rmaster
-      resize(c, (m->rmaster ? x + m->wx - m->ww  : x + m->wx), m->wy + y,
+      resize(c, (m->rmaster ? x + m->wx - m->ww : x + m->wx), m->wy + y,
              m->ww - x - (2 * c->bw), h - (2 * c->bw), 0);
-      // resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 * c->bw),
+      // resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 *
+      // c->bw),
       //        0);
       y += HEIGHT(c);
     }
@@ -2800,7 +2806,8 @@ void stairs(Monitor *m) {
   for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
       h = (m->wh - my) / (MIN(n, m->nmaster) - i);
-      resize(c, (m->rmaster ? m->wx + m->ww - mw: m->wx), m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
+      resize(c, (m->rmaster ? m->wx + m->ww - mw : m->wx), m->wy + my,
+             mw - (2 * c->bw), h - (2 * c->bw), 0);
       if (my + HEIGHT(c) < m->wh)
         my += HEIGHT(c);
     } else {
@@ -2808,9 +2815,11 @@ void stairs(Monitor *m) {
       ox = stairdirection ? n - i - 1 : (stairsamesize ? i - m->nmaster : 0);
       ow = stairsamesize ? n - m->nmaster - 1 : n - i - 1;
       oh = stairsamesize ? ow : i - m->nmaster;
-      resize(c, (m-> rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox * stairpx) ), m->wy + (oy * stairpx),
-             m->ww - mw - (2 * c->bw) - (ow * stairpx),
-             m->wh - (2 * c->bw) - (oh * stairpx), 0);
+      resize(
+          c,
+          (m->rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox * stairpx)),
+          m->wy + (oy * stairpx), m->ww - mw - (2 * c->bw) - (ow * stairpx),
+          m->wh - (2 * c->bw) - (oh * stairpx), 0);
     }
   }
 }
@@ -2982,6 +2991,13 @@ void toggleview(const Arg *arg) {
     selmon->lt[selmon->sellt ^ 1] =
         selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt ^ 1];
 
+    selmon->gappoh = (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff) >> 0;
+    selmon->gappov =
+        (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff00) >> 8;
+    selmon->gappih =
+        (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff0000) >> 16;
+    selmon->gappiv =
+        (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff000000) >> 24;
     if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
       togglebar(NULL);
 
@@ -3469,6 +3485,13 @@ void view(const Arg *arg) {
       selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
   selmon->lt[selmon->sellt ^ 1] =
       selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt ^ 1];
+
+  selmon->gappoh = (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff) >> 0;
+  selmon->gappov = (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff00) >> 8;
+  selmon->gappih =
+      (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff0000) >> 16;
+  selmon->gappiv =
+      (selmon->pertag->gaps[selmon->pertag->curtag] & 0xff000000) >> 24;
 
   if (selmon->showbar != selmon->pertag->showbars[selmon->pertag->curtag])
     togglebar(NULL);

@@ -28,9 +28,6 @@ static void getfacts(Monitor *m, int msize, int ssize, float *mf, float *sf,
 static void setgaps(int oh, int ov, int ih, int iv);
 
 /* Settings */
-#if !PERTAG_PATCH
-static int enablegaps = 1;
-#endif // PERTAG_PATCH
 
 void setgaps(int oh, int ov, int ih, int iv) {
   if (oh < 0)
@@ -46,17 +43,17 @@ void setgaps(int oh, int ov, int ih, int iv) {
   selmon->gappov = ov;
   selmon->gappih = ih;
   selmon->gappiv = iv;
+
+  selmon->pertag->gaps[selmon->pertag->curtag] =
+      ((oh & 0xFF) << 0) | ((ov & 0xFF) << 8) | ((ih & 0xFF) << 16) |
+      ((iv & 0xFF) << 24);
   arrange(selmon);
 }
 
 void togglegaps(const Arg *arg) {
-#if PERTAG_PATCH
   selmon->pertag->enablegaps[selmon->pertag->curtag] =
       !selmon->pertag->enablegaps[selmon->pertag->curtag];
-#else
-  enablegaps = !enablegaps;
-#endif // PERTAG_PATCH
-  arrange(NULL);
+  arrange(selmon);
 }
 
 void defaultgaps(const Arg *arg) { setgaps(gappoh, gappov, gappih, gappiv); }
@@ -98,11 +95,7 @@ void incrivgaps(const Arg *arg) {
 
 void getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv, unsigned int *nc) {
   unsigned int n, oe, ie;
-#if PERTAG_PATCH
   oe = ie = selmon->pertag->enablegaps[selmon->pertag->curtag];
-#else
-  oe = ie = enablegaps;
-#endif // PERTAG_PATCH
   Client *c;
 
   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
@@ -182,7 +175,8 @@ static void bstack(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
-      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2*oh: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
+      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2 * oh : my),
+             (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
              mh - (2 * c->bw), 0);
       mx += WIDTH(c) + iv;
     } else {
@@ -225,11 +219,12 @@ static void bstackhoriz(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
     if (i < m->nmaster) {
-      resize(c, mx,(m->rmaster ? my + m->wh - mh - 2*oh: my), (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
+      resize(c, mx, (m->rmaster ? my + m->wh - mh - 2 * oh : my),
+             (mw / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
              mh - (2 * c->bw), 0);
       mx += WIDTH(c) + iv;
     } else {
-      resize(c, sx, (m->rmaster ? sy - mh - ih: sy), sw - (2 * c->bw),
+      resize(c, sx, (m->rmaster ? sy - mh - ih : sy), sw - (2 * c->bw),
              (sh / sfacts) + ((i - m->nmaster) < srest ? 1 : 0) - (2 * c->bw),
              0);
       sy += HEIGHT(c) + ih;
@@ -355,7 +350,8 @@ void centeredfloatingmaster(Monitor *m) {
     mivf = 0.8;
     /* go mfact box in the center if more than nmaster clients */
     if (m->ww > m->wh) {
-      mw = m->ww * (m->rmaster ? m->mfact : 1.0 - m->mfact) - iv * mivf * (MIN(n, m->nmaster) - 1);
+      mw = m->ww * (m->rmaster ? m->mfact : 1.0 - m->mfact) -
+           iv * mivf * (MIN(n, m->nmaster) - 1);
       mh = m->wh * 0.9;
     } else {
       mw = m->ww * 0.9 - iv * mivf * (MIN(n, m->nmaster) - 1);
@@ -423,11 +419,13 @@ void deck(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
-      resize(c, (m->rmaster ? mx +m->ww - mw - 2*ov : mx), my, mw - (2 * c->bw),
+      resize(c, (m->rmaster ? mx + m->ww - mw - 2 * ov : mx), my,
+             mw - (2 * c->bw),
              (mh / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw), 0);
       my += HEIGHT(c) + ih;
     } else {
-      resize(c, (m->rmaster ? mx  : sx), sy, sw - (2 * c->bw), sh - (2 * c->bw), 0);
+      resize(c, (m->rmaster ? mx : sx), sy, sw - (2 * c->bw), sh - (2 * c->bw),
+             0);
     }
 }
 
@@ -502,7 +500,9 @@ void fibonacci(Monitor *m, int s) {
       }
       if (i == 0) {
         if (n != 1) {
-          nw = (m->ww - iv - 2 * ov) - (m->ww - iv - 2 * ov) * (1 - (m->rmaster ? 1.0 - m->mfact : m->mfact));
+          nw = (m->ww - iv - 2 * ov) -
+               (m->ww - iv - 2 * ov) *
+                   (1 - (m->rmaster ? 1.0 - m->mfact : m->mfact));
           wrest = 0;
         }
         ny = m->wy + oh;
@@ -745,13 +745,9 @@ static void tile(Monitor *m) {
 
   for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
-      resize(c,
-             m->rmaster ? mx + m->ww - mw - 2*ov : mx,
-             my,
+      resize(c, m->rmaster ? mx + m->ww - mw - 2 * ov : mx, my,
              mw - (2 * c->bw),
-             (mh / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw),
-             0);
-
+             (mh / mfacts) + (i < mrest ? 1 : 0) - (2 * c->bw), 0);
 
       // resize(c,
       //        mx,
@@ -762,10 +758,7 @@ static void tile(Monitor *m) {
 
       my += HEIGHT(c) + ih;
     } else {
-      resize(c,
-             m->rmaster ? mx : sx,
-             sy,
-             sw - (2 * c->bw),
+      resize(c, m->rmaster ? mx : sx, sy, sw - (2 * c->bw),
              (sh / sfacts) + ((i - m->nmaster) < srest ? 1 : 0) - (2 * c->bw),
              0);
 
