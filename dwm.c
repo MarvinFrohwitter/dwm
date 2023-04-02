@@ -88,9 +88,9 @@
 #define OPAQUE 0xffU
 
 /* enums */
-enum { Manager, Xembed, XembedInfo, XLast };     /* Xembed atoms */
-enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeTray, SchemeSel };      /* color schemes */
+enum { Manager, Xembed, XembedInfo, XLast };             /* Xembed atoms */
+enum { CurNormal, CurResize, CurMove, CurLast };         /* cursor */
+enum { SchemeNorm, SchemeTitle, SchemeTray, SchemeSel }; /* color schemes */
 enum {
   NetSupported,
   NetSystemTray,
@@ -449,12 +449,11 @@ static int depth;
 static Colormap cmap;
 static xcb_connection_t *xcon;
 
-
 /*The hard coded 9 was previously LENGTH(tags), but we get and dependency
  * problem*/
 struct Pertag {
   unsigned int curtag, prevtag;   /* current and previous tag */
-  int nmasters[9 + 1];    /* number of windows in master area */
+  int nmasters[9 + 1];            /* number of windows in master area */
   float mfacts[9 + 1];            /* mfacts per tag */
   unsigned int sellts[9 + 1];     /* selected layouts */
   const Layout *ltidxs[9 + 1][2]; /* matrix of tags and layouts indexes  */
@@ -1192,7 +1191,7 @@ void drawbar(Monitor *m) {
 
   if ((w = m->ww - tw - stw - x) > bh) {
     if (m->sel) {
-      drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+      drw_setscheme(drw, scheme[m == selmon ? SchemeTitle : SchemeNorm]);
 
       // tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
       // / 2); drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);

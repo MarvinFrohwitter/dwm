@@ -60,6 +60,7 @@ static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeTitle]  = { col_gray4, col_cyan,  col_cyan  },
        [SchemeTray] = { normfgcolor, normbgcolor, normbordercolor },
        // [SchemeTray] = { red, red, red },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  red  },
