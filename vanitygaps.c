@@ -20,6 +20,8 @@ static void grid(Monitor *m);
 static void nrowgrid(Monitor *m);
 static void spiral(Monitor *m);
 static void tile(Monitor *m);
+// static void col(Monitor *);
+// static void stairs(Monitor *m);
 /* Internals */
 static void getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv,
                     unsigned int *nc);
@@ -772,3 +774,88 @@ static void tile(Monitor *m) {
       sy += HEIGHT(c) + ih;
     }
 }
+
+// void col(Monitor *m) {
+//   unsigned int i, n, h, w, x, y, mw;
+//   int oh, ov, ih, iv;
+//   int mx = 0, my = 0, mh = 0, mw = 0;
+//   int sx = 0, sy = 0, sh = 0, sw = 0;
+//   float mfacts, sfacts;
+//   int mrest, srest;
+
+//   Client *c;
+
+//   getgaps(m, &oh, &ov, &ih, &iv, &n);
+
+//   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+//     ;
+//   if (n == 0)
+//     return;
+
+//   sx = mx = m->wx + ov;
+//   sy = my = m->wy + oh;
+//   // mh = m->wh - 2 * oh - ih * (MIN(n, m->nmaster) - 1);
+//   sh = m->wh - 2 * oh - ih * (n - m->nmaster - 1);
+//   sw = mw = m->ww - 2 * ov;
+
+//   getfacts(m, mh, sh, &mfacts, &sfacts, &mrest, &srest);
+
+//   if (n > m->nmaster)
+//     mw = m->nmaster ? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) : 0;
+//   else
+//     mw = m->ww;
+//   for (i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+//     if (i < m->nmaster) {
+//       w = (mw - x) / (MIN(n, m->nmaster) - i);
+//       // The positioning is correct but client pos update is sometime wrong
+//       resize(c, (m->rmaster ? x + m->wx + m->ww - mw : x + m->wx), m->wy,
+//              w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+//       // resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
+//       x += WIDTH(c);
+//     } else {
+//       h = (m->wh - y) / (n - i);
+//       // This is correct resize function for the rmaster
+//       resize(c, (m->rmaster ? x + m->wx - m->ww : x + m->wx), m->wy + y,
+//              m->ww - x - (2 * c->bw), h - (2 * c->bw), 0);
+//       // resize(c, x + m->wx, m->wy + y, m->ww - x - (2 * c->bw), h - (2 *
+//       // c->bw),
+//       //        0);
+//       y += HEIGHT(c);
+//     }
+// }
+
+// void stairs(Monitor *m) {
+//   unsigned int i, n, h, mw, my;
+//   unsigned int ox, oy, ow, oh; /* stair offset values */
+//   Client *c;
+
+//   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+//     ;
+//   if (n == 0)
+//     return;
+
+//   if (n > m->nmaster)
+//     mw = m->nmaster ? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) : 0;
+//   else
+//     mw = m->ww;
+
+//   for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+//     if (i < m->nmaster) {
+//       h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+//       resize(c, (m->rmaster ? m->wx + m->ww - mw : m->wx), m->wy + my,
+//              mw - (2 * c->bw), h - (2 * c->bw), 0);
+//       if (my + HEIGHT(c) < m->wh)
+//         my += HEIGHT(c);
+//     } else {
+//       oy = i - m->nmaster;
+//       ox = stairdirection ? n - i - 1 : (stairsamesize ? i - m->nmaster : 0);
+//       ow = stairsamesize ? n - m->nmaster - 1 : n - i - 1;
+//       oh = stairsamesize ? ow : i - m->nmaster;
+//       resize(
+//           c,
+//           (m->rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox * stairpx)),
+//           m->wy + (oy * stairpx), m->ww - mw - (2 * c->bw) - (ow * stairpx),
+//           m->wh - (2 * c->bw) - (oh * stairpx), 0);
+//     }
+//   }
+// }

@@ -154,8 +154,8 @@ struct Client {
   int bw, oldbw;
   unsigned int tags;
   unsigned int switchtotag;
-  int isfixed, isfloating, canfocus, isurgent, neverfocus, oldstate,
-      isfullscreen, isterminal, noswallow, issticky;
+  int isfixed, isfloating, iscentered, canfocus, isurgent, isalwaysontop,
+      neverfocus, oldstate, isfullscreen, isterminal, noswallow, issticky;
   int floatborderpx;
   int hasfloatbw;
   pid_t pid;
@@ -349,6 +349,7 @@ static void tagmon(const Arg *arg);
 /* static void tile(Monitor *m); */
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglealwaysontop(const Arg *arg);
 static void togglermaster(const Arg *arg);
 static void togglescratch(const Arg *arg);
 static void togglefullscr(const Arg *arg);
@@ -1196,10 +1197,14 @@ void drawbar(Monitor *m) {
       // tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
       // / 2); drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
       drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
-      if (m->sel->isfloating)
+      if (m->sel->isfloating) {
         drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-      // drw_rect(drw, x + boxs + tlpad - lrpad / 2, boxs, boxw, boxw,
-      // m->sel->isfixed, 0);
+        // drw_rect(drw, x + boxs + tlpad - lrpad / 2, boxs, boxw, boxw,
+        // m->sel->isfixed, 0);
+
+        if (m->sel->isalwaysontop)
+          drw_rect(drw, x + boxs, bh - boxw, boxw, boxw, 0, 0);
+      }
       if (m->sel->issticky)
         drw_polygon(drw, x + boxs, m->sel->isfloating ? boxs * 2 + boxw : boxs,
                     stickyiconbb.x, stickyiconbb.y, boxw,
@@ -2169,6 +2174,17 @@ void restack(Monitor *m) {
     return;
   if (m->sel->isfloating || !m->lt[m->sellt]->arrange)
     XRaiseWindow(dpy, m->sel->win);
+
+  /* raise the aot window */
+  for (Monitor *m_search = mons; m_search; m_search = m_search->next) {
+    for (c = m_search->clients; c; c = c->next) {
+      if (c->isalwaysontop) {
+        XRaiseWindow(dpy, c->win);
+        break;
+      }
+    }
+  }
+
   if (m->lt[m->sellt]->arrange) {
     wc.stack_mode = Below;
     wc.sibling = m->barwin;
@@ -2876,9 +2892,34 @@ void togglefloating(const Arg *arg) {
       return;
   }
   selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-  if (selmon->sel->isfloating)
+  if (selmon->sel->isfloating) {
     resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
            selmon->sel->h, 0);
+  } else {
+    selmon->sel->isalwaysontop = 0; /* disabled, turn this off too */
+  }
+  arrange(selmon);
+}
+
+void togglealwaysontop(const Arg *arg) {
+  if (!selmon->sel)
+    return;
+  if (selmon->sel->isfullscreen)
+    return;
+
+  if (selmon->sel->isalwaysontop) {
+    selmon->sel->isalwaysontop = 0;
+  } else {
+    /* disable others */
+    for (Monitor *m = mons; m; m = m->next)
+      for (Client *c = m->clients; c; c = c->next)
+        c->isalwaysontop = 0;
+
+    /* turn on, make it float too */
+    selmon->sel->isfloating = 1;
+    selmon->sel->isalwaysontop = 1;
+  }
+
   arrange(selmon);
 }
 

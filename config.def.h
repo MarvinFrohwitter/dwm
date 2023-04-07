@@ -26,7 +26,7 @@ static const unsigned int systrayspacing = 3;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;        /* 0 means no systray */
 
-static const int rmaster            = 1;        /* 1 means master-area is initially on the right */
+static const int rmaster            = 0;        /* 1 means master-area is initially on the right */
 static const unsigned int stairpx   = 20;       /* depth of the stairs layout */
 static const int stairdirection     = 1;        /* 0: left-aligned, 1: right-aligned */
 static const int stairsamesize      = 1;        /* 1 means shrink all the staired windows to the same size */
@@ -60,7 +60,7 @@ static char selbgcolor[]            = "#005577";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeTitle]  = { col_gray4, col_cyan,  col_cyan  },
+       [SchemeTitle]  = { red, normbgcolor,  normbordercolor  },
        [SchemeTray] = { normfgcolor, normbgcolor, normbordercolor },
        // [SchemeTray] = { red, red, red },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  red  },
@@ -297,27 +297,27 @@ ResourcePref resources[] = {
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_z, spawn, SHCMD("dmenumount") },
-	{ MODKEY,                       XK_v, spawn, SHCMD("dmenuunicode") },
-	{ MODKEY,                       XK_g, spawn, SHCMD("dmenuhandler") },
-	{ MODKEY,                       XK_m, spawn, SHCMD("dmenumpd") },
-	{ MODKEY|ShiftMask,             XK_m, spawn, SHCMD("dmenumpc") },
-	{ MODKEY|ShiftMask,             XK_p, spawn, SHCMD("dmenupac") },
-	{ MODKEY,                  XK_Super_L,         spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,              XK_r,         spawn,          {.v = rofi } },
+	{ MODKEY,                       XK_z, spawn,               SHCMD("dmenumount") },
+	{ MODKEY,                       XK_v, spawn,               SHCMD("dmenuunicode") },
+	{ MODKEY,                       XK_g, spawn,               SHCMD("dmenuhandler") },
+	{ MODKEY,                       XK_m, spawn,               SHCMD("dmenumpd") },
+	{ MODKEY|ShiftMask,             XK_m, spawn,               SHCMD("dmenumpc") },
+	{ MODKEY|ShiftMask,             XK_p, spawn,               SHCMD("dmenupac") },
+	{ MODKEY,                       XK_Super_L,                spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_r,                      spawn,          {.v = rofi } },
 	/* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
 	/* { 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } }, */
 	/* { 0,                       XF86XK_AudioMicMute,     spawn, {.v = mutemicvol } }, */
 	/* { 0,                       XF86XK_AudioMute,        spawn, {.v = mutevol } }, */
 
-	{ 0,                       XF86XK_AudioLowerVolume, spawn, SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ;kill -44 $(pidof dwmblocks)") },
-	{ 0,                       XF86XK_AudioRaiseVolume, spawn,  SHCMD("/usr/bin/pactl set-sink-volume 0 +5% ;kill -44 $(pidof dwmblocks)") },
+	{ 0,              XF86XK_AudioLowerVolume, spawn,          SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ;kill -44 $(pidof dwmblocks)") },
+	{ 0,              XF86XK_AudioRaiseVolume, spawn,          SHCMD("/usr/bin/pactl set-sink-volume 0 +5% ;kill -44 $(pidof dwmblocks)") },
 
-	{ 0,                       XF86XK_AudioMicMute,     spawn, SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
-	{ 0,                       XF86XK_AudioMute,        spawn, SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
+	{ 0,              XF86XK_AudioMicMute,     spawn,          SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
+	{ 0,              XF86XK_AudioMute,        spawn,          SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)") },
 
-	{ 0,                       XF86XK_MonBrightnessUp,  spawn, {.v = brightnessup   } },
-	{ 0,                       XF86XK_MonBrightnessDown,spawn, {.v = brightnessdown   } },
+	{ 0,              XF86XK_MonBrightnessUp,  spawn,          {.v = brightnessup   } },
+	{ 0,              XF86XK_MonBrightnessDown,spawn,          {.v = brightnessdown   } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = ranger } },
 	{ MODKEY,                       XK_a,      spawn,          {.v = lf } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = term } },
@@ -350,14 +350,14 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-	{ MODKEY|ControlMask,                       XK_Return, zoom,           {0} },
+	{ MODKEY|ControlMask,           XK_Return, zoom,           {0} },
 
-	{ ControlMask|Mod4Mask,              XK_j,      incrgaps,       {.i = +1 } },
-	{ ControlMask|Mod4Mask,              XK_k,      incrgaps,       {.i = -1 } },
-	{ ControlMask|ShiftMask,    XK_j,      incrigaps,      {.i = +1 } },
-	{ ControlMask|ShiftMask,    XK_k,      incrigaps,      {.i = -1 } },
-	{ ControlMask|Mod4Mask,              XK_h,      incrogaps,      {.i = +1 } },
-	{ ControlMask|Mod4Mask,              XK_l,      incrogaps,      {.i = -1 } },
+	{ ControlMask|Mod4Mask,              XK_j, incrgaps,       {.i = +1 } },
+	{ ControlMask|Mod4Mask,              XK_k, incrgaps,       {.i = -1 } },
+	{ ControlMask|ShiftMask,             XK_j, incrigaps,      {.i = +1 } },
+	{ ControlMask|ShiftMask,             XK_k, incrigaps,      {.i = -1 } },
+	{ ControlMask|Mod4Mask,              XK_h, incrogaps,      {.i = +1 } },
+	{ ControlMask|Mod4Mask,              XK_l, incrogaps,      {.i = -1 } },
 	/* { ControlMask,              XK_6,      incrihgaps,     {.i = +1 } }, */
 	/* { ControlMask|ShiftMask,    XK_6,      incrihgaps,     {.i = -1 } }, */
 	/* { ControlMask,              XK_7,      incrivgaps,     {.i = +1 } }, */
@@ -367,67 +367,68 @@ static const Key keys[] = {
 	/* { ControlMask,              XK_9,      incrovgaps,     {.i = +1 } }, */
 	/* { ControlMask|ShiftMask,    XK_9,      incrovgaps,     {.i = -1 } }, */
 
-	{ ControlMask,              XK_0,      togglegaps,     {0} },
-	{ ControlMask|ShiftMask,    XK_0,      defaultgaps,    {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-	{ MODKEY,                       XK_q,      killclient,     {0} },
+	{ ControlMask,                  XK_0,      togglegaps,           {0} },
+	{ ControlMask|ShiftMask,        XK_0,      defaultgaps,          {0} },
+	{ MODKEY,                       XK_Tab,    view,                 {0} },
+	{ MODKEY|ShiftMask,             XK_q,      killclient,           {0} },
+	{ MODKEY,                       XK_q,      killclient,           {0} },
 
-	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
-	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
-	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
-	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
-	{ MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
-	{ MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
-	{ MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
-	{ MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
-	{ MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} },
-	{ MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} },
-	{ MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} },
-	{ MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "T"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "B"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
+	{ MODKEY,                       XK_Down,   moveresize,           {.v = "0x 25y 0w 0h" } },
+	{ MODKEY,                       XK_Up,     moveresize,           {.v = "0x -25y 0w 0h" } },
+	{ MODKEY,                       XK_Right,  moveresize,           {.v = "25x 0y 0w 0h" } },
+	{ MODKEY,                       XK_Left,   moveresize,           {.v = "-25x 0y 0w 0h" } },
+	{ MODKEY|ShiftMask,             XK_Down,   moveresize,           {.v = "0x 0y 0w 25h" } },
+	{ MODKEY|ShiftMask,             XK_Up,     moveresize,           {.v = "0x 0y 0w -25h" } },
+	{ MODKEY|ShiftMask,             XK_Right,  moveresize,           {.v = "0x 0y 25w 0h" } },
+	{ MODKEY|ShiftMask,             XK_Left,   moveresize,           {.v = "0x 0y -25w 0h" } },
+	{ MODKEY|ControlMask,           XK_Up,     moveresizeedge,       {.v = "t"} },
+	{ MODKEY|ControlMask,           XK_Down,   moveresizeedge,       {.v = "b"} },
+	{ MODKEY|ControlMask,           XK_Left,   moveresizeedge,       {.v = "l"} },
+	{ MODKEY|ControlMask,           XK_Right,  moveresizeedge,       {.v = "r"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge,       {.v = "T"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge,       {.v = "B"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge,       {.v = "L"} },
+	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge,       {.v = "R"} },
 
-	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,    {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
+	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,            {.v = &layouts[0]} },
+	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,          {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period, cyclelayout,          {.i = +1 } },
 
-	{ MODKEY|ControlMask,           XK_r,      togglermaster,  {0} },
-	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
-	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
+	{ MODKEY|ControlMask,           XK_r,      togglermaster,        {0} },
+	{ MODKEY|ShiftMask,             XK_f,      fullscreen,           {0} },
+	{ MODKEY,                       XK_f,      togglefullscr,        {0} },
 	{ MODKEY|ControlMask,           XK_f,      toggleactualfullscr,  {0} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
-	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY|ShiftMask,                       XK_a,      toggleopacity,  {0} },
-	{ MODKEY|ShiftMask,                       XK_s,      togglesticky,   {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_space,  togglealwaysontop,    {0} },
+	{ MODKEY|ShiftMask|ControlMask, XK_space,  setlayout,            {0} },
+	{ MODKEY,                       XK_space,  togglefloating,       {0} },
+	{ MODKEY|ShiftMask,             XK_a,      toggleopacity,        {0} },
+	{ MODKEY|ShiftMask,             XK_s,      togglesticky,         {0} },
+	{ MODKEY,                       XK_0,      view,                 {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_0,      tag,                  {.ui = ~0 } },
 
-	{ MODKEY|ControlMask,           XK_space,  focusmaster,    {0} },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ControlMask,           XK_space,  focusmaster,          {0} },
+	{ MODKEY,                       XK_comma,  focusmon,             {.i = -1 } },
+	{ MODKEY,                       XK_period, focusmon,             {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,  tagmon,               {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period, tagmon,               {.i = +1 } },
 
 
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_1,                            0)
+	TAGKEYS(                        XK_2,                            1)
+	TAGKEYS(                        XK_3,                            2)
+	TAGKEYS(                        XK_4,                            3)
+	TAGKEYS(                        XK_5,                            4)
+	TAGKEYS(                        XK_6,                            5)
+	TAGKEYS(                        XK_7,                            6)
+	TAGKEYS(                        XK_8,                            7)
+	TAGKEYS(                        XK_9,                            8)
 
-	{ MODKEY,                       XK_w, scratchpad_show, {0} },
-	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide, {0} },
-	{ MODKEY|ControlMask,           XK_w,scratchpad_remove,{0} },
-	{ MODKEY,           XK_c,  togglescratch,  {.v = scratchpad_bc } },
-	{ MODKEY,           XK_x,  togglescratch,  {.v = scratchpad_htop } },
-	{ MODKEY|ShiftMask, XK_x,  togglescratch,  {.v = scratchpad } },
+	{ MODKEY,                       XK_w, scratchpad_show,           {0} },
+	{ MODKEY|ShiftMask,             XK_w, scratchpad_hide,           {0} },
+	{ MODKEY|ControlMask,           XK_w, scratchpad_remove,         {0} },
+	{ MODKEY,                       XK_c, togglescratch,             {.v = scratchpad_bc } },
+	{ MODKEY,                       XK_x, togglescratch,             {.v = scratchpad_htop } },
+	{ MODKEY|ShiftMask,             XK_x, togglescratch,             {.v = scratchpad } },
 
 	SCRATCHTAGWIN_KEY (scratchtagwin1, 1)
 	SCRATCHTAGWIN_KEY (scratchtagwin2, 2)
@@ -438,15 +439,15 @@ static const Key keys[] = {
 	SCRATCHTAGWIN_KEY (scratchtagwin7, 7)
 	SCRATCHTAGWIN_KEY (scratchtagwin8, 8)
 	SCRATCHTAGWIN_KEY (scratchtagwin9, 9)
-	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_0,  makescratchtagwin,  {.i = 0} },
-	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_s,  makescratchtagwin,  {.i = 's'} },
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_0,  makescratchtagwin,    {.i = 0} },
+	{ Mod4Mask|Mod1Mask|ShiftMask,     XK_s,  makescratchtagwin,    {.i = 's'} },
 
 	{ MODKEY|ShiftMask,		XK_KP_Add, changeopacity,	{.f = +0.1}},
 	{ MODKEY|ShiftMask,		XK_KP_Subtract, changeopacity,  {.f = -0.1}},
 
-	{ MODKEY,                       XK_s,  spawn,           {.v = slock } },
-	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit, {.v = killscript } },
-	{ MODKEY,                       XK_e,  reloadafterquitwithsig, {.v = killscript } },
+	{ MODKEY,                       XK_s,  spawn,                   {.v = slock } },
+	{ MODKEY|ShiftMask,             XK_e,  reloadafterquit,         {.v = killscript } },
+	{ MODKEY,                       XK_e,  reloadafterquitwithsig,  {.v = killscript } },
 };
 
 /* button definitions */
