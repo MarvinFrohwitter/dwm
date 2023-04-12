@@ -51,36 +51,44 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:anti
 
 
 static char normbgcolor[]           = "#11121D";
-static char red[]           = "#FF00FF";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#a9b1d6";
 static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#005577";
 static char selbgcolor[]            = "#005577";
+static char magenta[]           = "#FF00FF";
+static char red[]           = "#ff0000";
+static char darkpurple[]           = "#660079";
 static char *colors[][3] = {
        /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeNorm] = {selbordercolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selbordercolor,  selbgcolor,  selbordercolor  },
+       [SchemeTray] = { selbordercolor, normbgcolor, normbordercolor },
        [SchemeTitle]  = { red, normbgcolor,  normbordercolor  },
-       [SchemeTray] = { normfgcolor, normbgcolor, normbordercolor },
-       // [SchemeTray] = { red, red, red },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  red  },
        // [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
 static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
 
 
+static const unsigned int noalpha = 0xff;
+static const unsigned int fullalpha = 0x00;
 static const unsigned int baralpha = 0xdd;
 static const unsigned int borderalpha = OPAQUE;
-static const unsigned int trayalpha = 0xff;
 
 
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
-	[SchemeTray] = { OPAQUE, baralpha, borderalpha },
-	// [SchemeTray] = { trayalpha, trayalpha, trayalpha },
-	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+	// [SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	// [SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+	// [SchemeTray] = { OPAQUE, baralpha, borderalpha },
+	// [SchemeTray] = { noalpha, fullalpha, noalpha },
+	// [SchemeNorm] = { noalpha, fullalpha, noalpha },
+	// [SchemeSel]  = { noalpha, fullalpha, noalpha },
+	[SchemeTray] = { noalpha, baralpha, noalpha },
+	[SchemeNorm] = { noalpha, baralpha, noalpha },
+	[SchemeSel]  = { noalpha, baralpha, noalpha },
+	[SchemeTitle]  = { noalpha, baralpha, noalpha },
 };
 
 /* tagging */
@@ -193,6 +201,7 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-l", "20", NULL };
 static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
+static const char *xkillclient[]  = { "/bin/sh", "-c", "dmenupskill", NULL };
 static const char *term[]  = { TERMINAL, NULL };
 static const char *termfloat[]  = { TERMINAL, "-n", "float", NULL };
 static const char *ranger[]  = { TERMINAL, "-t", "ranger" ,"-e","ranger", NULL };
@@ -260,6 +269,7 @@ static const char *layoutmenu_cmd = "layoutmenu.sh";
 static const Launcher launchers[] = {
        /* command       name to display */
 
+	{ xkillclient,         "X" },
 	{ brave,         "" },
 	{ term,          "" },
 	{ thunderbird,   "" },
