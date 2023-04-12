@@ -93,6 +93,8 @@ static const unsigned int alphas[][3]      = {
 
 /* tagging */
 static const char *tags[] = { "", " ", " ", "ﭮ ", "", "", "", "爵 ", "" };
+static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const int momentaryalttags = 0; /* 1 means alttags will show only when key is held down*/
 
 static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
@@ -404,6 +406,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,	    	XK_comma,  cyclelayout,          {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,          {.i = +1 } },
 
+	{ MODKEY|ControlMask,           XK_a,      togglealttag,         {0} },
 	{ MODKEY|ControlMask,           XK_r,      togglermaster,        {0} },
 	{ MODKEY|ShiftMask,             XK_f,      fullscreen,           {0} },
 	{ MODKEY,                       XK_f,      togglefullscr,        {0} },
