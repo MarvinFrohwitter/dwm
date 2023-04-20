@@ -711,7 +711,7 @@ void buttonpress(XEvent *e) {
     i = x = 0;
     unsigned int occ = 0;
     for (c = m->clients; c; c = c->next)
-      occ |= c->tags;
+      occ |= c->tags == 255 ? 0 : c->tags;
     do {
       /* Do not reserve space for vacant tags */
       if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
@@ -1118,6 +1118,7 @@ Monitor *dirtomon(int dir) {
 }
 
 void drawbar(Monitor *m) {
+  int indn;
   int x, w, wdelta, tw = 0, stw = 0;
   // int tlpad;
   int boxs = drw->fonts->h / 9;
@@ -1159,7 +1160,7 @@ void drawbar(Monitor *m) {
   }
 
   for (c = m->clients; c; c = c->next) {
-    occ |= c->tags;
+    occ |= c->tags == 255 ? 0 : c->tags;
     if (c->isurgent)
       urg |= c->tags;
   }
@@ -1168,6 +1169,7 @@ void drawbar(Monitor *m) {
     /* Do not draw vacant tags */
     if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
       continue;
+    indn = 0;
     w = TEXTW(tags[i]);
     wdelta = selmon->alttag ? abs(TEXTW(tags[i]) - TEXTW(tagsalt[i])) / 2 : 0;
     drw_setscheme(
@@ -1178,12 +1180,21 @@ void drawbar(Monitor *m) {
         m->tagset[m->seltags] &
             1 << i) /* if there are conflicts, just move these lines directly
                        underneath both 'drw_setscheme' and 'drw_text' :) */
+
       drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset,
                w - (ulinepad * 2), ulinestroke, 1, 0);
     /* if (occ & 1 << i) */
     /* 	drw_rect(drw, x + boxs, boxs, boxw, boxw, */
     /* 		m == selmon && selmon->sel && selmon->sel->tags & 1 << i, */
     /* 		urg & 1 << i); */
+
+		for (c = m->clients; c; c = c->next) {
+			if (c->tags & (1 << i)) {
+				drw_rect(drw, x, 1 + (indn * 2), selmon->sel == c ? 6 : 1, 1, 1, urg & 1 << i);
+				indn++;
+			}
+		}
+
     x += w;
   }
   w = TEXTW(m->ltsymbol);

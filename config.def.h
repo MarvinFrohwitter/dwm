@@ -315,6 +315,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_m, spawn,               SHCMD("dmenumpd") },
 	{ MODKEY|ShiftMask,             XK_m, spawn,               SHCMD("dmenumpc") },
 	{ MODKEY|ShiftMask,             XK_p, spawn,               SHCMD("dmenupac") },
+	{ MODKEY|ShiftMask,             XK_g, spawn,               SHCMD("dmenuman") },
+	{ MODKEY|ShiftMask,             XK_v, spawn,               SHCMD("dmenuyt") },
 	{ MODKEY,                       XK_Super_L,                spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_r,                      spawn,          {.v = rofi } },
 	/* { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }, */
