@@ -39,6 +39,8 @@ static const double defaultopacity  = 1.0;
 static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
 					"JoyPixels:size=12:antialias=true:autohint=true" };
+// static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
+// 					"NotoColorEmoji:pixelsize=12:antialias=true:autohint=true" };
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
 
@@ -312,6 +314,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_z, spawn,               SHCMD("dmenumount") },
 	{ MODKEY,                       XK_v, spawn,               SHCMD("dmenuunicode") },
 	{ MODKEY,                       XK_g, spawn,               SHCMD("dmenuhandler") },
+	{ MODKEY|ShiftMask|ControlMask, XK_m, spawn,               SHCMD("dmenumovie") },
 	{ MODKEY,                       XK_m, spawn,               SHCMD("dmenumpd") },
 	{ MODKEY|ShiftMask,             XK_m, spawn,               SHCMD("dmenumpc") },
 	{ MODKEY|ShiftMask,             XK_p, spawn,               SHCMD("dmenupac") },
@@ -444,6 +447,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_c, togglescratch,             {.v = scratchpad_bc } },
 	{ MODKEY,                       XK_x, togglescratch,             {.v = scratchpad_htop } },
 	{ MODKEY|ShiftMask,             XK_x, togglescratch,             {.v = scratchpad } },
+	{ MODKEY|ControlMask,           XK_g,      gesture,        {0} },
 
 	SCRATCHTAGWIN_KEY (scratchtagwin1, 1)
 	SCRATCHTAGWIN_KEY (scratchtagwin2, 2)
@@ -474,6 +478,7 @@ static const Button buttons[] = {
 	/* { ClkWinTitle,          0,              Button2,        zoom,           {0} }, */
 	/* { ClkStatusText,        0,              Button2,        spawn,          {.v = st } }, */
 
+   	{ ClkClientWin,         MODKEY|ShiftMask,Button3,       gesture,        {0} },
 	{ ClkLtSymbol,          0,              Button3,        layoutmenu,     {0} },
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
@@ -487,4 +492,15 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+/* gestures
+ * u means up
+ * d means down
+ * l means left
+ * r means right
+ * ud means up and down
+ */
+static Gesture gestures[] = {
+	{ "u",  spawn, {.v = term } },
+	{ "d",  spawn, {.v = dmenucmd } },
+};
 
