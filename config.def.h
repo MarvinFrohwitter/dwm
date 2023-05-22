@@ -222,10 +222,15 @@ static const char *discord[]  = { "discord", NULL };
 static const char *clementine[]  = { "clementine", NULL };
 // static const char *clementinemute[]  = { "clementine", "-t", NULL };
 static const char *musicmute[]  = { "musicmute", NULL };
-static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
-static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
-static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
-static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
+static const char *musicvolumeup[]  = { "musicvolume", "-u", "5", NULL };
+static const char *musicvolumedown[]  = { "musicvolume", "-d", "5", NULL };
+static const char *musicnext[]  = { "musicswitch", "-n", NULL };
+static const char *musicprev[]  = { "musicswitch", "-p", NULL };
+
+// static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
+// static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
+// static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
+// static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
 static const char *ncmpcpp[]  = { TERMINAL, "-t", "ncmpcpp", "-e", "ncmpcpp", NULL };
 
 static const char *notetaker[]  = { TERMINAL, "-t", "notetaker", "-e", "notetaker", NULL };
@@ -346,10 +351,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = surf } },
 
 	{ MODKEY|ShiftMask,             XK_c,      spawn,          {.v = clementine } },
-	{ MODKEY,                       XK_plus,   spawn,          {.v = clementineup } },
-	{ MODKEY,                       XK_minus,  spawn,          {.v = clementinedown } },
-	{ MODKEY|ControlMask,           XK_plus,   spawn,          {.v = clementinenexttrack } },
-	{ MODKEY|ControlMask,           XK_minus,  spawn,          {.v = clementineprevioustrack} },
+	{ MODKEY,                       XK_plus,   spawn,          {.v = musicvolumeup } },
+	{ MODKEY,                       XK_minus,  spawn,          {.v = musicvolumedown } },
+	{ MODKEY|ControlMask,           XK_plus,   spawn,          {.v = musicnext } },
+	{ MODKEY|ControlMask,           XK_minus,  spawn,          {.v = musicprev } },
 	{ MODKEY|ControlMask,           XK_m,      spawn,          {.v = musicmute } },
 	{ MODKEY|ControlMask,           XK_n,      spawn,	   {.v = ncmpcpp } },
 
