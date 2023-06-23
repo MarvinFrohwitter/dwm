@@ -394,6 +394,7 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xinitvisual();
 static void zoom(const Arg *arg);
+static void swaptags(const Arg *arg);
 static void load_xresources(void);
 static void resource_load(XrmDatabase db, char *name, enum resource_type rtype,
                           void *dst);
@@ -4049,6 +4050,27 @@ void zoom(const Arg *arg) {
   }
   focus(c);
   arrange(c->mon);
+}
+
+void swaptags(const Arg *arg) {
+  unsigned int newtag = arg->ui & TAGMASK;
+  unsigned int curtag = selmon->tagset[selmon->seltags];
+
+  if (newtag == curtag || !curtag || (curtag & (curtag - 1)))
+    return;
+
+  for (Client *c = selmon->clients; c != NULL; c = c->next) {
+    if ((c->tags & newtag) || (c->tags & curtag))
+      c->tags ^= curtag ^ newtag;
+
+    if (!c->tags)
+      c->tags = newtag;
+  }
+
+  selmon->tagset[selmon->seltags] = newtag;
+
+  focus(NULL);
+  arrange(selmon);
 }
 
 void resource_load(XrmDatabase db, char *name, enum resource_type rtype,
