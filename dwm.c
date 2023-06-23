@@ -3306,9 +3306,12 @@ void unmanage(Client *c, int destroyed) {
   }
 
   if (c->switchtotag) {
-    Arg a = {.ui = c->switchtotag};
-    view(&a);
+    if (m->sel->next == 0) {
+      Arg a = {.ui = c->switchtotag};
+      view(&a);
+    }
   }
+
   Client *s = swallowingclient(c->win);
   if (s) {
     free(s->swallowing);
