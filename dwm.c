@@ -166,6 +166,7 @@ struct Client {
   int hasfloatbw;
   pid_t pid;
   char scratchkey;
+  int allowkill;
   Client *next;
   Client *snext;
   Client *swallowing;
@@ -224,6 +225,7 @@ typedef struct {
   const char *title;
   unsigned int tags;
   unsigned int switchtotag;
+  int allowkill;
   int isfloating;
   int canfocus;
   int isterminal;
@@ -360,6 +362,7 @@ static void tagmon(const Arg *arg);
 static void togglealttag(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void toggleallowkill(const Arg *arg);
 static void togglealwaysontop(const Arg *arg);
 static void togglermaster(const Arg *arg);
 static void togglescratch(const Arg *arg);
@@ -567,6 +570,7 @@ void applyrules(Client *c) {
   c->isfloating = 0;
   c->canfocus = 1;
   c->tags = 0;
+  c->allowkill = allowkill;
   c->scratchkey = 0;
   c->opacity = defaultopacity;
   c->wasruleopacity = 0;
@@ -584,6 +588,7 @@ void applyrules(Client *c) {
       c->isfloating = r->isfloating;
       c->canfocus = r->canfocus;
       c->tags |= r->tags;
+      c->allowkill = r->allowkill;
       c->scratchkey = r->scratchkey;
       if (r->opacity != c->opacity) {
         c->opacity = r->opacity;
@@ -1650,7 +1655,7 @@ void keypress(XEvent *e) {
 }
 
 void killclient(const Arg *arg) {
-  if (!selmon->sel)
+  if (!selmon->sel || !selmon->sel->allowkill)
     return;
   if (selmon->sel->crop)
     cropdelete(selmon->sel);
@@ -3124,6 +3129,12 @@ void togglebar(const Arg *arg) {
   }
   updatesystray(1);
   arrange(selmon);
+}
+
+void toggleallowkill(const Arg *arg) {
+  if (!selmon->sel)
+    return;
+  selmon->sel->allowkill = !selmon->sel->allowkill;
 }
 
 void togglealttag(const Arg *arg) {
