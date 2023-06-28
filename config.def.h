@@ -192,7 +192,7 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, \
-    { ALTMOD|ShiftMask,             KEY,      swaptags,       {.ui = 1 << TAG} }, \
+    { ALTMOD|ControlMask,             KEY,      swaptags,       {.ui = 1 << TAG} }, \
     { ALTMOD,                       KEY,      focusnthmon,    {.i  = TAG } }, \
     { ALTMOD|ShiftMask,             KEY,      tagnthmon,      {.i  = TAG } },
 
@@ -489,6 +489,17 @@ static const Button buttons[] = {
 	/* { ClkWinTitle,          0,              Button2,        zoom,           {0} }, */
 	/* { ClkStatusText,        0,              Button2,        spawn,          {.v = st } }, */
 
+	/* placemouse options, choose which feels more natural:
+	 *    0 - tiled position is relative to mouse cursor
+	 *    1 - tiled postiion is relative to window center
+	 *    2 - mouse pointer warps to window center
+	 *
+	 * The moveorplace uses movemouse or placemouse depending on the floating state
+	 * of the selected client. Set up individual keybindings for the two if you want
+	 * to control these separately (i.e. to retain the feature to move a tiled window
+	 * into a floating position).
+	 */
+	{ ClkClientWin,         ControlMask,     Button1,       moveorplace,    {.i = 1} },
    	{ ClkClientWin,         MODKEY|ShiftMask,Button3,       gesture,        {0} },
 	{ ClkLtSymbol,          0,              Button3,        layoutmenu,     {0} },
 	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
