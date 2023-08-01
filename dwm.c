@@ -3353,8 +3353,17 @@ void togglefloating(const Arg *arg) {
   }
   selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
   if (selmon->sel->isfloating) {
-    resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
-           selmon->sel->h, 0);
+
+    if (selmon->sel != 0) {
+      Client *c = selmon->sel;
+      c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
+      c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
+      resize(selmon->sel, c->x, c->y, c->w, c->h, 0);
+    } else {
+      resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
+             selmon->sel->h, 0);
+    }
+
   } else {
     selmon->sel->isalwaysontop = 0; /* disabled, turn this off too */
   }
