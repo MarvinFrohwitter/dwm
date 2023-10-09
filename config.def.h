@@ -41,8 +41,8 @@ static const double defaultopacity  = 1.0;
 static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
 					"JoyPixels:size=12:antialias=true:autohint=true" };
-// static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
-// 					"NotoColorEmoji:pixelsize=12:antialias=true:autohint=true" };
+/* static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
+					"NotoColorEmoji:pixelsize=12:antialias=true:autohint=true" }; */
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
 static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
 
@@ -69,7 +69,7 @@ static char *colors[][3] = {
        [SchemeSel]  = { selbordercolor,  selbgcolor,  selbordercolor  },
        [SchemeTray] = { selbordercolor, normbgcolor, normbordercolor },
        [SchemeTitle]  = { red, normbgcolor,  normbordercolor  },
-       // [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+       /* [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  }, */
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
 static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
@@ -83,12 +83,12 @@ static const unsigned int borderalpha = OPAQUE;
 
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	// [SchemeNorm] = { OPAQUE, baralpha, borderalpha },
-	// [SchemeSel]  = { OPAQUE, baralpha, borderalpha },
-	// [SchemeTray] = { OPAQUE, baralpha, borderalpha },
-	// [SchemeTray] = { noalpha, fullalpha, noalpha },
-	// [SchemeNorm] = { noalpha, fullalpha, noalpha },
-	// [SchemeSel]  = { noalpha, fullalpha, noalpha },
+	/* [SchemeNorm] = { OPAQUE, baralpha, borderalpha }, */
+	/* [SchemeSel]  = { OPAQUE, baralpha, borderalpha }, */
+	/* [SchemeTray] = { OPAQUE, baralpha, borderalpha }, */
+	/* [SchemeTray] = { noalpha, fullalpha, noalpha }, */
+	/* [SchemeNorm] = { noalpha, fullalpha, noalpha }, */
+	/* [SchemeSel]  = { noalpha, fullalpha, noalpha }, */
 	[SchemeTray] = { noalpha, baralpha, noalpha },
 	[SchemeNorm] = { noalpha, baralpha, noalpha },
 	[SchemeSel]  = { noalpha, baralpha, noalpha },
@@ -209,11 +209,12 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 
 /* commands */
  static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-// static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL };
+/* static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, "-l", "20", NULL }; */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-F", "-c", "-fn", dmenufont, "-l", "20", NULL };
 static const char *rofi[]  = { "rofi", "-show-icons", "-show", "drun", NULL };
 static const char *killscript[]  = { "killscript", NULL };
 static const char *xkillclient[]  = { "/bin/sh", "-c", "dmenupskill", NULL };
+static const char *lowpower[]  = { "/bin/sh", "-c", "lowpower", NULL };
 static const char *term[]  = { TERMINAL, NULL };
 static const char *termfloat[]  = { TERMINAL, "-n", "float", NULL };
 static const char *ranger[]  = { TERMINAL, "-t", "ranger" ,"-e","ranger", NULL };
@@ -235,10 +236,10 @@ static const char *musicvolumedown[]  = { "musicvolume", "-d", "5", NULL };
 static const char *musicnext[]  = { "musicswitch", "-n", NULL };
 static const char *musicprev[]  = { "musicswitch", "-p", NULL };
 
-// static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL };
-// static const char *clementinenexttrack[]  = { "clementine", "-f", NULL };
-// static const char *clementineup[]  = { "clementine", "--volume-up", NULL };
-// static const char *clementinedown[]  = { "clementine", "--volume-down", NULL };
+/* static const char *clementineprevioustrack[]  = { "clementine", "-r", NULL }; */
+/* static const char *clementinenexttrack[]  = { "clementine", "-f", NULL }; */
+/* static const char *clementineup[]  = { "clementine", "--volume-up", NULL }; */
+/* static const char *clementinedown[]  = { "clementine", "--volume-down", NULL }; */
 static const char *ncmpcpp[]  = { TERMINAL, "-t", "ncmpcpp", "-e", "ncmpcpp", NULL };
 
 static const char *notetaker[]  = { TERMINAL, "-t", "notetaker", "-e", "notetaker", NULL };
@@ -259,15 +260,15 @@ static const char *scratchtagwin8[] = { "8", TERMINAL, "-n", "scratchtagwin8",  
 static const char *scratchtagwin9[] = { "9", TERMINAL, "-n", "scratchtagwin9",  NULL };
 
 
-// static const char *scratchtagwin1[] = { "1", "tabbed", "-p", "s+1", "-n", "scratchtagwin1", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin2[] = { "2", "tabbed", "-p", "s+1", "-n", "scratchtagwin2", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin3[] = { "3", "tabbed", "-p", "s+1", "-n", "scratchtagwin3", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin4[] = { "4", "tabbed", "-p", "s+1", "-n", "scratchtagwin4", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin5[] = { "5", "tabbed", "-p", "s+1", "-n", "scratchtagwin5", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin6[] = { "6", "tabbed", "-p", "s+1", "-n", "scratchtagwin6", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin7[] = { "7", "tabbed", "-p", "s+1", "-n", "scratchtagwin7", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin8[] = { "8", "tabbed", "-p", "s+1", "-n", "scratchtagwin8", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
-// static const char *scratchtagwin9[] = { "9", "tabbed", "-p", "s+1", "-n", "scratchtagwin9", "-g", "1195x672", "-c", TERMINAL, "-w", NULL };
+/* static const char *scratchtagwin1[] = { "1", "tabbed", "-p", "s+1", "-n", "scratchtagwin1", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin2[] = { "2", "tabbed", "-p", "s+1", "-n", "scratchtagwin2", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin3[] = { "3", "tabbed", "-p", "s+1", "-n", "scratchtagwin3", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin4[] = { "4", "tabbed", "-p", "s+1", "-n", "scratchtagwin4", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin5[] = { "5", "tabbed", "-p", "s+1", "-n", "scratchtagwin5", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin6[] = { "6", "tabbed", "-p", "s+1", "-n", "scratchtagwin6", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin7[] = { "7", "tabbed", "-p", "s+1", "-n", "scratchtagwin7", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin8[] = { "8", "tabbed", "-p", "s+1", "-n", "scratchtagwin8", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
+/* static const char *scratchtagwin9[] = { "9", "tabbed", "-p", "s+1", "-n", "scratchtagwin9", "-g", "1195x672", "-c", TERMINAL, "-w", NULL }; */
 
 
 
@@ -286,12 +287,13 @@ static const char *layoutmenu_cmd = "layoutmenu.sh";
 static const Launcher launchers[] = {
        /* command       name to display */
 
-	{ xkillclient,         "X" },
+	{ xkillclient,   "X" },
 	{ brave,         "" },
 	{ term,          "" },
 	{ thunderbird,   "" },
 	{ firefox,       "" },
-	{ nemo,          "" }
+	{ nemo,          "" },
+	{ lowpower,      "M" }
 };
 
 /*
