@@ -423,6 +423,7 @@ static Bool defaultfakefullscreenmode;
 static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static Client *prevzoom = NULL;
+static Client *lastfocused = NULL;
 static const char broken[] = "broken";
 static const char dwmdir[] = "dwm";
 static const char localshare[] = ".local/share";
@@ -1396,7 +1397,11 @@ void focus(Client *c) {
     detachstack(c);
     attachstack(c);
     grabbuttons(c, 1);
+    /* set new focused border first to avoid flickering */
     XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+    /* lastfocused may be us if another window was unmanaged */
+    if (lastfocused && lastfocused != c)
+      XSetWindowBorder(dpy, lastfocused->win, scheme[SchemeNorm][ColBorder].pixel);
     setfocus(c);
     if (!c->wasruleopacity) {
       if (c->opacity != defaultopacity) {
@@ -3522,7 +3527,7 @@ void unfocus(Client *c, int setfocus) {
     return;
   grabbuttons(c, 0);
   opacity(c, inactiveopacity);
-  XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
+  lastfocused = c;
   if (setfocus) {
     XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
@@ -3575,6 +3580,8 @@ void unmanage(Client *c, int destroyed) {
   }
   if (scratchpad_last_showed == c)
     scratchpad_last_showed = NULL;
+  if (lastfocused == c)
+    lastfocused = NULL;
   free(c);
 
   if (!s) {
