@@ -306,6 +306,7 @@ static pid_t getstatusbarpid();
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void horizontal(Monitor *m);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void keyrelease(XEvent *e);
@@ -1401,7 +1402,8 @@ void focus(Client *c) {
     XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
     /* lastfocused may be us if another window was unmanaged */
     if (lastfocused && lastfocused != c)
-      XSetWindowBorder(dpy, lastfocused->win, scheme[SchemeNorm][ColBorder].pixel);
+      XSetWindowBorder(dpy, lastfocused->win,
+                       scheme[SchemeNorm][ColBorder].pixel);
     setfocus(c);
     if (!c->wasruleopacity) {
       if (c->opacity != defaultopacity) {
@@ -3236,6 +3238,22 @@ Monitor *systraytomon(Monitor *m) {
   if (systraypinningfailfirst && n < systraypinning)
     return mons;
   return t;
+}
+
+void horizontal(Monitor *m) {
+  Client *c;
+  unsigned int n, i;
+
+  /* Count windows */
+  for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+    ;
+
+  if (!n)
+    return;
+  else /* Split vertically */
+    for (i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+      resize(c, m->wx + i * m->mw / n, m->wy, m->mw / n - (2 * c->bw),
+             m->wh - (2 * c->bw), False);
 }
 
 void stairs(Monitor *m) {

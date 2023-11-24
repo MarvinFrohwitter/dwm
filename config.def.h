@@ -177,6 +177,7 @@ static const Layout layouts[] = {
 	{ "[S]",      stairs },
 	{ "|M|",      centeredmaster },
 	{ ">M>",      centeredfloatingmaster },
+	{ "III",      horizontal },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ NULL,       NULL },
 };
