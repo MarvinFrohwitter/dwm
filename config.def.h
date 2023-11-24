@@ -125,7 +125,7 @@ static const Rule rules[] = {
 	{ TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ "Pavucontrol", NULL,             NULL,           1<<4, 0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, NULL,             "notetaker",    0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-	{ TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      'l' },
+	{ TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'l' },
 	{ TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,            0   },
 	{ "Alacritty",   NULL,             NULL,           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
 	{ TERMINALCLASS, "float",          NULL,           0,    0,           1,         1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,      0   },
