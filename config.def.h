@@ -1,51 +1,52 @@
 /* See LICENSE file for copyright and license details. */
 /* appearance */
-#define TERMINAL "st"
+#define TERMINAL      "st"
 #define TERMINALCLASS "St"
-#define BROWSER "brave"
-#define FIRE "librewolf"
+#define BROWSER       "brave"
+#define FIRE          "librewolf"
 
 #include <X11/Xutil.h>
 #include <string.h>
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const int allowkill          = 1;        /* allow killing clients by default? */
-static const int viewontag          = 1;        /* Switch view on tag switch */
-static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
-static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
-static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
-static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
-static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
+static const unsigned int borderpx       = 2;        /* border pixel of windows */
+static const unsigned int snap           = 32;       /* snap pixel */
+static const int allowkill               = 1;        /* allow killing clients by default? */
+static const int viewontag               = 1;        /* Switch view on tag switch */
+static const unsigned int gappih         = 10;       /* horiz inner gap between windows */
+static const unsigned int gappiv         = 10;       /* vert inner gap between windows */
+static const unsigned int gappoh         = 10;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov         = 10;       /* vert outer gap between windows and screen edge */
+static       int smartgaps               = 0;        /* 1 means no outer gap when there is only one window */
+static const int swallowfloating         = 0;        /* 1 means swallow floating windows by default */
+static const int showbar                 = 1;        /* 0 means no bar */
+static const int topbar                  = 1;        /* 0 means bottom bar */
 
-static const int vertpad            = 10;       /* vertical padding of bar */
-static const int sidepad            = 10;       /* horizontal padding of bar */
+static const int vertpad                 = 10;       /* vertical padding of bar */
+static const int sidepad                 = 10;       /* horizontal padding of bar */
 
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 3;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
-static const int showsystray        = 1;        /* 0 means no systray */
+static const int showsystray             = 1;        /* 0 means no systray */
 
-static const int rmaster            = 0;        /* 1 means master-area is initially on the right */
-static const unsigned int stairpx   = 20;       /* depth of the stairs layout */
-static const int stairdirection     = 1;        /* 0: left-aligned, 1: right-aligned */
-static const int stairsamesize      = 1;        /* 1 means shrink all the staired windows to the same size */
+static const int rmaster                 = 0;        /* 1 means master-area is initially on the right */
+static const unsigned int stairpx        = 20;       /* depth of the stairs layout */
+static const int stairdirection          = 1;        /* 0: left-aligned, 1: right-aligned */
+static const int stairsamesize           = 1;        /* 1 means shrink all the staired windows to the same size */
 
-static const double activeopacity   = 1.0f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
-static const double inactiveopacity = 1.0f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
-static       Bool bUseOpacity       = True;     /* Starts with opacity on any unfocused windows */
-static const double defaultopacity  = 1.0;
+static const double activeopacity        = 1.0f;     /* Window opacity when it's focused (0 <= opacity <= 1) */
+static const double inactiveopacity      = 1.0f;   /* Window opacity when it's inactive (0 <= opacity <= 1) */
+static       Bool bUseOpacity            = True;     /* Starts with opacity on any unfocused windows */
+static const double defaultopacity       = 1.0;
 
-static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
-static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
-					"JoyPixels:size=12:antialias=true:autohint=true" };
+static const int user_bh                 = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
+static const char *fonts[] = {
+    "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
+    "JoyPixels:size=12:antialias=true:autohint=true"};
 /* static const char *fonts[]          = { "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
-					"NotoColorEmoji:pixelsize=12:antialias=true:autohint=true" }; */
+                                        "NotoColorEmoji:pixelsize=12:antialias=true:autohint=true" }; */
 /* static const char *fonts2[]          = { "NotoColorEmoji:pixelsize=15:antialias=true:autohint=true" }; */
-static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
-
+static const char dmenufont[] =
+    "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true";
 
 /* For using fonts with Xresources, uncomment the following an comment the old static font chars */
 
@@ -54,56 +55,57 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font:pixelsize=12:anti
 /* static const char *fonts[]          = { font }; */
 
 
-static char normbgcolor[]           = "#11121D";
-static char normbordercolor[]       = "#444444";
-static char normfgcolor[]           = "#a9b1d6";
-static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#005577";
-static char selbgcolor[]            = "#005577";
-static char magenta[]           = "#FF00FF";
-static char red[]           = "#ff0000";
-static char darkpurple[]           = "#660079";
+static char normbgcolor[]     = "#11121D";
+static char normbordercolor[] = "#444444";
+static char normfgcolor[]     = "#a9b1d6";
+static char selfgcolor[]      = "#eeeeee";
+static char selbordercolor[]  = "#005577";
+static char selbgcolor[]      = "#005577";
+static char magenta[]         = "#FF00FF";
+static char red[]             = "#ff0000";
+static char darkpurple[]      = "#660079";
 static char *colors[][3] = {
        /*               fg           bg           border   */
-       [SchemeNorm] = {selbordercolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selbordercolor,  selbgcolor,  selbordercolor  },
-       [SchemeTray] = { selbordercolor, normbgcolor, normbordercolor },
-       [SchemeTitle]  = { red, normbgcolor,  normbordercolor  },
-       /* [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  }, */
+       [SchemeNorm]  = { selbordercolor, normbgcolor, normbordercolor },
+       [SchemeSel]   = { selbordercolor, selbgcolor,  selbordercolor  },
+       [SchemeTray]  = { selbordercolor, normbgcolor, normbordercolor },
+       [SchemeTitle] = { red,            normbgcolor, normbordercolor },
+       // [SchemeSel]   = { selfgcolor,     selbgcolor,  selbordercolor  },
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
 static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
 
 
-static const unsigned int noalpha = 0xff;
-static const unsigned int fullalpha = 0x00;
-static const unsigned int baralpha = 0xdd;
+static const unsigned int noalpha     = 0xff;
+static const unsigned int fullalpha   = 0x00;
+static const unsigned int baralpha    = 0xdd;
 static const unsigned int borderalpha = OPAQUE;
 
 
 static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
-	/* [SchemeNorm] = { OPAQUE, baralpha, borderalpha }, */
-	/* [SchemeSel]  = { OPAQUE, baralpha, borderalpha }, */
-	/* [SchemeTray] = { OPAQUE, baralpha, borderalpha }, */
-	/* [SchemeTray] = { noalpha, fullalpha, noalpha }, */
-	/* [SchemeNorm] = { noalpha, fullalpha, noalpha }, */
-	/* [SchemeSel]  = { noalpha, fullalpha, noalpha }, */
-	[SchemeTray] = { noalpha, baralpha, noalpha },
-	[SchemeNorm] = { noalpha, baralpha, noalpha },
-	[SchemeSel]  = { noalpha, baralpha, noalpha },
-	[SchemeTitle]  = { noalpha, baralpha, noalpha },
+	// [SchemeNorm]  = { OPAQUE,  baralpha,  borderalpha },
+	// [SchemeSel]   = { OPAQUE,  baralpha,  borderalpha },
+	// [SchemeTray]  = { OPAQUE,  baralpha,  borderalpha },
+	// [SchemeTray]  = { noalpha, fullalpha, noalpha },
+	// [SchemeNorm]  = { noalpha, fullalpha, noalpha },
+	// [SchemeSel]   = { noalpha, fullalpha, noalpha },
+
+	[SchemeTray]  = { noalpha, baralpha,  noalpha },
+	[SchemeNorm]  = { noalpha, baralpha,  noalpha },
+	[SchemeSel]   = { noalpha, baralpha,  noalpha },
+	[SchemeTitle] = { noalpha, baralpha,  noalpha },
 };
 
 /* tagging */
-static const char *tags[] = { "", " ", " ", "󰙯", "", "", "", " ", "" };
-static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const int momentaryalttags = 0; /* 1 means alttags will show only when key is held down*/
+static const char *tags[]              = { "", " ", " ", "󰙯", "", "", "", " ", "" };
+static const char *tagsalt[]           = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const int momentaryalttags      = 0; /* 1 means alttags will show only when key is held down*/
 
-static const unsigned int ulinepad	= 5;	/* horizontal padding between the underline and tag */
-static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
-static const unsigned int ulinevoffset	= 0;	/* how far above the bottom of the bar the line should appear */
-static const int ulineall 		= 0;	/* 1 to show underline on all tags, 0 for just the active ones */
+static const unsigned int ulinepad     = 5;	/* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke  = 2;	/* thickness / height of the underline */
+static const unsigned int ulinevoffset = 0;	/* how far above the bottom of the bar the line should appear */
+static const int ulineall              = 0;	/* 1 to show underline on all tags, 0 for just the active ones */
 
 
 #include "scratchtagwins.c"
@@ -150,36 +152,36 @@ static const Rule rules[] = {
 
 
 /* layout(s) */
-static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const float mfact        = 0.50; /* factor of master area size [0.05..0.95] */
+static const int nmaster        = 1;    /* number of clients in master area */
+static const int resizehints    = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
-static Bool isfakefullscreen  = False;     /* enables fakefullscreen */
+static Bool isfakefullscreen    = False;     /* enables fakefullscreen */
 
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
 #include "helper.c"
 
 static const Layout layouts[] = {
-	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "[M]",      monocle },
-	{ "[@]",      spiral },
-	{ "[\\]",     dwindle },
-	{ "H[]",      deck },
-	{ "TTT",      bstack },
-	{ "===",      bstackhoriz },
-	{ "HHH",      grid },
-	{ "###",      nrowgrid },
-	{ "---",      horizgrid },
-	{ ":::",      gaplessgrid },
-	{ "|||",      col },
-	{ "[S]",      stairs },
-	{ "|M|",      centeredmaster },
-	{ ">M>",      centeredfloatingmaster },
-	{ "III",      horizontal },
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ NULL,       NULL },
+    /* symbol     arrange function */
+    {"[]=",  tile}, /* first entry is default */
+    {"[M]",  monocle},
+    {"[@]",  spiral},
+    {"[\\]", dwindle},
+    {"H[]",  deck},
+    {"TTT",  bstack},
+    {"===",  bstackhoriz},
+    {"HHH",  grid},
+    {"###",  nrowgrid},
+    {"---",  horizgrid},
+    {":::",  gaplessgrid},
+    {"|||",  col},
+    {"[S]",  stairs},
+    {"|M|",  centeredmaster},
+    {">M>",  centeredfloatingmaster},
+    {"III",  horizontal},
+    {"><>",  NULL}, /* no layout function means floating behavior */
+    {NULL,   NULL},
 };
 
 /* custom symbols for nr. of clients in monocle layout */
@@ -191,13 +193,13 @@ static const char *monocles[] = { "[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]
 #define MODKEY Mod1Mask
 #define ALTMOD Mod4Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, \
-    { ALTMOD|ControlMask,             KEY,      swaptags,       {.ui = 1 << TAG} }, \
-    { ALTMOD,                       KEY,      focusnthmon,    {.i  = TAG } }, \
-    { ALTMOD|ShiftMask,             KEY,      tagnthmon,      {.i  = TAG } },
+    { MODKEY,                       KEY, view,        {.ui = 1 << TAG} }, \
+    { MODKEY|ControlMask,           KEY, toggleview,  {.ui = 1 << TAG} }, \
+    { MODKEY|ShiftMask,             KEY, tag,         {.ui = 1 << TAG} }, \
+    { MODKEY|ControlMask|ShiftMask, KEY, toggletag,   {.ui = 1 << TAG} }, \
+    { ALTMOD|ControlMask,           KEY, swaptags,    {.ui = 1 << TAG} }, \
+    { ALTMOD,                       KEY, focusnthmon, {.i  = TAG } },     \
+    { ALTMOD|ShiftMask,             KEY, tagnthmon,   {.i  = TAG } },
 
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
@@ -277,24 +279,24 @@ static const char *scratchtagwin9[]  = { "9", TERMINAL, "-n", "scratchtagwin9", 
 
 /* You obviously need the X11 development packages installed, X11proto in particular */
 
-/* static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%", NULL }; */
-/* static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%", NULL }; */
-/* static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL }; */
-/* static const char *mutemicvol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL }; */
-static const char *brightnessup[] = { "light", "-A", "10", NULL };
-static const char *brightnessdown[] = { "light", "-U", "10", NULL };
-static const char *layoutmenu_cmd = "layoutmenu.sh";
+// static const char *upvol[]          = { "/usr/bin/pactl", "set-sink-volume", "0",  "+5%",    NULL };
+// static const char *downvol[]        = { "/usr/bin/pactl", "set-sink-volume", "0",  "-5%",    NULL };
+// static const char *mutevol[]        = { "/usr/bin/pactl", "set-sink-mute",   "0",  "toggle", NULL };
+// static const char *mutemicvol[]     = { "/usr/bin/pactl", "set-sink-mute",   "0",  "toggle", NULL };
+static const char *brightnessup[]   = { "light",          "-A",              "10", NULL };
+static const char *brightnessdown[] = { "light",          "-U",              "10", NULL };
+static const char *layoutmenu_cmd   = "layoutmenu.sh";
 
 static const Launcher launchers[] = {
        /* command       name to display */
 
-	{ xkillclient,   "X" },
-	{ brave,         "" },
-	{ term,          "" },
-	{ thunderbird,   "" },
-	{ firefox,       "" },
-	{ nemo,          "" },
-	{ lowpower,      "M" }
+    { xkillclient,   "X" },
+    { brave,         "" },
+    { term,          "" },
+    { thunderbird,   "" },
+    { firefox,       "" },
+    { nemo,          "" },
+    { lowpower,      "M" }
 };
 
 /*
