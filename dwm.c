@@ -1290,10 +1290,10 @@ void drawbar(Monitor *m) {
 
       drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset,
                w - (ulinepad * 2), ulinestroke, 1, 0);
-    /* if (occ & 1 << i) */
-    /* 	drw_rect(drw, x + boxs, boxs, boxw, boxw, */
-    /* 		m == selmon && selmon->sel && selmon->sel->tags & 1 << i, */
-    /* 		urg & 1 << i); */
+    // if (occ & 1 << i)
+    //   drw_rect(drw, x + boxs, boxs, boxw, boxw,
+    //            m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+    //            urg & 1 << i);
 
     for (c = m->clients; c; c = c->next) {
       if (c->tags & (1 << i)) {
