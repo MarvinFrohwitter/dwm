@@ -3181,6 +3181,7 @@ void sigstatusbar(const Arg *arg) {
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
 }
 
+
 void sighup(int unused) {
   Arg a = {.i = 1};
   quit(&a);
@@ -3192,15 +3193,25 @@ void sigterm(int unused) {
 }
 
 void spawn(const Arg *arg) {
+  struct sigaction sa;
+
   if (arg->v == dmenucmd)
     dmenumon[0] = '0' + selmon->num;
   if (fork() == 0) {
     if (dpy) {
       close(ConnectionNumber(dpy));
     }
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_DFL;
+    sigaction(SIGCHLD, &sa, NULL);
+
     pid_t pid = setsid();
     _Bool pid_found = 0;
     pid_found = scratchpad_show_client_by_pid(pid);
+
+
     if (pid_found) {
       die("dwm: process '%s' allready exists:", ((char **)arg->v)[0]);
     } else {
