@@ -242,6 +242,11 @@ typedef struct {
   const char scratchkey;
 } Rule;
 
+typedef struct {
+  const char **cmd;
+  unsigned int tags;
+} Autostarttag;
+
 typedef struct Systray Systray;
 struct Systray {
   Window win;
@@ -366,6 +371,8 @@ static void sighup(int unused);
 static void sigterm(int unused);
 static void sigstatusbar(const Arg *arg);
 static void spawn(const Arg *arg);
+static void autostarttagsspawner(void);
+static void applyautostarttags(Client *c);
 static void spawnscratch(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
 static void stairs(Monitor *m);
@@ -470,6 +477,9 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static unsigned int autostarttags = 0;
+static int autostartcomplete = 0;
+static int autostartcmdscomplete = 0;
 static Systray *systray = NULL;
 static unsigned long systrayorientation = _NET_SYSTEM_TRAY_ORIENTATION_HORZ;
 /* scratchpad */
@@ -1824,7 +1834,11 @@ void manage(Window w, XWindowAttributes *wa) {
     c->tags = t->tags;
   } else {
     c->mon = selmon;
-    applyrules(c);
+    if (autostarttags) {
+      applyautostarttags(c);
+    } else {
+      applyrules(c);
+    }
     term = termforwin(c);
   }
   opacity(c, c->opacity);
@@ -2691,9 +2705,12 @@ void run(void) {
   XEvent ev;
   /* main event loop */
   XSync(dpy, False);
-  while (running && !XNextEvent(dpy, &ev))
+  while (running && !XNextEvent(dpy, &ev)) {
+    if (!(autostartcomplete || autostarttags))
+      autostarttagsspawner();
     if (handler[ev.type])
       handler[ev.type](&ev); /* call handler */
+  }
 }
 
 void col(Monitor *m) {
@@ -3380,6 +3397,29 @@ void tag(const Arg *arg) {
       view(arg);
     }
   }
+}
+
+void autostarttagsspawner(void) {
+  int i;
+  Arg arg;
+
+  for (i = autostartcmdscomplete; i < LENGTH(autostarttaglist); i++) {
+    autostartcmdscomplete += 1;
+    autostarttags = autostarttaglist[i].tags;
+    arg.v = autostarttaglist[i].cmd;
+    spawn(&arg);
+    return;
+  }
+  autostartcomplete = 1;
+  return;
+}
+
+void applyautostarttags(Client *c) {
+  if (!c)
+    return;
+  c->tags = autostarttags;
+  autostarttags = 0;
+  return;
 }
 
 void tagmon(const Arg *arg) {

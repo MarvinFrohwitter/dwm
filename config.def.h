@@ -299,6 +299,14 @@ static const Launcher launchers[] = {
     { lowpower,      "M" }
 };
 
+// This skips the rules
+// It also is not correctly initialized because it has no border and you cant
+// kill it.
+Autostarttag autostarttaglist[] = {
+    // {.cmd = firefox,                .tags = 1 << 8},
+    {.cmd = NULL,                    .tags = 0},
+};
+
 /*
  * Xresources preferences to load at startup
  */
@@ -542,4 +550,3 @@ static Gesture gestures[] = {
         { "u",  spawn, {.v = term } },
         { "d",  spawn, {.v = dmenucmd } },
 };
-
