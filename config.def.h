@@ -7,7 +7,7 @@
 
 #include <X11/Xutil.h>
 #include <string.h>
-static const unsigned int borderpx       = 2;        /* border pixel of windows */
+static const unsigned int borderpx       = 5;        /* border pixel of windows */
 static const unsigned int snap           = 32;       /* snap pixel */
 static const int allowkill               = 1;        /* allow killing clients by default? */
 static const int viewontag               = 1;        /* Switch view on tag switch */
@@ -115,38 +115,38 @@ static const Rule rules[] = {
          *        WM_CLASS(STRING) = instance, class
          *        WM_NAME(STRING) = title
          */
-        /* class        instance          title       tags mask  switchtotag      allowkill  isfloating confocus isterminal noswallow opacity monitor float x,y,w,h floatborderpx scratch key*/
-        { "thunderbird", NULL,             NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { "discord",     NULL,             NULL,           1<<3, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { "Clementine",  NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { "Audacity",    NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { "Thunar",      NULL,             NULL,           1<<5, 1,           1,         1,         1,       0,         0, defaultopacity, -1,     0,0,1000,700, borderpx,      0   },
-        { "TIPP10",      NULL,             NULL,           1<<6, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { FIRE,          NULL,             NULL,           1<<7, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { "Pavucontrol", NULL,             NULL,           1<<4, 0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, NULL,             "notetaker",    0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'l' },
-        { TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,            0   },
-        { "Alacritty",   NULL,             NULL,           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, "float",          NULL,           0,    0,           1,         1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,      0   },
-        { TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,           1,         0,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,      0   },
-        { "gimp",        NULL,             NULL,           0,    0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { NULL,          NULL,             "Event Tester", 0,    0,           1,         0,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      0   }, /* xev */
-        { "panel",       NULL,             NULL,           0,    0,           1,         0,         0,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      0   },
-        { NULL,          NULL,             "htop",         0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'h' },
-        { NULL,          NULL,             "bc",           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      'b' },
-        { NULL,          "scratchpad",     NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      's' },
-        { NULL,          "scratchtagwin1", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '1' },
-        { NULL,          "scratchtagwin2", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '2' },
-        { NULL,          "scratchtagwin3", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '3' },
-        { NULL,          "scratchtagwin4", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '4' },
-        { NULL,          "scratchtagwin5", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '5' },
-        { NULL,          "scratchtagwin6", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '6' },
-        { NULL,          "scratchtagwin7", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '7' },
-        { NULL,          "scratchtagwin8", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '8' },
-        { NULL,          "scratchtagwin9", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,      '9' },
+        /* class        instance          title       tags mask  switchtotag  allowkill  isfloating confocus isterminal noswallow opacity monitor float x,y,w,h floatborderpx borderwidth scratch key*/
+        { "thunderbird", NULL,             NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "discord",     NULL,             NULL,           1<<3, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "Clementine",  NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "Audacity",    NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "Thunar",      NULL,             NULL,           1<<5, 1,           1,         1,         1,       0,         0, defaultopacity, -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "TIPP10",      NULL,             NULL,           1<<6, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { FIRE,          NULL,             NULL,           1<<7, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "Pavucontrol", NULL,             NULL,           1<<4, 0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 8,                0,          0   },
+        { TERMINALCLASS, NULL,             "notetaker",    0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'l' },
+        { TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,              -1,          0   },
+        { "Alacritty",   NULL,             NULL,           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, "float",          NULL,           0,    0,           1,         1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,           1,         0,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { "gimp",        NULL,             NULL,           0,    0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { NULL,          NULL,             "Event Tester", 0,    0,           1,         0,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   }, /* xev */
+        { "panel",       NULL,             NULL,           0,    0,           1,         0,         0,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { NULL,          NULL,             "htop",         0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'h' },
+        { NULL,          NULL,             "bc",           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'b' },
+        { NULL,          "scratchpad",     NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          's' },
+        { NULL,          "scratchtagwin1", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '1' },
+        { NULL,          "scratchtagwin2", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '2' },
+        { NULL,          "scratchtagwin3", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '3' },
+        { NULL,          "scratchtagwin4", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '4' },
+        { NULL,          "scratchtagwin5", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '5' },
+        { NULL,          "scratchtagwin6", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '6' },
+        { NULL,          "scratchtagwin7", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '7' },
+        { NULL,          "scratchtagwin8", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '8' },
+        { NULL,          "scratchtagwin9", NULL,           0,    0,           1,         1,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          '9' },
 };
 
 

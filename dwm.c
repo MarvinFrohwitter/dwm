@@ -238,6 +238,7 @@ typedef struct {
   int monitor;
   int floatx, floaty, floatw, floath;
   int floatborderpx;
+  int bw;
   const char scratchkey;
 } Rule;
 
@@ -584,6 +585,7 @@ void applyrules(Client *c) {
   c->canfocus = 1;
   c->tags = 0;
   c->allowkill = allowkill;
+  c->bw = borderpx;
   c->scratchkey = 0;
   c->opacity = defaultopacity;
   c->wasruleopacity = 0;
@@ -602,6 +604,8 @@ void applyrules(Client *c) {
       c->canfocus = r->canfocus;
       c->tags |= r->tags;
       c->allowkill = r->allowkill;
+      if (r->bw != -1)
+        c->bw = r->bw;
       c->scratchkey = r->scratchkey;
       if (r->opacity != c->opacity) {
         c->opacity = r->opacity;
@@ -1806,11 +1810,13 @@ void manage(Window w, XWindowAttributes *wa) {
     c->y = c->mon->wy + c->mon->wh - HEIGHT(c);
   c->x = MAX(c->x, c->mon->wx);
   c->y = MAX(c->y, c->mon->wy);
-  if (c->hasfloatbw) {
+  if (c->hasfloatbw && c->isfloating) {
     c->bw = c->floatborderpx;
-  } else {
-    c->bw = borderpx;
   }
+  // Removed for the border rule
+  //   else {
+  //   c->bw = borderpx;
+  // }
 
   wc.border_width = c->bw;
   XConfigureWindow(dpy, w, CWBorderWidth, &wc);
