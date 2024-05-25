@@ -8,6 +8,8 @@
 #include <X11/Xutil.h>
 #include <string.h>
 static const unsigned int borderpx       = 5;        /* border pixel of windows */
+static const unsigned int tabModKey      = 0x40;
+static const unsigned int tabCycleKey    = 0x17;
 static const unsigned int snap           = 32;       /* snap pixel */
 static const int allowkill               = 1;        /* allow killing clients by default? */
 static const int viewontag               = 1;        /* Switch view on tag switch */
@@ -489,6 +491,7 @@ static const Key keys[] = {
         SCRATCHTAGWIN_KEY             (scratchtagwin7,           7)
         SCRATCHTAGWIN_KEY             (scratchtagwin8,           8)
         SCRATCHTAGWIN_KEY             (scratchtagwin9,           9)
+
         { Mod4Mask|Mod1Mask|ShiftMask,  XK_0,                     makescratchtagwin,      {.i = 0} },
         { Mod4Mask|Mod1Mask|ShiftMask,  XK_s,                     makescratchtagwin,      {.i = 's'} },
 
@@ -502,6 +505,8 @@ static const Key keys[] = {
         { MODKEY|ShiftMask|ControlMask, XK_q,                     killclient,             {.ui = 2} },  // killall except clients that are marked unkillable
         { Mod1Mask|ShiftMask|ControlMask, XK_q,                   killclient,             {.ui = 3} },  // killall
 
+     	{ MODKEY|ShiftMask,             XK_o,                     winview,                {0} },
+	    { Mod1Mask,                     XK_Tab,                   alttab,                 {0} },
         { MODKEY|ShiftMask,             XK_e,                     reloadafterquit,        {.v = killscript } },
         { MODKEY,                       XK_e,                     reloadafterquitwithsig, {.v = killscript } },
 };
