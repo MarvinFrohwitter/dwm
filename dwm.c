@@ -298,6 +298,7 @@ static void focusin(XEvent *e);
 static void focusmaster(const Arg *arg);
 static void focusmon(const Arg *arg);
 static void focusnthmon(const Arg *arg);
+static void focusvisibletagstacks(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
@@ -1492,6 +1493,29 @@ void focusnthmon(const Arg *arg) {
   focus(NULL);
 }
 
+/* loops through all the open windows on the visible tags of all the monitors */
+/* the Arguments sets the direction for the monitors to loop through */
+void focusvisibletagstacks(const Arg *arg) {
+  Client *c = NULL;
+  Monitor *beginm = selmon;
+  if (selmon->sel) {
+    if (selmon->sel->isfullscreen && lockfullscreen)
+      return;
+    for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next)
+      ;
+  }
+  if (!c) {
+    do {
+      focusmon(arg);
+
+    } while (!selmon->clients &&
+             selmon != beginm); // focus next monitor with clients
+    for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next)
+      ;
+  }
+  focus(c);
+}
+
 void focusstack(const Arg *arg) {
   Client *c = NULL, *i;
 
@@ -1719,9 +1743,9 @@ void killclient(const Arg *arg) {
     if (selmon->sel->crop)
       cropdelete(selmon->sel);
 
-    if (selmon->sel->scratchkey == 'l') {
-      pskiller(selmon->sel->pid);
-    }
+    // if (selmon->sel->scratchkey == 'l') {
+    //   pskiller(selmon->sel->pid);
+    // }
 
     killthis(selmon->sel->win);
     return;
@@ -1738,9 +1762,9 @@ void killclient(const Arg *arg) {
     if (c->crop)
       cropdelete(c);
 
-    if (c->scratchkey == 'l') {
-      pskiller(c->pid);
-    }
+    // if (c->scratchkey == 'l') {
+    //   pskiller(c->pid);
+    // }
 
     killthis(c->win);
   }

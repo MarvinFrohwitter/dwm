@@ -8,6 +8,8 @@
 // static void movetotag8forrule(const Arg *arg);
 // static void movetotag9forrule(const Arg *arg);
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 static void toggleactualfullscr(const Arg *arg);
 static void reloadafterquit(const Arg *arg);
@@ -16,12 +18,11 @@ static void pskiller(pid_t pid);
 
 void pskiller(pid_t pid) {
   char *s_pid;
-  int err = sprintf(s_pid, "%d\n", pid);
+  int err = sprintf(s_pid, "kill -9 %d\n", pid);
   if (err < 0) {
     return;
   }
-  Arg a = {.v = (const char *[]){"kill", "-9", s_pid, NULL}};
-  spawn(&a);
+  system(s_pid);
 }
 
 void reloadafterquit(const Arg *arg) {

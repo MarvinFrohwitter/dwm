@@ -1,0 +1,56 @@
+diff -up dwm-a/config.def.h dwm-b/config.def.h
+--- dwm-a/config.def.h	2024-03-23 15:14:00.173450954 +0100
++++ dwm-b/config.def.h	2024-03-23 15:35:38.200217214 +0100
+@@ -65,7 +65,7 @@ static const Key keys[] = {
+ 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+ 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+ 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
++	{ MODKEY,             XK_j,      focusvisibletagstacks,{.i = +1 } },
+ 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+ 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
+ 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+Only in dwm-b: config.h
+Only in dwm-b: drw.o
+Only in dwm-b: dwm
+diff -up dwm-a/dwm.c dwm-b/dwm.c
+--- dwm-a/dwm.c	2024-03-23 15:14:00.173450954 +0100
++++ dwm-b/dwm.c	2024-03-23 16:22:58.729308679 +0100
+@@ -168,6 +168,7 @@ static void expose(XEvent *e);
+ static void focus(Client *c);
+ static void focusin(XEvent *e);
+ static void focusmon(const Arg *arg);
++static void focusvisibletagstacks(const Arg *arg);
+ static void focusstack(const Arg *arg);
+ static Atom getatomprop(Client *c, Atom prop);
+ static int getrootptr(int *x, int *y);
+@@ -835,6 +836,27 @@ focusmon(const Arg *arg)
+ 	focus(NULL);
+ }
+ 
++/* loops through all the open windows on the visible tags of all the monitors */
++/* the Arguments sets the direction for the monitors to loop through */
++void
++focusvisibletagstacks(const Arg *arg)
++{
++	Client *c = NULL;
++	Monitor *beginm = selmon;
++	if (selmon->sel) {
++		if (selmon->sel->isfullscreen && lockfullscreen) return;
++		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
++	}
++	if (!c) {
++	do {		 
++		focusmon(arg);
++	}
++	while(!selmon->clients && selmon != beginm); //focus next monitor with clients
++	for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
++	}
++	focus(c);
++}
++
+ void
+ focusstack(const Arg *arg)
+ {
+Only in dwm-b: dwm.o
+Only in dwm-b: util.o
