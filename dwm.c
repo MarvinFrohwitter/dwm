@@ -372,6 +372,7 @@ static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tagnthmon(const Arg *arg);
 /* static void tile(Monitor *m); */
+static void toggleall(const Arg *arg);
 static void togglealttag(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
@@ -3405,6 +3406,47 @@ void togglebar(const Arg *arg) {
   }
   updatesystray(1);
   arrange(selmon);
+}
+
+void toggleall(const Arg *arg) {
+  int i;
+  unsigned int tmptag;
+
+  Monitor *m;
+  for (m = mons; m; m = m->next) {
+
+    if ((arg->ui & TAGMASK) == m->tagset[m->seltags])
+      return;
+    m->seltags ^= 1; /* toggle sel tagset */
+    if (arg->ui & TAGMASK) {
+      m->tagset[m->seltags] = arg->ui & TAGMASK;
+      m->pertag->prevtag = m->pertag->curtag;
+
+      if (arg->ui == ~0)
+        m->pertag->curtag = 0;
+      else {
+        for (i = 0; !(arg->ui & 1 << i); i++)
+          ;
+        m->pertag->curtag = i + 1;
+      }
+    } else {
+      tmptag = m->pertag->prevtag;
+      m->pertag->prevtag = m->pertag->curtag;
+      m->pertag->curtag = tmptag;
+    }
+
+    m->nmaster = m->pertag->nmasters[m->pertag->curtag];
+    m->mfact = m->pertag->mfacts[m->pertag->curtag];
+    m->sellt = m->pertag->sellts[m->pertag->curtag];
+    m->lt[m->sellt] = m->pertag->ltidxs[m->pertag->curtag][m->sellt];
+    m->lt[m->sellt ^ 1] = m->pertag->ltidxs[m->pertag->curtag][m->sellt ^ 1];
+
+    if (m->showbar != m->pertag->showbars[m->pertag->curtag])
+      togglebar(NULL);
+
+    focus(NULL);
+    arrange(m);
+  }
 }
 
 void toggleallowkill(const Arg *arg) {

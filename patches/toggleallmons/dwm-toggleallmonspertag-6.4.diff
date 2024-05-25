@@ -1,0 +1,74 @@
+diff --git a/config.def.h b/config.def.h
+index 061ad66..67afc6d 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -71,6 +71,7 @@ static const Key keys[] = {
+ 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
+ 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+ 	{ MODKEY,                       XK_Return, zoom,           {0} },
++	{ MODKEY|ShiftMask,             XK_Tab,    toggleall,      {0} },
+ 	{ MODKEY,                       XK_Tab,    view,           {0} },
+ 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+ 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+diff --git a/dwm.c b/dwm.c
+index e5efb6a..62f711b 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -210,6 +210,7 @@ static void spawn(const Arg *arg);
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
+ static void tile(Monitor *m);
++static void toggleall(const Arg *arg);
+ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+ static void toggletag(const Arg *arg);
+@@ -1694,6 +1695,49 @@ tile(Monitor *m)
+ 		}
+ }
+ 
++
++void
++toggleall(const Arg *arg)
++{
++	int i;
++	unsigned int tmptag;
++
++	Monitor* m;
++	for(m = mons; m; m = m->next){
++
++		if ((arg->ui & TAGMASK) == m->tagset[m->seltags])
++			return;
++		m->seltags ^= 1; /* toggle sel tagset */
++		if (arg->ui & TAGMASK) {
++			m->tagset[m->seltags] = arg->ui & TAGMASK;
++			m->pertag->prevtag = m->pertag->curtag;
++
++			if (arg->ui == ~0)
++				m->pertag->curtag = 0;
++			else {
++				for (i = 0; !(arg->ui & 1 << i); i++) ;
++				m->pertag->curtag = i + 1;
++			}
++		} else {
++			tmptag = m->pertag->prevtag;
++			m->pertag->prevtag = m->pertag->curtag;
++			m->pertag->curtag = tmptag;
++		}
++
++		m->nmaster = m->pertag->nmasters[m->pertag->curtag];
++		m->mfact = m->pertag->mfacts[m->pertag->curtag];
++		m->sellt = m->pertag->sellts[m->pertag->curtag];
++		m->lt[m->sellt] = m->pertag->ltidxs[m->pertag->curtag][m->sellt];
++		m->lt[m->sellt^1] = m->pertag->ltidxs[m->pertag->curtag][m->sellt^1];
++
++		if (m->showbar != m->pertag->showbars[m->pertag->curtag])
++			togglebar(NULL);
++
++		focus(NULL);
++		arrange(m);
++	}
++}
++
+ void
+ togglebar(const Arg *arg)
+ {

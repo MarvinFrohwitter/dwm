@@ -405,6 +405,7 @@ static const Key keys[] = {
         { ControlMask,                  XK_0,                     togglegaps,             {0} },
         { ControlMask|ShiftMask,        XK_0,                     defaultgaps,            {0} },
         { MODKEY,                       XK_Tab,                   view,                   {0} },
+    	{ MODKEY|ShiftMask,             XK_Tab,                   toggleall,              {0} },
 
         { MODKEY,                       XK_Down,                  moveresize,             {.v = "0x 25y 0w 0h" } },
         { MODKEY,                       XK_Up,                    moveresize,             {.v = "0x -25y 0w 0h" } },
