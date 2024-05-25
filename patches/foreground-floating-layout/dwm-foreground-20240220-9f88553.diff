@@ -1,0 +1,180 @@
+From 507895940574e77386d53f81df541e3903bf1ba3 Mon Sep 17 00:00:00 2001
+From: espro1 <ericspero@icloud.com>
+Date: Tue, 20 Feb 2024 16:11:05 -0500
+Subject: [PATCH] Essentially a layout for a special class of floating windows.
+ When a window is foregrounded, it is floated, resized, and moved to a
+ predictable location
+
+---
+ config.def.h |  3 ++
+ dwm.c        | 82 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 84 insertions(+), 1 deletion(-)
+
+diff --git a/config.def.h b/config.def.h
+index 9efa774..718e7c3 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -37,6 +37,8 @@ static const int nmaster     = 1;    /* number of clients in master area */
+ static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+
++static const float fgw = .6,fgh = .6;
++
+ static const Layout layouts[] = {
+ 	/* symbol     arrange function */
+ 	{ "[]=",      tile },    /* first entry is default */
+@@ -78,6 +80,7 @@ static const Key keys[] = {
+ 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+ 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+ 	{ MODKEY,                       XK_space,  setlayout,      {0} },
++	{ MODKEY|Mod4Mask,              XK_space,  toggleforegrounded, {0} },
+ 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+ 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+ 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+diff --git a/dwm.c b/dwm.c
+index f1d86b2..12b037d 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -92,9 +92,10 @@ struct Client {
+ 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
+ 	int bw, oldbw;
+ 	unsigned int tags;
+-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
++	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, isforegrounded;
+ 	Client *next;
+ 	Client *snext;
++	Client *tnext;
+ 	Monitor *mon;
+ 	Window win;
+ };
+@@ -127,6 +128,7 @@ struct Monitor {
+ 	Client *clients;
+ 	Client *sel;
+ 	Client *stack;
++	Client *foregrounded;
+ 	Monitor *next;
+ 	Window barwin;
+ 	const Layout *lt[2];
+@@ -210,6 +212,7 @@ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
+ static void tile(Monitor *m);
+ static void togglebar(const Arg *arg);
++static void toggleforegrounded(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+ static void toggletag(const Arg *arg);
+ static void toggleview(const Arg *arg);
+@@ -415,6 +418,21 @@ attachstack(Client *c)
+ 	c->mon->stack = c;
+ }
+
++void
++attachforegrounded (Client *c)
++{
++	c->tnext = c->mon->foregrounded;
++	c->mon->foregrounded = c;
++}
++
++void
++detachforegrounded (Client *c)
++{
++	Client **tc;
++	for (tc = &c->mon->foregrounded; *tc && *tc != c; tc = &(*tc)->tnext);
++	*tc = c->tnext;
++}
++
+ void
+ buttonpress(XEvent *e)
+ {
+@@ -1209,6 +1227,39 @@ nexttiled(Client *c)
+ 	return c;
+ }
+
++Client *
++nextforegrounded(Client *c)
++{
++	for (; c && (!c->isforegrounded || !ISVISIBLE(c)); c = c->tnext);
++	return c;
++}
++
++void
++arrangeforegrounded (Monitor *m)
++{
++	unsigned int n,i,x,y,w,h;
++	Client *c;
++
++	for (n = 0, c = nextforegrounded(m->foregrounded); c; c = nextforegrounded(c->tnext), n++);
++	if (n == 0)
++		return;
++
++	for (i = 0, c = nextforegrounded(m->foregrounded); c; c = nextforegrounded(c->tnext), i++){
++		if (n == 1) {
++			x = m->mx + (m->mw - m->mw * fgw) / 2;
++			y = m->my + (m->mh - m->mh * fgh) / 2;
++			w = (m->mw * fgw) - (2 * (m->foregrounded->bw));
++			h = (m->mh * fgh) - (2 * (m->foregrounded->bw));
++		} else {
++			x = (n - 1 - i) * (m->mw / n);
++			y = m->my + (m->mh - m->mh * fgh) / 2;
++			w = (m->mw * (1 / (float)n)) - (2 * (m->foregrounded->bw));
++			h = (m->mh * fgh) - (2 * (m->foregrounded->bw));
++		}
++		resize(c,x,y,w,h,0);
++	}
++}
++
+ void
+ pop(Client *c)
+ {
+@@ -1721,6 +1772,24 @@ togglebar(const Arg *arg)
+ 	arrange(selmon);
+ }
+
++void
++toggleforegrounded(const Arg *arg)
++{
++	if (!selmon->sel)
++		return;
++	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
++		return;
++
++	selmon->sel->isforegrounded || selmon->sel->isfloating ?
++		detachforegrounded(selmon->sel) : attachforegrounded(selmon->sel);
++
++	selmon->sel->isforegrounded = selmon->sel->isfloating =
++		!selmon->sel->isfloating && !selmon->sel->isforegrounded;
++
++	arrangeforegrounded(selmon);
++	arrange(selmon);
++}
++
+ void
+ togglefloating(const Arg *arg)
+ {
+@@ -1732,6 +1801,11 @@ togglefloating(const Arg *arg)
+ 	if (selmon->sel->isfloating)
+ 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
+ 			selmon->sel->w, selmon->sel->h, 0);
++	if (selmon->sel->isforegrounded) {
++		selmon->sel->isforegrounded = 0;
++		detachforegrounded(selmon->sel);
++		arrangeforegrounded(selmon);
++	}
+ 	arrange(selmon);
+ }
+
+@@ -1783,6 +1857,12 @@ unmanage(Client *c, int destroyed)
+
+ 	detach(c);
+ 	detachstack(c);
++
++	if (c->isforegrounded){
++		detachforegrounded(c);
++		arrangeforegrounded(m);
++	}
++
+ 	if (!destroyed) {
+ 		wc.border_width = c->oldbw;
+ 		XGrabServer(dpy); /* avoid race conditions */
+--
+2.43.0
+

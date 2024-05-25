@@ -164,7 +164,8 @@ struct Client {
   unsigned int tags;
   unsigned int switchtotag;
   int isfixed, isfloating, iscentered, canfocus, isurgent, isalwaysontop,
-      neverfocus, oldstate, isfullscreen, isterminal, noswallow, issticky;
+      neverfocus, oldstate, isfullscreen, isterminal, noswallow, issticky,
+      isforegrounded;
   int beingmoved;
   int floatborderpx;
   int hasfloatbw;
@@ -173,6 +174,7 @@ struct Client {
   int allowkill;
   Client *next;
   Client *snext;
+  Client *tnext;
   Client *swallowing;
   double opacity;
   int wasruleopacity;
@@ -215,6 +217,7 @@ struct Monitor {
   Client *clients;
   Client *sel;
   Client *stack;
+  Client *foregrounded;
   Client *tagmarked[32];
   Monitor *next;
   Window barwin;
@@ -383,6 +386,7 @@ static void tagnthmon(const Arg *arg);
 static void toggleall(const Arg *arg);
 static void togglealttag(const Arg *arg);
 static void togglebar(const Arg *arg);
+static void toggleforegrounded(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void toggleallowkill(const Arg *arg);
 static void togglealwaysontop(const Arg *arg);
@@ -811,6 +815,18 @@ void unswallow(Client *c) {
   arrange(c->mon);
 }
 
+void attachforegrounded(Client *c) {
+  c->tnext = c->mon->foregrounded;
+  c->mon->foregrounded = c;
+}
+
+void detachforegrounded(Client *c) {
+  Client **tc;
+  for (tc = &c->mon->foregrounded; *tc && *tc != c; tc = &(*tc)->tnext)
+    ;
+  *tc = c->tnext;
+}
+
 void buttonpress(XEvent *e) {
   unsigned int i, x, click;
   int stw = getsystraywidth();
@@ -890,6 +906,39 @@ execute_handler:
         CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
       buttons[i].func(
           click == ClkTagBar && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
+}
+
+Client *nextforegrounded(Client *c) {
+  for (; c && (!c->isforegrounded || !ISVISIBLE(c)); c = c->tnext)
+    ;
+  return c;
+}
+
+void arrangeforegrounded(Monitor *m) {
+  unsigned int n, i, x, y, w, h;
+  Client *c;
+
+  for (n = 0, c = nextforegrounded(m->foregrounded); c;
+       c = nextforegrounded(c->tnext), n++)
+    ;
+  if (n == 0)
+    return;
+
+  for (i = 0, c = nextforegrounded(m->foregrounded); c;
+       c = nextforegrounded(c->tnext), i++) {
+    if (n == 1) {
+      x = m->mx + (m->mw - m->mw * fgw) / 2;
+      y = m->my + (m->mh - m->mh * fgh) / 2;
+      w = (m->mw * fgw) - (2 * (m->foregrounded->bw));
+      h = (m->mh * fgh) - (2 * (m->foregrounded->bw));
+    } else {
+      x = (n - 1 - i) * (m->mw / n);
+      y = m->my + (m->mh - m->mh * fgh) / 2;
+      w = (m->mw * (1 / (float)n)) - (2 * (m->foregrounded->bw));
+      h = (m->mh * fgh) - (2 * (m->foregrounded->bw));
+    }
+    resize(c, x, y, w, h, 0);
+  }
 }
 
 void changeopacity(const Arg *arg) {
@@ -2432,6 +2481,23 @@ void opacity(Client *c, double opacity) {
 //   arrange(c->mon);
 // }
 
+void toggleforegrounded(const Arg *arg) {
+  if (!selmon->sel)
+    return;
+  if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
+    return;
+
+  selmon->sel->isforegrounded || selmon->sel->isfloating
+      ? detachforegrounded(selmon->sel)
+      : attachforegrounded(selmon->sel);
+
+  selmon->sel->isforegrounded = selmon->sel->isfloating =
+      !selmon->sel->isfloating && !selmon->sel->isforegrounded;
+
+  arrangeforegrounded(selmon);
+  arrange(selmon);
+}
+
 Client *recttoclient(int x, int y, int w, int h) {
   Client *c, *r = NULL;
   int a, area = 0;
@@ -3540,8 +3606,14 @@ void togglefloating(const Arg *arg) {
       c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
       resize(selmon->sel, c->x, c->y, c->w, c->h, 0);
     } else {
-      resize(selmon->sel, selmon->sel->x, selmon->sel->y, selmon->sel->w,
+      resize(selmon->sel, selmon->sel->x, selmon->sel->y + user_bh, selmon->sel->w,
              selmon->sel->h, 0);
+    }
+
+    if (selmon->sel->isforegrounded) {
+      selmon->sel->isforegrounded = 0;
+      detachforegrounded(selmon->sel);
+      arrangeforegrounded(selmon);
     }
 
   } else {
@@ -3741,6 +3813,12 @@ void unmanage(Client *c, int destroyed) {
     cropdelete(c);
   detach(c);
   detachstack(c);
+
+  if (c->isforegrounded) {
+    detachforegrounded(c);
+    arrangeforegrounded(m);
+  }
+
   if (!destroyed) {
     wc.border_width = c->oldbw;
     XGrabServer(dpy); /* avoid race conditions */

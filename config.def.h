@@ -158,6 +158,8 @@ static const int resizehints    = 1;    /* 1 means respect size hints in tiled r
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static Bool isfakefullscreen    = False;     /* enables fakefullscreen */
 
+static const float fgw = .6,fgh = .6;
+
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
 #include "helper.c"
@@ -447,6 +449,7 @@ static const Key keys[] = {
         { MODKEY|ShiftMask,             XK_space,                 togglealwaysontop,      {0} },
         { MODKEY|ShiftMask|ControlMask, XK_space,                 setlayout,              {0} },
         { MODKEY,                       XK_space,                 togglefloating,         {0} },
+        { MODKEY|Mod1Mask,              XK_space,                 toggleforegrounded,     {0} },
         { MODKEY|ShiftMask,             XK_a,                     toggleopacity,          {0} },
         { MODKEY|ShiftMask,             XK_s,                     togglesticky,           {0} },
         { MODKEY,                       XK_0,                     view,                   {.ui = ~0 } },
