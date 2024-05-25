@@ -310,6 +310,7 @@ static void horizontal(Monitor *m);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void keyrelease(XEvent *e);
+static void killthis(Window w);
 static void killclient(const Arg *arg);
 static void layoutmenu(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
@@ -1689,24 +1690,54 @@ void keypress(XEvent *e) {
       keys[i].func(&(keys[i].arg));
 }
 
-void killclient(const Arg *arg) {
-  if (!selmon->sel || !selmon->sel->allowkill)
-    return;
-  if (selmon->sel->crop)
-    cropdelete(selmon->sel);
-
-  if (selmon->sel->scratchkey == 'l') {
-    pskiller(selmon->sel->pid);
-  }
-  if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask,
-                 wmatom[WMDelete], CurrentTime, 0, 0, 0)) {
+void killthis(Window w) {
+  if (!sendevent(w, wmatom[WMDelete], NoEventMask, wmatom[WMDelete],
+                 CurrentTime, 0, 0, 0)) {
     XGrabServer(dpy);
     XSetErrorHandler(xerrordummy);
     XSetCloseDownMode(dpy, DestroyAll);
-    XKillClient(dpy, selmon->sel->win);
+    XKillClient(dpy, w);
     XSync(dpy, False);
     XSetErrorHandler(xerror);
     XUngrabServer(dpy);
+  }
+}
+
+void killclient(const Arg *arg) {
+  Client *c;
+
+  if (!selmon->sel || !selmon->sel->allowkill)
+    return;
+
+  if (!arg->ui || arg->ui == 0) {
+
+    if (selmon->sel->crop)
+      cropdelete(selmon->sel);
+
+    if (selmon->sel->scratchkey == 'l') {
+      pskiller(selmon->sel->pid);
+    }
+
+    killthis(selmon->sel->win);
+    return;
+  }
+
+  for (c = selmon->clients; c; c = c->next) {
+    if (!ISVISIBLE(c) || (arg->ui == 1 && c == selmon->sel))
+      continue;
+
+    if (arg->ui != 3)
+      if (!c->allowkill)
+        continue;
+
+    if (c->crop)
+      cropdelete(c);
+
+    if (c->scratchkey == 'l') {
+      pskiller(c->pid);
+    }
+
+    killthis(c->win);
   }
 }
 
@@ -3181,7 +3212,6 @@ void sigstatusbar(const Arg *arg) {
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
 }
 
-
 void sighup(int unused) {
   Arg a = {.i = 1};
   quit(&a);
@@ -3210,7 +3240,6 @@ void spawn(const Arg *arg) {
     pid_t pid = setsid();
     _Bool pid_found = 0;
     pid_found = scratchpad_show_client_by_pid(pid);
-
 
     if (pid_found) {
       die("dwm: process '%s' allready exists:", ((char **)arg->v)[0]);

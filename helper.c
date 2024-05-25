@@ -14,10 +14,16 @@ static void reloadafterquit(const Arg *arg);
 static void reloadafterquitwithsig(const Arg *arg);
 static void pskiller(pid_t pid);
 
-void pskiller(pid_t pid){
-  Arg a = {.v = (const char*[]){ "kill", "-9", pid, NULL }};
+void pskiller(pid_t pid) {
+  char *s_pid;
+  int err = sprintf(s_pid, "%d\n", pid);
+  if (err < 0) {
+    return;
+  }
+  Arg a = {.v = (const char *[]){"kill", "-9", s_pid, NULL}};
   spawn(&a);
 }
+
 void reloadafterquit(const Arg *arg) {
   spawn(arg);
   Arg a;

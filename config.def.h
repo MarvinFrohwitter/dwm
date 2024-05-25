@@ -482,7 +482,11 @@ static const Key keys[] = {
 
         { MODKEY,                       XK_s,                     spawn,                  {.v = slock } },
         { MODKEY|ShiftMask,             XK_q,                     toggleallowkill,        {0} },
-        { MODKEY,                       XK_q,                     killclient,             {0} },
+        { MODKEY,                       XK_q,                     killclient,             {0} },        // kill the selected client
+        { MODKEY|ControlMask,           XK_q,                     killclient,             {.ui = 1} },  // kill unselect
+        { MODKEY|ShiftMask|ControlMask, XK_q,                     killclient,             {.ui = 2} },  // killall except clients that are marked unkillable
+        { Mod1Mask|ShiftMask|ControlMask, XK_q,                   killclient,             {.ui = 3} },  // killall
+
         { MODKEY|ShiftMask,             XK_e,                     reloadafterquit,        {.v = killscript } },
         { MODKEY,                       XK_e,                     reloadafterquitwithsig, {.v = killscript } },
 };
