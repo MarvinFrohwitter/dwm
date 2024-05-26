@@ -2,7 +2,6 @@ dwm - dynamic window manager
 ============================
 dwm is an extremely fast, small, and dynamic window manager for X.
 
-
 Requirements
 ------------
 In order to build dwm you need the Xlib header files.
@@ -13,3 +12,85 @@ Installation
 $ sudo make clean install
 ```
 
+### The external patches that are included and some customization from myself.
+
+dwm-alttab2+winview-6.4.diff
+dwm-foreground-20240220-9f88553.diff
+dwm-autostarttags-6.4.diff
+dwm-focusvisibletagstacks-6.5.diff
+dwm-toggleallmonspertag-6.4.diff
+dwm-borderrule-20231226-e7f651b.diff
+dwm-bulkill-systray-20231029-9f88553.diff
+dwm-fixmultimon-6.4.diff
+dwm-horizontal-6.4.diff
+dwm-noborderflicker-20211227-8657affa2a61.diff
+Custom variant of dwm-viewontag.diff
+placemouse.diff
+accessnthmon.diff
+dwm-allowkillrule-6.4.diff
+dwm-swaptags-6.2.diff
+Added the feature that the autostart file can also be placed in $HOME/.config/dwm like in the $XDG_CONFIG_HOME specification.
+resizecorners/dwm-resizecorners-6.2.diff
+dwm-cropwindows-20170709-ceac8c9.diff
+patched getures
+dwm-clientindicatorshidevacant-6.2.diff
+dwm-alternativetags-6.3.diff
+alwaysontop-6.2.diff
+dwm-titlecolor-20210815-ed3ab6b4.diff
+complet pertag functionality with vanitygaps
+added rmaster functionality to stairs
+added rmaster functionality to bstackhorize layout
+added rmaster functionality to bstack layout
+added rmaster functionality to deck layout
+added rmaster functionality to col layout
+dwm-rmaster-6.2.diff
+dwm-clientopacity-20220612-d3f93c7.diff
+systray, statuscmd (dwmblocks), alpha and barpadding work together with the correct startup-script
+dwm-scratchtagwins-6.3.diff
+dwm-namedscratchpads-6.2.diff
+dwm-canfocusrule-20200702-f709b19.diff
+dwm-moveresize-20221210-7ac106c.diff
+make custom restartsig in helper.c with killscript
+dwm-restartsig-20180523-6.2.diff
+dwm-preserveonrestart-6.3.diff
+added fakefullscreen toggle
+systray-dwmblocks patch works kinda with slstatus
+dwm-layoutmenu-6.2.diff
+dwm-cursorwarp-6.3.diff
+systray-alpha
+systray-6.4
+dwm-dragmfact-6.2.diff
+dwm-stickyindicator-6.2.diff
+dwm-fakefullscreen-20210714-138b405.diff and supported actualfullscreen as well
+dwm-zoomswap-6.2.diff
+dwm-actualfullscreen-20211013-cb3f58a.diff
+dwm-launchers-20200527-f09418b.diff
+dwm-floatrules-20210801-138b405.diff
+dwm-switchtotag-6.2.diff
+dwm-hide_vacant_tags-6.3.diff
+dwm-barpadding-20211020-a786211.diff
+dwm-stairs-20220430-8b48e30.diff
+dwm-columns-6.2.diff
+dwm-focusmaster-return-6.2.diff
+dwm-fadeinactive-20211114-a786211.diff
+dwm-underlinetags-6.2.diff
+dwm-clientmonoclesymbol-20220417-d93ff48.diff
+dwm-sticky-20160911-ab9571b.diff
+dwm-cyclelayouts-20180524-6.2.diff
+dwm-vanitygaps-6.2.diff
+dwm-swallow-6.2.diff
+dwm-statuscmd-20210405-67d76bd.diff
+pre dwmblocks
+dwm-xresources-20210827-138b405.diff
+dwm-scratchpad-20200727-bb2e7222baeec7776930354d0e9f210cc2aaad5f.diff
+dwm-statusallmons-6.2.diff
+dwm-autostart-20210120-cb3f58a.diff
+dwm-fullscreen-6.2.diff
+dwm-warp-6.2.diff
+dwm-bar-height-6.2.diff
+dwm-attachbottom-20201227-61bb8b2.diff
+dwm-alwayscenter-20200625-f04cac6.diff
+dwm-movestack-20211115-a786211.diff
+dwm-fullgaps-toggle-20200830.diff
+dwm-pertag-perseltag-6.2.diff
+dwm-alpha-20201019-61bb8b2.diff
