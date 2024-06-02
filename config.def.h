@@ -128,7 +128,7 @@ static const Rule rules[] = {
         { FIRE,          NULL,             NULL,           1<<7, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, NULL,             "newsboat",     1<<8, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, NULL,             "ncmpcpp",      1<<4, 1,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
-        { "Pavucontrol", NULL,             NULL,           1<<4, 0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 8,                0,          0   },
+        { "pavucontrol", NULL,             NULL,           1<<4, 0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 8,                0,          0   },
         { TERMINALCLASS, NULL,             "notetaker",    0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'l' },
         { TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,              -1,          0   },
