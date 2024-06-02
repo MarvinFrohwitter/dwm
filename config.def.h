@@ -118,6 +118,7 @@ static const Rule rules[] = {
          *        WM_NAME(STRING) = title
          */
         /* class        instance          title       tags mask  switchtotag  allowkill  isfloating confocus isterminal noswallow opacity monitor float x,y,w,h floatborderpx borderwidth scratch key*/
+        { NULL,         NULL, "TEAM KITE BALLETT CHOREOGRAPHER", 1<<1, 0,     1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { "thunderbird", NULL,             NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { "discord",     NULL,             NULL,           1<<3, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { "Clementine",  NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
@@ -133,6 +134,7 @@ static const Rule rules[] = {
         { TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,              -1,          0   },
         { "Alacritty",   NULL,             NULL,           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, "float",          NULL,           0,    0,           1,         1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
+        { TERMINALCLASS, "dev",            NULL,           0,    0,           1,         0,         1,       0,         1,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, TERMINAL,         TERMINAL,       0,    0,           1,         0,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { "gimp",        NULL,             NULL,           0,    0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { NULL,          NULL,             "Event Tester", 0,    0,           1,         0,         1,       0,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   }, /* xev */
@@ -223,6 +225,7 @@ static const char *killscript[]                 = { "killscript", NULL };
 static const char *xkillclient[]                = { "/bin/sh", "-c", "dmenupskill", NULL };
 static const char *lowpower[]                   = { "/bin/sh", "-c", "lowpower", NULL };
 static const char *term[]                       = { TERMINAL, NULL };
+static const char *termdev[]                  = { TERMINAL, "-n", "dev", NULL };
 static const char *termfloat[]                  = { TERMINAL, "-n", "float", NULL };
 static const char *ranger[]                     = { TERMINAL, "-t", "ranger" ,"-e","ranger", NULL };
 static const char *lf[]                         = { TERMINAL, "-t", "lf", "-e", "lfueberzug", NULL };
@@ -368,6 +371,7 @@ static const Key keys[] = {
         { MODKEY|ShiftMask,             XK_Return,                spawn,                  {.v = ranger } },
         { MODKEY,                       XK_a,                     spawn,                  {.v = lf } },
         { MODKEY,                       XK_Return,                spawn,                  {.v = term } },
+        { Mod1Mask,                     XK_Return,                spawn,                  {.v = termdev } },
         { MODKEY|ControlMask,           XK_t,                     spawn,                  {.v = termfloat } },
 
         { MODKEY,                       XK_y,                     spawn,                  {.v = notetaker } },
