@@ -131,6 +131,7 @@ static const Rule rules[] = {
         { "pavucontrol", NULL,             NULL,           1<<4, 0,           1,         0,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 8,                0,          0   },
         { TERMINALCLASS, NULL,             "notetaker",    0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, NULL,             "lf",           0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'l' },
+        { TERMINALCLASS, NULL,             "yazi",         0,    0,           1,         1,         1,       1,         1,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          'l' },
         { TERMINALCLASS, NULL,             "ranger",       0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, 10,              -1,          0   },
         { "Alacritty",   NULL,             NULL,           0,    0,           1,         1,         1,       0,         0,        1.0,     -1,     0,0,1000,700, borderpx,        -1,          0   },
         { TERMINALCLASS, "float",          NULL,           0,    0,           1,         1,         1,       1,         0,        1.1,     -1,     0,0,1000,700, borderpx,        -1,          0   },
@@ -225,10 +226,11 @@ static const char *killscript[]                 = { "killscript", NULL };
 static const char *xkillclient[]                = { "/bin/sh", "-c", "dmenupskill", NULL };
 static const char *lowpower[]                   = { "/bin/sh", "-c", "lowpower", NULL };
 static const char *term[]                       = { TERMINAL, NULL };
-static const char *termdev[]                  = { TERMINAL, "-n", "dev", NULL };
+static const char *termdev[]                    = { TERMINAL, "-n", "dev", NULL };
 static const char *termfloat[]                  = { TERMINAL, "-n", "float", NULL };
 static const char *ranger[]                     = { TERMINAL, "-t", "ranger" ,"-e","ranger", NULL };
 static const char *lf[]                         = { TERMINAL, "-t", "lf", "-e", "lfueberzug", NULL };
+static const char *yazi[]                       = { TERMINAL, "-t", "yazi", "-e", "yazi", NULL };
 static const char *slock[]                      = { "slock", NULL };
 static const char *brave[]                      = { BROWSER, NULL };
 static const char *firefox[]                    = { FIRE, NULL };
@@ -369,7 +371,8 @@ static const Key keys[] = {
         { 0,                            XF86XK_MonBrightnessUp,   spawn,                  {.v = brightnessup   } },
         { 0,                            XF86XK_MonBrightnessDown, spawn,                  {.v = brightnessdown   } },
         { MODKEY|ShiftMask,             XK_Return,                spawn,                  {.v = ranger } },
-        { MODKEY,                       XK_a,                     spawn,                  {.v = lf } },
+        { MODKEY,                       XK_a,                     spawn,                  {.v = yazi } },
+        { MODKEY|ShiftMask,             XK_a,                     spawn,                  {.v = lf } },
         { MODKEY,                       XK_Return,                spawn,                  {.v = term } },
         { Mod1Mask,                     XK_Return,                spawn,                  {.v = termdev } },
         { MODKEY|ControlMask,           XK_t,                     spawn,                  {.v = termfloat } },
@@ -456,7 +459,7 @@ static const Key keys[] = {
         { MODKEY|ShiftMask|ControlMask, XK_space,                 setlayout,              {0} },
         { MODKEY,                       XK_space,                 togglefloating,         {0} },
         { MODKEY|Mod1Mask,              XK_space,                 toggleforegrounded,     {0} },
-        { MODKEY|ShiftMask,             XK_a,                     toggleopacity,          {0} },
+        { MODKEY|ShiftMask|ControlMask, XK_a,                     toggleopacity,          {0} },
         { MODKEY|ShiftMask,             XK_s,                     togglesticky,           {0} },
         { MODKEY,                       XK_0,                     view,                   {.ui = ~0 } },
         { MODKEY|ShiftMask,             XK_0,                     tag,                    {.ui = ~0 } },
