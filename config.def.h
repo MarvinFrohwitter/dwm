@@ -485,6 +485,9 @@ static const Key keys[] = {
         { MODKEY|ShiftMask,             XK_period,                tagmon,                 {.i = +1 } },
         { MODKEY,                       XK_z,                     setscheme,              {.i = +1 } },
 
+        { ALTMOD,                       XK_n,                     focussame,              {.i = +1 } },
+        { ALTMOD|ShiftMask,             XK_n,                     focussame,              {.i = -1 } },
+
 
         TAGKEYS(                        XK_1,                     0)
         TAGKEYS(                        XK_2,                     1)
