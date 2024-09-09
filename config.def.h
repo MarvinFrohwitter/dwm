@@ -66,13 +66,22 @@ static char selbgcolor[]      = "#005577";
 static char magenta[]         = "#FF00FF";
 static char red[]             = "#ff0000";
 static char darkpurple[]      = "#660079";
-static char *colors[][3] = {
+
+static char *colors[][SchemeN][3] = {
        /*               fg           bg           border   */
+      { /* dark red */
        [SchemeNorm]  = { selbordercolor, normbgcolor, normbordercolor },
        [SchemeSel]   = { selbordercolor, selbgcolor,  selbordercolor  },
        [SchemeTray]  = { selbordercolor, normbgcolor, normbordercolor },
        [SchemeTitle] = { red,            normbgcolor, normbordercolor },
        // [SchemeSel]   = { selfgcolor,     selbgcolor,  selbordercolor  },
+      },
+      { /* dark purple */
+       [SchemeNorm]  = { selbordercolor, normbgcolor, normbordercolor },
+       [SchemeSel]   = { selbordercolor, selbgcolor,  selbordercolor  },
+       [SchemeTray]  = { selbordercolor, normbgcolor, normbordercolor },
+       [SchemeTitle] = { darkpurple,     normbgcolor, normbordercolor },
+      }
 };
 static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
 static const XPoint stickyiconbb    = {4,8};        /* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
@@ -346,7 +355,7 @@ ResourcePref resources[] = {
 
 static const Key keys[] = {
         /* modifier                     key                       function                argument */
-        { MODKEY,                       XK_z,                     spawn,                  SHCMD("dmenumount")},
+        { MODKEY|ShiftMask,             XK_z,                     spawn,                  SHCMD("dmenumount")},
         { MODKEY,                       XK_v,                     spawn,                  SHCMD("dmenuunicode")},
         { MODKEY,                       XK_g,                     spawn,                  SHCMD("dmenuhandler")},
         { MODKEY|ShiftMask|ControlMask, XK_m,                     spawn,                  SHCMD("dmenumovie")},
@@ -469,6 +478,7 @@ static const Key keys[] = {
         { MODKEY,                       XK_period,                focusmon,               {.i = +1 } },
         { MODKEY|ShiftMask,             XK_comma,                 tagmon,                 {.i = -1 } },
         { MODKEY|ShiftMask,             XK_period,                tagmon,                 {.i = +1 } },
+        { MODKEY,                       XK_z,                     setscheme,              {.i = +1 } },
 
 
         TAGKEYS(                        XK_1,                     0)
