@@ -7,7 +7,13 @@
 
 #include <X11/Xutil.h>
 #include <string.h>
+
+static const int user_bh                 = 30;       /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const unsigned int borderpx       = 5;        /* border pixel of windows */
+static const unsigned int dash_h         = 3;        /* height of the app bar dash */
+static const unsigned int dashpos_y      = user_bh - dash_h;   /* y-position of the dash */
+static const unsigned int text_ypos      = 0;        /* y-position of active window text */
+
 static const unsigned int tabModKey      = 0x40;
 static const unsigned int tabCycleKey    = 0x17;
 static const unsigned int snap           = 32;       /* snap pixel */
@@ -40,7 +46,6 @@ static const double inactiveopacity      = 1.0f;     /* Window opacity when it's
 static       Bool bUseOpacity            = True;     /* Starts with opacity on any unfocused windows */
 static const double defaultopacity       = 1.0;
 
-static const int user_bh                 = 30;       /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 static const char *fonts[] = {
     "JetBrainsMono Nerd Font:pixelsize=12:antialias=true:autohint=true",
     "JoyPixels:size=12:antialias=true:autohint=true"};

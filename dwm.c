@@ -1493,7 +1493,12 @@ void drawbar(Monitor *m) {
 
       // tlpad = MAX((m->ww - ((int)TEXTW(m->sel->name) - lrpad)) / 2 - x, lrpad
       // / 2); drw_text(drw, x, 0, w - 2 * sp, bh, tlpad, m->sel->name, 0);
-      drw_text(drw, x, 0, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
+      drw_text(drw, x, text_ypos, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
+
+      drw_setscheme(drw, scheme[SchemeNorm]);
+      int MAGIC_FOR_BAR = 2*sidepad;
+      drw_rect(drw, x, dashpos_y, w - 2 * sp - MAGIC_FOR_BAR, dash_h, 1, 0);
+
       if (m->sel->isfloating) {
         drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
         // drw_rect(drw, x + boxs + tlpad - lrpad / 2, boxs, boxw, boxw,
