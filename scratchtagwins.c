@@ -5,7 +5,7 @@
 #include <X11/XF86keysym.h>
 
 # define SCRATCHTAGWIN_KEY(name, id)														\
-	{ Mod4Mask|Mod1Mask,          XK_ ## id,      togglescratch,  {.v = name } },				\
+    { Mod4Mask|Mod1Mask,          XK_ ## id,      togglescratch,  {.v = name } },			\
 	{ Mod4Mask|Mod1Mask|ShiftMask,XK_ ## id,      makescratchtagwin,{.i = '0' + id } },		\
 
 static void makescratchtagwin (const Arg * arg)

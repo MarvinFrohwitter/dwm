@@ -113,30 +113,58 @@ void getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv, unsigned int *nc) {
   *nc = n;              // number of clients
 }
 
+// void getfacts(Monitor *m, int msize, int ssize, float *mf, float *sf, int
+// *mr,
+//               int *sr) {
+//   unsigned int n;
+//   float mfacts, sfacts;
+//   int mtotal = 0, stotal = 0;
+//   Client *c;
+
+//   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+//     ;
+//   mfacts = MIN(n, m->nmaster);
+//   sfacts = n - m->nmaster;
+
+//   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
+//     if (n < m->nmaster)
+//       mtotal += msize / mfacts;
+//     else
+//       stotal += ssize / sfacts;
+
+//   *mf = mfacts; // total factor of master area
+//   *sf = sfacts; // total factor of stack area
+//   *mr = msize -
+//         mtotal; // the remainder (rest) of pixels after an even master split
+//   *sr = ssize -
+//         stotal; // the remainder (rest) of pixels after an even stack split
+// }
+
 void getfacts(Monitor *m, int msize, int ssize, float *mf, float *sf, int *mr,
               int *sr) {
   unsigned int n;
-  float mfacts, sfacts;
+  float mfacts = 0, sfacts = 0;
   int mtotal = 0, stotal = 0;
   Client *c;
 
   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
-    ;
-  mfacts = MIN(n, m->nmaster);
-  sfacts = n - m->nmaster;
+    if (n < m->nmaster)
+      mfacts += c->cfact;
+    else
+      sfacts += c->cfact;
 
   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
     if (n < m->nmaster)
-      mtotal += msize / mfacts;
+      mtotal += msize * (c->cfact / mfacts);
     else
-      stotal += ssize / sfacts;
+      stotal += ssize * (c->cfact / sfacts);
 
   *mf = mfacts; // total factor of master area
   *sf = sfacts; // total factor of stack area
   *mr = msize -
-        mtotal; // the remainder (rest) of pixels after an even master split
+        mtotal; // the remainder (rest) of pixels after a cfacts master split
   *sr = ssize -
-        stotal; // the remainder (rest) of pixels after an even stack split
+        stotal; // the remainder (rest) of pixels after a cfacts stack split
 }
 
 /***
@@ -804,14 +832,15 @@ static void tile(Monitor *m) {
 //     mw = m->nmaster ? m->ww * (m->rmaster ? 1.0 - m->mfact : m->mfact) : 0;
 //   else
 //     mw = m->ww;
-//   for (i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+//   for (i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next),
+//   i++)
 //     if (i < m->nmaster) {
 //       w = (mw - x) / (MIN(n, m->nmaster) - i);
 //       // The positioning is correct but client pos update is sometime wrong
 //       resize(c, (m->rmaster ? x + m->wx + m->ww - mw : x + m->wx), m->wy,
 //              w - (2 * c->bw), m->wh - (2 * c->bw), 0);
-//       // resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw), 0);
-//       x += WIDTH(c);
+//       // resize(c, (x + m->wx), m->wy, w - (2 * c->bw), m->wh - (2 * c->bw),
+//       0); x += WIDTH(c);
 //     } else {
 //       h = (m->wh - y) / (n - i);
 //       // This is correct resize function for the rmaster
@@ -839,7 +868,8 @@ static void tile(Monitor *m) {
 //   else
 //     mw = m->ww;
 
-//   for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+//   for (i = my = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+//   {
 //     if (i < m->nmaster) {
 //       h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 //       resize(c, (m->rmaster ? m->wx + m->ww - mw : m->wx), m->wy + my,
@@ -853,9 +883,9 @@ static void tile(Monitor *m) {
 //       oh = stairsamesize ? ow : i - m->nmaster;
 //       resize(
 //           c,
-//           (m->rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox * stairpx)),
-//           m->wy + (oy * stairpx), m->ww - mw - (2 * c->bw) - (ow * stairpx),
-//           m->wh - (2 * c->bw) - (oh * stairpx), 0);
+//           (m->rmaster ? m->wx + (ox * stairpx) : m->wx + mw + (ox *
+//           stairpx)), m->wy + (oy * stairpx), m->ww - mw - (2 * c->bw) - (ow *
+//           stairpx), m->wh - (2 * c->bw) - (oh * stairpx), 0);
 //     }
 //   }
 // }
