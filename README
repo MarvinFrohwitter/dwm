@@ -14,6 +14,10 @@ $ sudo make clean install
 
 ### The external patches that are included and some customization from myself.
 
+Added the cfacts and combined support for rmaster, pertag and gaps.
+dwm-cyclewindows-20240624-56f64312.diff
+Adapted dwm-dash_above_activeWindow-20240604-061e9fe.diff to an underline
+dwm-colorschemes-6.5.diff
 dwm-alttab2+winview-6.4.diff
 dwm-foreground-20240220-9f88553.diff
 dwm-autostarttags-6.4.diff
@@ -37,7 +41,7 @@ dwm-clientindicatorshidevacant-6.2.diff
 dwm-alternativetags-6.3.diff
 alwaysontop-6.2.diff
 dwm-titlecolor-20210815-ed3ab6b4.diff
-complet pertag functionality with vanitygaps
+complete pertag functionality with vanitygaps
 added rmaster functionality to stairs
 added rmaster functionality to bstackhorize layout
 added rmaster functionality to bstack layout
