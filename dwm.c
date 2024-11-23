@@ -756,6 +756,8 @@ static void focusnext(const Arg *arg) {
   Client *c;
   m = selmon;
   c = m->sel;
+  if (!c)
+    return;
 
   if (arg->i) {
     if (c->next)
@@ -4655,8 +4657,11 @@ void winview(const Arg *arg) {
   while (XQueryTree(dpy, win, &win_r, &win_p, &win_c, &nc) && win_p != win_r)
     win = win_p;
 
-  if (!(c = wintoclient(win)))
+  if (!(c = wintoclient(win))) {
+    a.ui = 0;
+    view(&a);
     return;
+  }
 
   a.ui = c->tags;
   view(&a);
