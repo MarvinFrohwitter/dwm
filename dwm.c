@@ -1651,6 +1651,10 @@ void focus(Client *c) {
         opacity(c, activeopacity);
       }
     }
+    // Just raise in floating mode.
+    if (selmon->lt[selmon->sellt]->arrange == NULL) {
+      XRaiseWindow(dpy, c->win);
+    }
   } else {
     XSetInputFocus(dpy, selmon->barwin, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);

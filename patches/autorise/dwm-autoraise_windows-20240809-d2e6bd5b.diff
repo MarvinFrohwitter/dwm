@@ -1,0 +1,27 @@
+From d2e6bd5b14741ce15d66ad1b23c593b3bba4bf8a Mon Sep 17 00:00:00 2001
+From: krackout <kr@kr.kr>
+Date: Fri, 9 Aug 2024 09:29:22 +0300
+Subject: [PATCH] Autoraise windows when gaining focus with mouse hovering - in
+ floating layout only
+
+---
+ dwm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/dwm.c b/dwm.c
+index 67c6b2b..3a9a62c 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -803,6 +803,9 @@ focus(Client *c)
+ 		grabbuttons(c, 1);
+ 		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+ 		setfocus(c);
++		if (selmon->lt[selmon->sellt]->arrange == NULL) {
++            XRaiseWindow(dpy, c->win);
++        }
+ 	} else {
+ 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+ 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
+-- 
+2.39.2
+
