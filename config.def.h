@@ -413,6 +413,8 @@ static const Key keys[] = {
         { MODKEY,                       XK_o,                     togglebar,              {0} },
         { MODKEY,                       XK_j,                     focusstack,             {.i = +1 } },
         { MODKEY,                       XK_k,                     focusstack,             {.i = -1 } },
+        { MODKEY|ControlMask,           XK_Tab,                   cycleview,              {0} },
+        { MODKEY|ControlMask|ShiftMask, XK_Tab,                   cycleview,              {1} },
         { MODKEY|ALTMOD,                XK_j,                     focusvisibletagstacks,  {.i = +1 } },
         { MODKEY|ALTMOD,                XK_k,                     focusvisibletagstacks,  {.i = -1 } },
 
