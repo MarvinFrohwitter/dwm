@@ -172,8 +172,8 @@ struct Client {
   unsigned int tags;
   unsigned int switchtotag;
   int isfixed, isfloating, iscentered, canfocus, isurgent, isalwaysontop,
-      neverfocus, oldstate, isfullscreen, isterminal, noswallow, issticky,
-      isforegrounded;
+      neverfocus, oldstate, isfullscreen, resizehints, isterminal, noswallow,
+      issticky, isforegrounded;
   int beingmoved;
   int floatborderpx;
   int hasfloatbw;
@@ -247,6 +247,7 @@ typedef struct {
   int noswallow;
   double opacity;
   int monitor;
+  int resizehints;
   int floatx, floaty, floatw, floath;
   int floatborderpx;
   int bw;
@@ -707,6 +708,7 @@ void applyrules(Client *c) {
       c->isfloating = r->isfloating;
       c->canfocus = r->canfocus;
       c->tags |= r->tags;
+      c->resizehints = r->resizehints;
       c->allowkill = r->allowkill;
       if (r->bw != -1)
         c->bw = r->bw;
@@ -805,7 +807,7 @@ int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact) {
     *h = bh;
   if (*w < bh)
     *w = bh;
-  if (resizehints || c->isfloating || !c->mon->lt[c->mon->sellt]->arrange) {
+  if (c->resizehints || c->isfloating || !c->mon->lt[c->mon->sellt]->arrange) {
     if (!c->hintsvalid)
       updatesizehints(c);
     /* see last two sentences in ICCCM 4.1.2.3 */
@@ -2050,6 +2052,7 @@ void manage(Window w, XWindowAttributes *wa) {
   c->w = c->oldw = wa->width;
   c->h = c->oldh = wa->height;
   c->oldbw = wa->border_width;
+  c->resizehints = resizehints;
   c->cfact = 1.0;
 
   updatetitle(c);
