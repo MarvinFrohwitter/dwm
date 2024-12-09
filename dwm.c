@@ -1301,7 +1301,7 @@ Monitor *createmon(void) {
   unsigned int i;
 
   m = ecalloc(1, sizeof(Monitor));
-  m->tagset[0] = m->tagset[1] = 1;
+  m->tagset[0] = m->tagset[1] = defaulttag;
   m->mfact = mfact;
   m->nmaster = nmaster;
   m->rmaster = rmaster;

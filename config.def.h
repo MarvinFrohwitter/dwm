@@ -17,6 +17,7 @@ static const unsigned int text_ypos      = 0;        /* y-position of active win
 static const unsigned int tabModKey      = 0x40;
 static const unsigned int tabCycleKey    = 0x17;
 static const unsigned int snap           = 32;       /* snap pixel */
+static const unsigned int defaulttag     = 1;        /* default tag on startup */
 static const int allowkill               = 1;        /* allow killing clients by default? */
 static const int viewontag               = 1;        /* Switch view on tag switch */
 static const unsigned int gappih         = 10;       /* horiz inner gap between windows */
