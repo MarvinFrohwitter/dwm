@@ -2131,6 +2131,8 @@ void manage(Window w, XWindowAttributes *wa) {
   XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w,
                     c->h); /* some windows require this */
   setclientstate(c, NormalState);
+  if (selmon->sel && selmon->sel->isfullscreen && !c->isfloating)
+    setfullscreen(selmon->sel, 0);
   if (c->mon == selmon)
     unfocus(selmon->sel, 0);
   c->mon->sel = c;

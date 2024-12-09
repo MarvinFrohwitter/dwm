@@ -1,0 +1,25 @@
+From 554f5a8a2205a7c52280babf5685462d8991b038 Mon Sep 17 00:00:00 2001
+From: Suleyman Farajli <suleyman@farajli.net>
+Date: Sat, 31 Aug 2024 13:34:58 +0400
+Subject: [PATCH] prevent focus shifting when a window is spawned in fullscreen
+
+---
+ dwm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dwm.c b/dwm.c
+index f1d86b2..31b5d07 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -1080,6 +1080,8 @@ manage(Window w, XWindowAttributes *wa)
+ 		(unsigned char *) &(c->win), 1);
+ 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
+ 	setclientstate(c, NormalState);
++	if(selmon->sel && selmon->sel->isfullscreen && !c->isfloating)
++		setfullscreen(selmon->sel, 0);
+ 	if (c->mon == selmon)
+ 		unfocus(selmon->sel, 0);
+ 	c->mon->sel = c;
+-- 
+2.44.2
+
