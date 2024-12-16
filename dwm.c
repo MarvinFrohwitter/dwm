@@ -3667,7 +3667,9 @@ void stairs(Monitor *m) {
 
 void tag(const Arg *arg) {
   Client *c;
-  if (selmon->sel && arg->ui & TAGMASK) {
+  if (!selmon->sel)
+    return;
+  if (arg->ui & TAGMASK) {
     c = selmon->sel;
     selmon->sel->tags = arg->ui & TAGMASK;
     setclienttagprop(c);
@@ -3676,6 +3678,10 @@ void tag(const Arg *arg) {
     if (viewontag && ((arg->ui & TAGMASK) != TAGMASK)) {
       view(arg);
     }
+  } else {
+    selmon->sel->tags = selmon->tagset[selmon->seltags ^ 1];
+    focus(NULL);
+    arrange(selmon);
   }
 }
 

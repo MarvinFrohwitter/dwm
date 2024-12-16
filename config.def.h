@@ -564,7 +564,7 @@ static const Button buttons[] = {
          * to control these separately (i.e. to retain the feature to move a tiled window
          * into a floating position).
          */
-        { ClkClientWin,  ControlMask,        Button1, moveorplace,    {.i = 1} },
+        { ClkClientWin,  ALTMOD,             Button1, moveorplace,    {.i = 1} },
         { ClkClientWin,  MODKEY|ShiftMask,   Button3, gesture,        {0} },
         { ClkLtSymbol,   0,                  Button3, layoutmenu,     {0} },
         { ClkStatusText, 0,                  Button1, sigstatusbar,   {.i = 1} },
