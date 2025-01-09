@@ -378,11 +378,11 @@ static const Key keys[] = {
         /* { 0,                         XF86XK_AudioMicMute,      spawn,                  {.v = mutemicvol } },       */
         /* { 0,                         XF86XK_AudioMute,         spawn,                  {.v = mutevol } },          */
 
-        { 0,                            XF86XK_AudioLowerVolume,  spawn,                  SHCMD("/usr/bin/pactl set-sink-volume 0 -5% ; kill -44 $(pidof dwmblocks)")},
-        { 0,                            XF86XK_AudioRaiseVolume,  spawn,                  SHCMD("/usr/bin/pactl set-sink-volume 0 +5% ; kill -44 $(pidof dwmblocks)")},
+        { 0,                            XF86XK_AudioLowerVolume,  spawn,                  SHCMD("pactl set-sink-volume $(pactl get-default-sink) -5% ; kill -44 $(pidof dwmblocks)")},
+        { 0,                            XF86XK_AudioRaiseVolume,  spawn,                  SHCMD("pactl set-sink-volume $(pactl get-default-sink) +5% ; kill -44 $(pidof dwmblocks)")},
 
-        { 0,                            XF86XK_AudioMicMute,      spawn,                  SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)")},
-        { 0,                            XF86XK_AudioMute,         spawn,                  SHCMD("/usr/bin/pactl set-sink-mute 0 toggle ; kill -44 $(pidof dwmblocks)")},
+        { 0,                            XF86XK_AudioMicMute,      spawn,                  SHCMD("pactl set-sink-mute $(pactl get-default-sink) toggle ; kill -44 $(pidof dwmblocks)")},
+        { 0,                            XF86XK_AudioMute,         spawn,                  SHCMD("pactl set-sink-mute $(pactl get-default-sink) toggle ; kill -44 $(pidof dwmblocks)")},
 
         { 0,                            XF86XK_MonBrightnessUp,   spawn,                  {.v = brightnessup   } },
         { 0,                            XF86XK_MonBrightnessDown, spawn,                  {.v = brightnessdown   } },
