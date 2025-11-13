@@ -134,7 +134,7 @@ static const Rule rules[] = {
          */
         /* class        instance          title       tags mask  switchtotag  allowkill  isfloating confocus isterminal noswallow opacity monitor resizehints float x,y,w,h floatborderpx borderwidth scratch key*/
         { NULL,         NULL, "TEAM KITE BALLETT CHOREOGRAPHER", 1<<1, 0,     1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
-        { "thunderbird", NULL,             NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
+        { "org.mozilla.Thunderbird", NULL, NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "discord",     NULL,             NULL,           1<<3, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "Clementine",  NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "Audacity",    NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
