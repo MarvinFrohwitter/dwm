@@ -14,6 +14,7 @@ $ sudo make clean install
 
 ### The external patches that are included and some customization from myself.
 
+added previewallwin and toggle behavior
 Added the cfacts and combined support for rmaster, pertag and gaps.
 dwm-cyclewindows-20240624-56f64312.diff
 Adapted dwm-dash_above_activeWindow-20240604-061e9fe.diff to an underline
