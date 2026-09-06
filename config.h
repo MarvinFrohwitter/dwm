@@ -134,7 +134,7 @@ static const Rule rules[] = {
          */
         /* class        instance          title       tags mask  switchtotag  allowkill  isfloating confocus isterminal noswallow opacity monitor resizehints float x,y,w,h floatborderpx borderwidth scratch key*/
         { NULL,         NULL, "TEAM KITE BALLETT CHOREOGRAPHER", 1<<1, 0,     1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
-        { "thunderbird", NULL,             NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
+        { "org.mozilla.Thunderbird", NULL, NULL,           1<<2, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "discord",     NULL,             NULL,           1<<3, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "Clementine",  NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
         { "Audacity",    NULL,             NULL,           1<<4, 1,           1,         0,         1,       0,         0,        1.0,     -1,    1,          0,0,1000,700, borderpx,        -1,          0   },
@@ -390,6 +390,7 @@ static const Key keys[] = {
         { MODKEY,                       XK_a,                     spawn,                  {.v = yazi } },
         { MODKEY|ShiftMask,             XK_a,                     spawn,                  {.v = lf } },
         { MODKEY,                       XK_Return,                spawn,                  {.v = term } },
+        // { MODKEY,                       XK_Return,                spawn,                  {.v = termdev } },
         { ALTMOD,                       XK_Return,                spawn,                  {.v = termdev } },
         { MODKEY|ControlMask,           XK_t,                     spawn,                  {.v = termfloat } },
 
@@ -495,7 +496,7 @@ static const Key keys[] = {
         { MODKEY,                       XK_z,                     setscheme,              {.i = +1 } },
 
         { ALTMOD,                       XK_n,                     focussame,              {.i = +1 } },
-        { ALTMOD|ShiftMask,             XK_n,                     focussame,              {.i = -1 } },
+        { ALTMOD,                       XK_p,                     focussame,              {.i = -1 } },
 
 
         TAGKEYS(                        XK_1,                     0)

@@ -390,6 +390,7 @@ static const Key keys[] = {
         { MODKEY,                       XK_a,                     spawn,                  {.v = yazi } },
         { MODKEY|ShiftMask,             XK_a,                     spawn,                  {.v = lf } },
         { MODKEY,                       XK_Return,                spawn,                  {.v = term } },
+        // { MODKEY,                       XK_Return,                spawn,                  {.v = termdev } },
         { ALTMOD,                       XK_Return,                spawn,                  {.v = termdev } },
         { MODKEY|ControlMask,           XK_t,                     spawn,                  {.v = termfloat } },
 
