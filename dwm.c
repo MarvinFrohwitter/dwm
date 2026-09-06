@@ -709,27 +709,24 @@ void applyrules(Client *c) {
 }
 
 static void focusnext(const Arg *arg) {
-  Monitor *m;
-  Client *c;
-  m = selmon;
-  c = m->sel;
-  if (!c)
-    return;
+    Monitor *m;
+    Client *c;
+    m = selmon;
+    c = m->sel;
+    if (!c) return;
 
-  if (arg->i) {
-    if (c->next)
-      c = c->next;
-    else
-      c = m->clients;
-  } else {
-    Client *last = c;
-    if (last == m->clients)
-      last = NULL;
-    for (c = m->clients; c->next != last; c = c->next)
-      ;
-  }
-  focus(c);
-  return;
+    if (arg->i) {
+        if (c->next)
+            c = c->next;
+        else
+            c = m->clients;
+    } else {
+        Client *last = c;
+        if (last == m->clients) last = NULL;
+        for (c = m->clients; c->next != last; c = c->next);
+    }
+    focus(c);
+    return;
 }
 
 int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact) {
@@ -1309,7 +1306,7 @@ void drawbar(Monitor *m) {
     if (showsystray && m == systraytomon(m)) {
         stw = getsystraywidth();
         drw_setscheme(drw, scheme[SchemeTray]);
-        drw_rect(drw, m->ww - stw, 0, 2 * stw, bh, 1, 1);
+        drw_rect(drw, m->ww - stw - 2 * sidepad, 0, 2 * stw + 2 * sidepad, bh, 1, 1);
     }
 
     /* draw status first so it can be overdrawn by tags later */
@@ -1385,8 +1382,8 @@ void drawbar(Monitor *m) {
             drw_text(drw, x, text_ypos, w - 2 * sp, bh, lrpad / 2, m->sel->name, 0);
 
             drw_setscheme(drw, scheme[SchemeNorm]);
-            int MAGIC_FOR_BAR = 2 * sidepad;
-            drw_rect(drw, x, dashpos_y, w - 2 * sp - MAGIC_FOR_BAR, dash_h, 1, 0);
+            drw_rect(drw, x, dashpos_y, w - 2 * sp, dash_h, 1, 0);
+            drw_rect(drw, x, dashpos_y, w - 2 * sp, dash_h, 1, 0);
 
             if (m->sel->isfloating) {
                 drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
