@@ -4463,12 +4463,21 @@ void previewallwin(const Arg *arg) {
             continue;
         }
         if (event.type == ButtonPress && event.xbutton.button == Button1) {
+            XAllowEvents(dpy, ReplayPointer, CurrentTime);
             previewsel = NULL;
             for (c = m->clients; c; c = c->next)
                 if (event.xbutton.window == c->pre.win) {
                     previewsel = c;
                     break;
                 }
+            if (!previewsel) {
+                Monitor *dm = wintomon(event.xbutton.window);
+                Client *dc = wintoclient(event.xbutton.window);
+                if (dm && dm != m) {
+                    selmon = dm;
+                    if (dc) focus(dc);
+                }
+            }
             previewactive = 0;
             break;
         }
