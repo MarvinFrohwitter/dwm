@@ -2452,7 +2452,7 @@ void sendmon(Client *c, Monitor *m) {
     c->mon = m;
     c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
     attachbottom(c);
-    attach(c);
+    // attach(c); // This gives a loop with attachbottom(c); and then dwm hangs.
     attachstack(c);
     setclienttagprop(c);
     if (c->isfullscreen) resizeclient(c, m->mx, m->my, m->mw, m->mh);
